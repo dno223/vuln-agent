@@ -8,6 +8,8 @@ summaries suitable for executive audiences.
 import json
 import logging
 import os
+import re
+from typing import Optional
 
 import anthropic
 from dotenv import load_dotenv
@@ -26,13 +28,15 @@ SYSTEM_PROMPT = (
     "You are a cybersecurity analyst writing reports for executive audiences. "
     "You will receive vulnerability data and must produce a structured JSON response "
     "with exactly these three keys:\n"
-    "- executive_summary: 3-4 sentences explaining the security situation in plain, "
-    "non-technical language\n"
-    "- action_items: a list of exactly 5 strings, each a specific remediation action, "
-    "ordered by priority (most urgent first)\n"
-    "- risk_narrative: 2-3 paragraphs explaining the overall threat landscape and "
-    "business risk\n\n"
-    "Respond with ONLY valid JSON. Do not include markdown code fences or any other text."
+    "- executive_summary: plain-language overview in UNDER 150 WORDS\n"
+    "- action_items: a list of EXACTLY 5 strings, each ONE SENTENCE, ordered by priority "
+    "(most urgent first)\n"
+    "- risk_narrative: threat landscape and business risk description in UNDER 150 WORDS\n\n"
+    "STRICT RULES:\n"
+    "1. Return ONLY valid JSON — no markdown, no code fences, no preamble, no trailing text.\n"
+    "2. The entire response must be a single JSON object starting with { and ending with }.\n"
+    "3. Keep all text fields short to avoid truncation.\n"
+    "4. action_items must contain exactly 5 elements — no more, no fewer."
 )
 
 
@@ -57,11 +61,11 @@ def format_vulnerability_data(data: dict) -> str:
         lines.append(
             f"  - {cve.get('cve_id', 'Unknown')}: "
             f"CVSS {cve.get('cvss_score', 'N/A')} | "
-            f"{cve.get('description', '')[:200]}"
+            f"{cve.get('description', '')[:150]}"
         )
 
     lines.append(f"\nNEW CISA KEV ENTRIES ({len(new_kev_entries)} added in last 7 days):")
-    for entry in new_kev_entries[:10]:
+    for entry in new_kev_entries[:5]:
         lines.append(
             f"  - {entry.get('cveID', 'Unknown')}: "
             f"{entry.get('vendorProject', '')} {entry.get('product', '')} | "
@@ -82,30 +86,90 @@ def format_vulnerability_data(data: dict) -> str:
     return "\n".join(lines)
 
 
+_SAFE_DEFAULT = {
+    "executive_summary": "Summary unavailable due to a parsing error.",
+    "action_items": [
+        "Summary unavailable — review raw vulnerability data manually.",
+        "Summary unavailable",
+        "Summary unavailable",
+        "Summary unavailable",
+        "Summary unavailable",
+    ],
+    "risk_narrative": "Summary unavailable due to a parsing error.",
+}
+
+
+def _try_loads(text: str) -> Optional[dict]:
+    """Return parsed dict on success, None on failure."""
+    try:
+        return json.loads(text)
+    except (json.JSONDecodeError, ValueError):
+        return None
+
+
+def _repair_truncated_json(text: str) -> Optional[dict]:
+    """Try to close a truncated JSON object by working back from the last quote."""
+    last_quote = text.rfind('"')
+    if last_quote < 0:
+        return None
+    fragment = text[: last_quote + 1]
+    for closing in ("}", '"}', '"]}', '", "action_items": [], "risk_narrative": "Unavailable"}'):
+        result = _try_loads(fragment + closing)
+        if result is not None:
+            return result
+    return None
+
+
 def parse_summary_response(response_text: str) -> dict:
     """
     Parse the JSON response from Claude into the expected dict structure.
+
+    Attempts four strategies in order:
+      1. Standard json.loads()
+      2. Regex extraction of the outermost { } block
+      3. Repair of a truncated JSON string
+      4. Safe default dict so the pipeline never fully fails
 
     Args:
         response_text: Raw text returned by the Claude API
 
     Returns:
         Dict with keys: executive_summary, action_items, risk_narrative
-
-    Raises:
-        ValueError: If the text is not valid JSON or is missing required keys
     """
-    try:
-        result = json.loads(response_text.strip())
-    except json.JSONDecodeError as e:
-        raise ValueError(
-            f"Claude returned invalid JSON: {e}\nResponse: {response_text[:500]}"
-        ) from e
+    text = response_text.strip()
+
+    # Stage 1 — standard parse
+    result = _try_loads(text)
+
+    # Stage 2 — extract JSON block via regex
+    if result is None:
+        match = re.search(r"\{.*\}", text, re.DOTALL)
+        if match:
+            result = _try_loads(match.group())
+            if result is not None:
+                logger.warning("Used regex extraction to recover JSON from Claude response")
+
+    # Stage 3 — repair truncated JSON
+    if result is None:
+        result = _repair_truncated_json(text)
+        if result is not None:
+            logger.warning("Used truncation repair to recover JSON from Claude response")
+
+    # Stage 4 — safe default so the pipeline never hard-fails
+    if result is None:
+        logger.error(
+            "All JSON parse attempts failed; returning default summary. "
+            "Response excerpt: %s",
+            text[:300],
+        )
+        return dict(_SAFE_DEFAULT)
 
     required_keys = {"executive_summary", "action_items", "risk_narrative"}
     missing = required_keys - set(result.keys())
     if missing:
-        raise ValueError(f"Claude response missing required keys: {missing}")
+        logger.warning("Claude response missing keys %s; filling with defaults", missing)
+        for key in missing:
+            result[key] = _SAFE_DEFAULT[key]
 
     return {
         "executive_summary": str(result["executive_summary"]),
@@ -147,7 +211,7 @@ def generate_summary(vulnerability_data: dict) -> dict:
 
     response = client.messages.create(
         model=MODEL,
-        max_tokens=2048,
+        max_tokens=2000,
         system=SYSTEM_PROMPT,
         messages=[
             {

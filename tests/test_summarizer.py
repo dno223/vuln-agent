@@ -116,7 +116,7 @@ class TestFormatVulnerabilityData(unittest.TestCase):
         result = format_vulnerability_data({})
         self.assertIsInstance(result, str)
 
-    def test_description_capped_at_200_chars(self):
+    def test_description_capped_at_150_chars(self):
         long_desc = "X" * 500
         data = {
             "high_severity_cves": [{"cve_id": "CVE-2099-1", "cvss_score": 9.0, "description": long_desc}],
@@ -124,7 +124,7 @@ class TestFormatVulnerabilityData(unittest.TestCase):
             "monitored_hits": [],
         }
         result = format_vulnerability_data(data)
-        self.assertNotIn("X" * 300, result)
+        self.assertNotIn("X" * 200, result)
 
     def test_shows_count_of_high_severity_cves(self):
         result = format_vulnerability_data(SAMPLE_INPUT)
@@ -169,33 +169,40 @@ class TestParseSummaryResponse(unittest.TestCase):
         result = parse_summary_response(json.dumps(VALID_CLAUDE_RESPONSE))
         self.assertIsInstance(result["risk_narrative"], str)
 
-    def test_raises_on_non_json_input(self):
-        with self.assertRaises(ValueError):
-            parse_summary_response("This is not JSON at all.")
+    def test_non_json_input_returns_safe_default(self):
+        result = parse_summary_response("This is not JSON at all.")
+        self.assertIn("executive_summary", result)
+        self.assertIn("action_items", result)
+        self.assertIn("risk_narrative", result)
+        self.assertIn("unavailable", result["executive_summary"].lower())
 
-    def test_raises_on_json_missing_executive_summary(self):
+    def test_missing_executive_summary_filled_with_default(self):
         incomplete = {"action_items": [], "risk_narrative": "..."}
-        with self.assertRaises(ValueError):
-            parse_summary_response(json.dumps(incomplete))
+        result = parse_summary_response(json.dumps(incomplete))
+        self.assertIn("unavailable", result["executive_summary"].lower())
+        self.assertEqual(result["risk_narrative"], "...")
 
-    def test_raises_on_json_missing_action_items(self):
+    def test_missing_action_items_filled_with_default(self):
         incomplete = {"executive_summary": "...", "risk_narrative": "..."}
-        with self.assertRaises(ValueError):
-            parse_summary_response(json.dumps(incomplete))
+        result = parse_summary_response(json.dumps(incomplete))
+        self.assertIsInstance(result["action_items"], list)
+        self.assertTrue(len(result["action_items"]) > 0)
 
-    def test_raises_on_json_missing_risk_narrative(self):
+    def test_missing_risk_narrative_filled_with_default(self):
         incomplete = {"executive_summary": "...", "action_items": []}
-        with self.assertRaises(ValueError):
-            parse_summary_response(json.dumps(incomplete))
+        result = parse_summary_response(json.dumps(incomplete))
+        self.assertIn("unavailable", result["risk_narrative"].lower())
+        self.assertEqual(result["executive_summary"], "...")
 
     def test_leading_and_trailing_whitespace_handled(self):
         text = "   \n" + json.dumps(VALID_CLAUDE_RESPONSE) + "\n   "
         result = parse_summary_response(text)
         self.assertIsNotNone(result)
 
-    def test_empty_json_object_raises(self):
-        with self.assertRaises(ValueError):
-            parse_summary_response("{}")
+    def test_empty_json_object_returns_safe_default(self):
+        result = parse_summary_response("{}")
+        self.assertIn("executive_summary", result)
+        self.assertIn("unavailable", result["executive_summary"].lower())
 
 
 # ---------------------------------------------------------------------------
@@ -299,15 +306,18 @@ class TestGenerateSummary(unittest.TestCase):
             generate_summary(SAMPLE_INPUT)
 
     @patch("agents.summarizer.anthropic.Anthropic")
-    def test_raises_value_error_on_invalid_json_response(self, mock_anthropic_cls):
+    def test_invalid_json_response_returns_safe_default(self, mock_anthropic_cls):
         mock_client = MagicMock()
         mock_anthropic_cls.return_value = mock_client
         mock_client.messages.create.return_value = _make_mock_response(
             "This is not JSON."
         )
 
-        with self.assertRaises(ValueError):
-            generate_summary(SAMPLE_INPUT)
+        result = generate_summary(SAMPLE_INPUT)
+        self.assertIn("executive_summary", result)
+        self.assertIn("action_items", result)
+        self.assertIn("risk_narrative", result)
+        self.assertIn("unavailable", result["executive_summary"].lower())
 
     @patch("agents.summarizer.anthropic.Anthropic")
     def test_empty_input_still_calls_api(self, mock_anthropic_cls):
