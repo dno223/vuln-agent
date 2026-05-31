@@ -15,6 +15,7 @@ from dotenv import load_dotenv
 
 from agents.cisa_tracker import run_cisa_tracker
 from agents.cve_monitor import get_high_severity_cves
+from agents.report_builder import copy_report_to_docs, save_html_report, update_reports_index
 from agents.summarizer import generate_summary
 
 load_dotenv()
@@ -246,13 +247,31 @@ def save_reports(results: dict, report_dir: Path = REPORTS_DIR) -> tuple[Path, P
     return json_path, md_path
 
 
+def save_all_reports(results: dict, report_dir: Path = REPORTS_DIR) -> tuple[Path, Path, Path]:
+    """
+    Write JSON, Markdown, and HTML reports, then update the docs index.
+
+    Args:
+        results: Dict returned by run_pipeline()
+        report_dir: Directory to write reports into
+
+    Returns:
+        Tuple of (json_path, markdown_path, html_path).
+    """
+    json_path, md_path = save_reports(results, report_dir)
+    html_path = save_html_report(results, report_dir)
+    update_reports_index(results)
+    copy_report_to_docs(results)
+    return json_path, md_path, html_path
+
+
 def main() -> None:
     """Entry point — runs the full pipeline and saves reports."""
     logger.info("Starting vulnerability intelligence pipeline")
 
     results = run_pipeline()
 
-    json_path, md_path = save_reports(results)
+    json_path, md_path, html_path = save_all_reports(results)
 
     error_count = len(results["pipeline_errors"])
     print("\nPipeline complete.")
@@ -262,6 +281,7 @@ def main() -> None:
     print(f"  Pipeline errors    : {error_count}")
     print(f"  JSON report        : {json_path}")
     print(f"  Markdown report    : {md_path}")
+    print(f"  HTML report        : {html_path}")
 
     if error_count:
         print("\nPipeline warnings:")
