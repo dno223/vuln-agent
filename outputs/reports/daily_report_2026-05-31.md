@@ -1,29 +1,29 @@
 # Vulnerability Intelligence Report
 
 **Date:** 2026-05-31  
-**Generated:** 2026-05-31T02:09:45Z  
+**Generated:** 2026-05-31T03:27:55Z  
 
 ---
 
 ## Executive Summary
 
-Our security assessment reveals 33 high-severity vulnerabilities with CVSS scores ranging from 7.3 to 8.8, primarily affecting WordPress plugins and network devices. Critical threats include remote code execution capabilities in Spectra Gutenberg Blocks plugin and multiple SQL injection vulnerabilities in student management systems. Additionally, 5 new vulnerabilities were added to CISA's Known Exploited Vulnerabilities catalog this week, indicating active threat actor exploitation. The combination of web application vulnerabilities and network device flaws creates significant exposure to data breaches and system compromise.
+The organization faces elevated cybersecurity risk with 39 high-severity vulnerabilities identified, including critical remote code execution flaws scoring up to 8.8 CVSS. WordPress plugins show multiple SQL injection and authentication bypass vulnerabilities affecting website security. Network infrastructure devices from TRENDnet contain remote code execution risks. Additionally, 5 new CISA Known Exploited Vulnerabilities were added in the past week, indicating active threat actor exploitation in the wild. Immediate patching and remediation efforts are required to prevent potential data breaches and system compromises.
 
 ---
 
 ## Risk Narrative
 
-The threat landscape shows attackers actively targeting web applications and network infrastructure. WordPress plugins represent the highest immediate risk with remote code execution and privilege escalation capabilities. Student management systems contain multiple SQL injection flaws allowing unauthorized database access. Network devices from TRENDnet have authentication bypass vulnerabilities enabling complete system compromise. The recent CISA KEV additions indicate these vulnerability classes are being weaponized in active campaigns. Organizations face potential data exfiltration, system compromise, and operational disruption without immediate remediation efforts.
+The threat landscape shows active exploitation of WordPress plugins and network devices, with attackers targeting SQL injection and remote code execution vulnerabilities. The presence of 5 new CISA KEV entries indicates sophisticated threat actors are rapidly weaponizing vulnerabilities. Student management systems and educational platforms appear particularly targeted, suggesting potential data theft campaigns focusing on personally identifiable information. Network infrastructure vulnerabilities create pathways for lateral movement and persistent access. Without immediate remediation, the organization faces high probability of successful cyberattacks leading to data breaches, system compromises, and operational disruption.
 
 ---
 
 ## Prioritized Action Items
 
-1. Immediately patch or disable the Spectra Gutenberg Blocks WordPress plugin (CVE-2026-7465) due to remote code execution risk.
-2. Update TRENDnet TEW-432BRP devices to latest firmware to address critical authentication bypass vulnerabilities.
-3. Audit and remediate all student management systems for SQL injection vulnerabilities with CVSS 7.3-8.2 scores.
-4. Review and patch WordPress Simple History and GEO my WP plugins to prevent account takeover and SQL injection attacks.
-5. Implement network segmentation and monitoring for systems running eNdonesia Portal 8.7 until patches are available.
+1. Immediately patch or disable Spectra Gutenberg Blocks WordPress plugin (CVE-2026-7465) due to remote code execution vulnerability with 8.8 CVSS score.
+2. Apply security updates to all TRENDnet TEW-432BRP devices or replace with newer models to address critical remote code execution flaws.
+3. Update all WordPress installations and review Simple History and GEO my WP plugins for SQL injection and authentication bypass vulnerabilities.
+4. Conduct emergency vulnerability assessment for any systems matching the 5 newly added CISA KEV entries from this week.
+5. Implement network segmentation and monitoring for affected student management systems until patches can be applied.
 
 ---
 
@@ -64,6 +64,12 @@ The threat landscape shows attackers actively targeting web applications and net
 | CVE-2026-10124 | 8.8 | 2026-05-30 | A vulnerability was determined in Shibby Tomato up to 1.28. Affected is the function rip_zebra_read_ipv4 of the file /us |
 | CVE-2026-10125 | 8.8 | 2026-05-30 | A vulnerability was identified in Edimax BR-6478AC 1.23. Affected by this vulnerability is the function formPPPoESetup o |
 | CVE-2026-10126 | 8.8 | 2026-05-30 | A security flaw has been discovered in Edimax BR-6478AC 1.23. Affected by this issue is the function formQoS of the file |
+| CVE-2026-10157 | 7.3 | 2026-05-31 | A vulnerability was identified in Open5GS up to 2.7.6. This impacts an unknown function of the file src/amf/ngap-handler |
+| CVE-2026-10158 | 8.8 | 2026-05-31 | A security flaw has been discovered in TRENDnet TEW-432BRP 3.10B20. Affected is the function formPortFw of the file /gof |
+| CVE-2026-10159 | 8.8 | 2026-05-31 | A weakness has been identified in TRENDnet TEW-432BRP 3.10B20. Affected by this vulnerability is the function formSysLog |
+| CVE-2026-10160 | 8.8 | 2026-05-31 | A security vulnerability has been detected in TRENDnet TEW-432BRP 3.10B20. Affected by this issue is the function formSe |
+| CVE-2026-10161 | 8.8 | 2026-05-31 | A vulnerability was detected in TRENDnet TEW-432BRP 3.10B20. This affects the function formResetStatistic of the file /g |
+| CVE-2026-10162 | 8.8 | 2026-05-31 | A flaw has been found in TRENDnet TEW-432BRP 3.10B20. This vulnerability affects the function formSetPassword of the fil |
 
 ---
 
