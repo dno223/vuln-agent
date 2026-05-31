@@ -15,6 +15,7 @@ from dotenv import load_dotenv
 
 from agents.cisa_tracker import run_cisa_tracker
 from agents.cve_monitor import get_high_severity_cves
+from agents.email_alert import send_alert
 from agents.report_builder import copy_report_to_docs, save_html_report, update_reports_index
 from agents.summarizer import generate_summary
 
@@ -272,6 +273,17 @@ def main() -> None:
     results = run_pipeline()
 
     json_path, md_path, html_path = save_all_reports(results)
+
+    # Step 4 — Email Alert
+    if os.getenv("EMAIL_SENDER"):
+        logger.info("Step 4: Sending email alert")
+        sent = send_alert(results, html_report_path=html_path)
+        if sent:
+            logger.info("Email alert sent successfully")
+        else:
+            logger.warning("Email alert was not sent — check email configuration in .env")
+    else:
+        logger.info("EMAIL_SENDER not configured — skipping email alert")
 
     error_count = len(results["pipeline_errors"])
     print("\nPipeline complete.")
