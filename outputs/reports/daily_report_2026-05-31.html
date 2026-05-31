@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vulnerability Intelligence Report — 2026-05-31</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #22263a;
+    --border: #2d3148;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --accent: #6366f1;
+    --critical: #dc2626;
+    --high: #ea580c;
+    --medium: #ca8a04;
+    --success: #16a34a;
+  }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace; line-height: 1.6; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* Header */
+  .header { background: linear-gradient(135deg, #1a1d27 0%, #0f1117 100%); border-bottom: 1px solid var(--border); padding: 24px 32px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+  .header-left h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: 0.01em; color: #f1f5f9; }
+  .header-left h1 span { color: var(--accent); }
+  .header-meta { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
+  .risk-badge { display: inline-flex; align-items: center; gap: 6px; padding: 8px 20px; border-radius: 9999px; font-weight: 700; font-size: 0.95rem; letter-spacing: 0.05em; text-transform: uppercase; background: #dc262622; color: #dc2626; border: 2px solid #dc2626; }
+  .risk-dot { width: 8px; height: 8px; border-radius: 50%; background: #dc2626; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  /* Layout */
+  .container { max-width: 1400px; margin: 0 auto; padding: 32px; }
+
+  /* KPI cards */
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 32px; }
+  .kpi-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; }
+  .kpi-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 8px; }
+  .kpi-value { font-size: 2.5rem; font-weight: 700; line-height: 1; color: #f1f5f9; }
+  .kpi-value.danger { color: var(--critical); }
+  .kpi-value.warn { color: var(--high); }
+  .kpi-sub { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+
+  /* Sections */
+  .section { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 24px; }
+  .section-title { font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+  .section p { color: var(--text-muted); line-height: 1.8; }
+
+  /* Action list */
+  .action-list { padding-left: 20px; }
+  .action-list li { color: var(--text-muted); margin-bottom: 10px; padding-left: 4px; line-height: 1.7; }
+  .action-list li::marker { color: var(--accent); font-weight: 700; }
+  .empty-msg { color: var(--text-muted); font-style: italic; }
+
+  /* Tables */
+  .table-wrapper { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+  th { background: var(--surface2); padding: 10px 14px; text-align: left; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); border-bottom: 1px solid var(--border); cursor: pointer; user-select: none; white-space: nowrap; }
+  th:hover { color: var(--text); }
+  th .sort-icon { margin-left: 4px; opacity: 0.4; }
+  th.sorted .sort-icon { opacity: 1; color: var(--accent); }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface2); }
+  .empty-row { text-align: center; color: var(--text-muted); font-style: italic; padding: 24px; }
+  .desc-cell { max-width: 500px; color: var(--text-muted); font-size: 0.8rem; }
+
+  /* Score badges */
+  .score-badge { display: inline-block; padding: 2px 8px; border-radius: 6px; font-weight: 700; font-size: 0.8rem; }
+  .score-badge.critical { background: #dc262622; color: #dc2626; border: 1px solid #dc262644; }
+  .score-badge.high { background: #ea580c22; color: #ea580c; border: 1px solid #ea580c44; }
+  .score-badge.medium { background: #ca8a0422; color: #ca8a04; border: 1px solid #ca8a0444; }
+
+  /* Misc badges */
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
+  .ransomware-known { background: #dc262622; color: #dc2626; border: 1px solid #dc262644; }
+  .ransomware-unknown { background: #37415122; color: #94a3b8; border: 1px solid #37415144; }
+  .cve-link { color: var(--accent); font-family: monospace; }
+
+  /* Warning */
+  .warning-box { background: #78350f22; border: 1px solid #92400e; border-radius: 8px; padding: 16px; margin-bottom: 24px; color: #fbbf24; font-size: 0.875rem; }
+  .warning-box ul { padding-left: 16px; margin-top: 8px; }
+
+  /* Footer */
+  footer { margin-top: 48px; padding: 24px 0; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); font-size: 0.8rem; }
+  footer a { color: var(--text-muted); }
+  footer a:hover { color: var(--text); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <h1>Vulnerability <span>Intelligence</span> Report</h1>
+    <div class="header-meta">Date: 2026-05-31 &nbsp;|&nbsp; Generated: 2026-05-31T01:26:03Z</div>
+  </div>
+  <div class="risk-badge">
+    <span class="risk-dot"></span>
+    Critical Risk
+  </div>
+</div>
+
+<div class="container">
+  
+
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">Total CVEs Found</div>
+      <div class="kpi-value danger">33</div>
+      <div class="kpi-sub">CVSS &ge; 7.0 in last 24h</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">CVSS Avg Score</div>
+      <div class="kpi-value warn">8.3</div>
+      <div class="kpi-sub">across all found CVEs</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">KEV New Entries</div>
+      <div class="kpi-value danger">5</div>
+      <div class="kpi-sub">added in last 7 days</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">KEV Due This Week</div>
+      <div class="kpi-value warn">1</div>
+      <div class="kpi-sub">remediation deadlines</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Executive Summary</div>
+    <p>Your organization faces significant cybersecurity risks with 33 high-severity vulnerabilities identified across multiple systems, including critical remote code execution flaws scoring up to 8.8 on the CVSS scale. Five new vulnerabilities have been added to CISA's Known Exploited Vulnerabilities catalog in the past week, indicating active threat actor interest in similar attack vectors. The vulnerability landscape includes SQL injection attacks, authentication bypasses, and remote code execution capabilities that could allow attackers to completely compromise affected systems.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Risk Narrative</div>
+    <p>The current threat landscape presents a perfect storm of exploitable vulnerabilities across critical business systems. The presence of multiple SQL injection vulnerabilities in student management systems and web applications creates direct pathways for data theft and system compromise. Remote code execution flaws in widely-used WordPress plugins pose particularly severe risks, as they allow attackers to gain complete control over web servers with minimal effort. The high CVSS scores ranging from 7.3 to 8.8 indicate that these vulnerabilities can be exploited with relative ease and minimal user interaction.
+
+The addition of five new entries to CISA's Known Exploited Vulnerabilities catalog within the past week signals heightened threat actor activity and demonstrates that similar vulnerability classes are being actively targeted in the wild. This trend, combined with the age of some vulnerabilities dating back to 2018, suggests that attackers are systematically scanning for and exploiting unpatched systems. The business impact of successful exploitation could include complete system compromise, data breaches affecting student records, website defacement, and potential lateral movement throughout the network infrastructure, making immediate remediation efforts critical for maintaining operational security.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Prioritized Action Items</div>
+    <ol class='action-list'><li>Immediately patch or isolate all WordPress plugins with remote code execution vulnerabilities (CVE-2026-7465) and account takeover flaws (CVE-2026-7459)</li>
+<li>Apply security updates to TRENDnet TEW-432BRP devices or replace with current models to address critical buffer overflow vulnerabilities (CVE-2026-10119, CVE-2026-10120)</li>
+<li>Audit and remediate all student management systems for SQL injection vulnerabilities (CVE-2026-10110, CVE-2026-10111) through input validation and parameterized queries</li>
+<li>Conduct emergency assessment of Palo Alto Networks PAN-OS systems for CVE-2026-0257 exploitation and apply vendor patches immediately</li>
+<li>Implement web application firewalls and input validation controls for eNdonesia Portal systems while planning migration from the vulnerable 8.7 version</li></ol>
+  </div>
+
+  <div class="section">
+    <div class="section-title">High Severity CVEs — 33 found (CVSS &ge; 7.0)</div>
+    <div class="table-wrapper">
+      <table id="cve-table">
+        <thead>
+          <tr>
+            <th onclick="sortTable('cve-table',0)" data-col="0">CVE ID <span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable('cve-table',1)" data-col="1">CVSS <span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable('cve-table',2)" data-col="2">Published <span class="sort-icon">&#8597;</span></th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-10110" target="_blank" rel="noopener noreferrer">CVE-2026-10110</a></td><td><span class="score-badge high">7.3</span></td><td>2026-05-30</td><td class="desc-cell">A vulnerability was detected in code-projects Student Details Management System 1.0. This affects an unknown function of the file /index.php. Performing a manipulation of the argument roll results in …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-10111" target="_blank" rel="noopener noreferrer">CVE-2026-10111</a></td><td><span class="score-badge high">7.3</span></td><td>2026-05-30</td><td class="desc-cell">A flaw has been found in sambitraj STUDENT-MANAGEMENT-SYSTEM 1.0. This impacts an unknown function of the component Login Page. Executing a manipulation of the argument email can lead to sql injection…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-7459" target="_blank" rel="noopener noreferrer">CVE-2026-7459</a></td><td><span class="score-badge high">7.5</span></td><td>2026-05-30</td><td class="desc-cell">The Simple History – Track, Log, and Audit WordPress Changes plugin for WordPress is vulnerable to authenticated (Subscriber+) account takeover in all versions up to, and including, 5.26.0 via the eve…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-7465" target="_blank" rel="noopener noreferrer">CVE-2026-7465</a></td><td><span class="score-badge high">8.8</span></td><td>2026-05-30</td><td class="desc-cell">The Spectra Gutenberg Blocks – Website Builder for the Block Editor plugin for WordPress is vulnerable to Remote Code Execution in all versions up to, and including, 2.19.25. This makes it possible fo…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-9757" target="_blank" rel="noopener noreferrer">CVE-2026-9757</a></td><td><span class="score-badge high">7.5</span></td><td>2026-05-30</td><td class="desc-cell">The GEO my WP plugin for WordPress is vulnerable to SQL Injection via the 'swlatlng' and 'nelatlng' parameters in all versions up to, and including, 4.5.5 The parameters are read from $_SERVER['QUERY_…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-10119" target="_blank" rel="noopener noreferrer">CVE-2026-10119</a></td><td><span class="score-badge high">8.8</span></td><td>2026-05-30</td><td class="desc-cell">A security vulnerability has been detected in TRENDnet TEW-432BRP 3.10B20. Impacted is the function formSetMACFilter of the file /goform/formSetMACFilter. The manipulation of the argument filter_name …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-10120" target="_blank" rel="noopener noreferrer">CVE-2026-10120</a></td><td><span class="score-badge high">8.8</span></td><td>2026-05-30</td><td class="desc-cell">A vulnerability was detected in TRENDnet TEW-432BRP 3.10B20. The affected element is the function formSetFirewallRule of the file /goform/formSetFirewallRule. The manipulation of the argument firewall…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2018-25405" target="_blank" rel="noopener noreferrer">CVE-2018-25405</a></td><td><span class="score-badge high">8.2</span></td><td>2026-05-30</td><td class="desc-cell">eNdonesia Portal 8.7 contains multiple SQL injection vulnerabilities that allow unauthenticated attackers to execute arbitrary SQL queries by injecting malicious code through parameters in mod.php. At…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2018-25406" target="_blank" rel="noopener noreferrer">CVE-2018-25406</a></td><td><span class="score-badge high">8.2</span></td><td>2026-05-30</td><td class="desc-cell">eNdonesia Portal 8.7 contains multiple SQL injection vulnerabilities that allow unauthenticated attackers to execute arbitrary SQL queries by injecting malicious code through parameters in mod.php. At…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2018-25407" target="_blank" rel="noopener noreferrer">CVE-2018-25407</a></td><td><span class="score-badge high">8.2</span></td><td>2026-05-30</td><td class="desc-cell">eNdonesia Portal 8.7 contains multiple SQL injection vulnerabilities that allow unauthenticated attackers to execute arbitrary SQL queries by injecting malicious code through parameters in mod.php. At…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2018-25408" target="_blank" rel="noopener noreferrer">CVE-2018-25408</a></td><td><span class="score-badge high">7.5</span></td><td>2026-05-30</td><td class="desc-cell">The Open ISES Project 3.30A contains a path traversal vulnerability in the ajax/download.php endpoint that allows unauthenticated attackers to download arbitrary files by manipulating the filename par…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2018-25409" target="_blank" rel="noopener noreferrer">CVE-2018-25409</a></td><td><span class="score-badge high">8.8</span></td><td>2026-05-30</td><td class="desc-cell">SIM-PKH 2.4.1 contains an arbitrary file upload vulnerability that allows authenticated attackers to upload malicious files by submitting PHP code through the fupload parameter. Attackers can upload P…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2018-25410" target="_blank" rel="noopener noreferrer">CVE-2018-25410</a></td><td><span class="score-badge high">7.1</span></td><td>2026-05-30</td><td class="desc-cell">SIM-PKH 2.4.1 contains an SQL injection vulnerability that allows authenticated attackers to execute arbitrary SQL queries by injecting malicious code through the 'id' parameter. Attackers can send GE…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2018-25411" target="_blank" rel="noopener noreferrer">CVE-2018-25411</a></td><td><span class="score-badge high">8.2</span></td><td>2026-05-30</td><td class="desc-cell">MGB OpenSource Guestbook 0.7.0.2 contains an SQL injection vulnerability that allows unauthenticated attackers to execute arbitrary SQL queries by injecting malicious code through the 'id' parameter. …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2018-25412" target="_blank" rel="noopener noreferrer">CVE-2018-25412</a></td><td><span class="score-badge critical">9.8</span></td><td>2026-05-30</td><td class="desc-cell">Delta Sql 1.8.2 contains an arbitrary file upload vulnerability that allows unauthenticated attackers to upload malicious files by sending POST requests to docs_upload.php with crafted multipart form …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2018-25413" target="_blank" rel="noopener noreferrer">CVE-2018-25413</a></td><td><span class="score-badge high">8.2</span></td><td>2026-05-30</td><td class="desc-cell">AiOPMSD Final 1.0.0 contains an SQL injection vulnerability that allows unauthenticated attackers to execute arbitrary SQL queries by injecting malicious code through the 'q' parameter. Attackers can …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2018-25414" target="_blank" rel="noopener noreferrer">CVE-2018-25414</a></td><td><span class="score-badge high">8.2</span></td><td>2026-05-30</td><td class="desc-cell">AiOPMSD Final 1.0.0 contains an SQL injection vulnerability that allows unauthenticated attackers to execute arbitrary SQL queries by injecting malicious code through the actor parameter. Attackers ca…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2018-25415" target="_blank" rel="noopener noreferrer">CVE-2018-25415</a></td><td><span class="score-badge high">8.2</span></td><td>2026-05-30</td><td class="desc-cell">AiOPMSD Final 1.0.0 contains an SQL injection vulnerability that allows unauthenticated attackers to execute arbitrary SQL queries by injecting malicious code through the director parameter. Attackers…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2018-25416" target="_blank" rel="noopener noreferrer">CVE-2018-25416</a></td><td><span class="score-badge high">8.2</span></td><td>2026-05-30</td><td class="desc-cell">AiOPMSD Final 1.0.0 contains an SQL injection vulnerability that allows unauthenticated attackers to execute arbitrary SQL queries by injecting malicious code through the country parameter. Attackers …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2018-25417" target="_blank" rel="noopener noreferrer">CVE-2018-25417</a></td><td><span class="score-badge high">8.2</span></td><td>2026-05-30</td><td class="desc-cell">AiOPMSD Final 1.0.0 contains an SQL injection vulnerability that allows unauthenticated attackers to execute arbitrary SQL queries by injecting malicious code through the quality parameter. Attackers …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2018-25418" target="_blank" rel="noopener noreferrer">CVE-2018-25418</a></td><td><span class="score-badge high">8.2</span></td><td>2026-05-30</td><td class="desc-cell">AiOPMSD Final 1.0.0 contains an SQL injection vulnerability that allows unauthenticated attackers to execute arbitrary SQL queries by injecting malicious code through the year parameter. Attackers can…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2018-25419" target="_blank" rel="noopener noreferrer">CVE-2018-25419</a></td><td><span class="score-badge high">8.2</span></td><td>2026-05-30</td><td class="desc-cell">AiOPMSD Final 1.0.0 contains an SQL injection vulnerability that allows unauthenticated attackers to execute arbitrary SQL queries by injecting malicious code through the genre parameter. Attackers ca…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2018-25420" target="_blank" rel="noopener noreferrer">CVE-2018-25420</a></td><td><span class="score-badge high">8.2</span></td><td>2026-05-30</td><td class="desc-cell">AiOPMSD Final 1.0.0 contains an SQL injection vulnerability that allows unauthenticated attackers to execute arbitrary SQL queries by injecting malicious code through the 'id' parameter. Attackers can…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2018-25422" target="_blank" rel="noopener noreferrer">CVE-2018-25422</a></td><td><span class="score-badge high">8.2</span></td><td>2026-05-30</td><td class="desc-cell">MOGG web simulator Script contains an SQL injection vulnerability that allows unauthenticated attackers to execute arbitrary SQL commands by injecting malicious code through the id parameter. Attacker…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2018-25424" target="_blank" rel="noopener noreferrer">CVE-2018-25424</a></td><td><span class="score-badge high">8.2</span></td><td>2026-05-30</td><td class="desc-cell">Gate Pass Management System 2.1 contains an SQL injection vulnerability that allows unauthenticated attackers to bypass authentication by injecting SQL code through the login and password parameters. …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2018-25425" target="_blank" rel="noopener noreferrer">CVE-2018-25425</a></td><td><span class="score-badge high">8.2</span></td><td>2026-05-30</td><td class="desc-cell">Yot CMS 3.3.1 contains an SQL injection vulnerability that allows unauthenticated attackers to execute arbitrary SQL queries by injecting malicious code through the aid and cid parameters. Attackers c…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2018-25426" target="_blank" rel="noopener noreferrer">CVE-2018-25426</a></td><td><span class="score-badge high">7.5</span></td><td>2026-05-30</td><td class="desc-cell">WinMTR 0.91 contains a denial of service vulnerability that allows attackers to crash the application by sending a malformed payload file containing a large buffer of repeated characters. Attackers ca…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-10121" target="_blank" rel="noopener noreferrer">CVE-2026-10121</a></td><td><span class="score-badge high">8.8</span></td><td>2026-05-30</td><td class="desc-cell">A flaw has been found in TRENDnet TEW-432BRP 3.10B20. The impacted element is the function formSetUrlFilter of the file /goform/formSetUrlFilter. This manipulation of the argument keyword_list/keyword…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-10122" target="_blank" rel="noopener noreferrer">CVE-2026-10122</a></td><td><span class="score-badge high">8.8</span></td><td>2026-05-30</td><td class="desc-cell">A vulnerability has been found in TRENDnet TEW-432BRP 3.10B20. This affects the function formSetProtocolFilter of the file /goform/formSetProtocolFilter. Such manipulation of the argument protocol_nam…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-10123" target="_blank" rel="noopener noreferrer">CVE-2026-10123</a></td><td><span class="score-badge high">8.8</span></td><td>2026-05-30</td><td class="desc-cell">A vulnerability was found in TRENDnet TEW-432BRP 3.10B20. This impacts the function formSetDomainFilter of the file /goform/formSetDomainFilter. Performing a manipulation of the argument blocked_domai…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-10124" target="_blank" rel="noopener noreferrer">CVE-2026-10124</a></td><td><span class="score-badge high">8.8</span></td><td>2026-05-30</td><td class="desc-cell">A vulnerability was determined in Shibby Tomato up to 1.28. Affected is the function rip_zebra_read_ipv4 of the file /usr/sbin/ripd of the component Zserv Handler. Executing a manipulation can lead to…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-10125" target="_blank" rel="noopener noreferrer">CVE-2026-10125</a></td><td><span class="score-badge high">8.8</span></td><td>2026-05-30</td><td class="desc-cell">A vulnerability was identified in Edimax BR-6478AC 1.23. Affected by this vulnerability is the function formPPPoESetup of the file /goform/formPPPoESetup of the component POST Request Handler. The man…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-10126" target="_blank" rel="noopener noreferrer">CVE-2026-10126</a></td><td><span class="score-badge high">8.8</span></td><td>2026-05-30</td><td class="desc-cell">A security flaw has been discovered in Edimax BR-6478AC 1.23. Affected by this issue is the function formQoS of the file /goform/formQoS of the component POST Request Handler. The manipulation of the …</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">CISA KEV — 5 new entries (last 7 days)</div>
+    <div class="table-wrapper">
+      <table id="kev-table">
+        <thead>
+          <tr>
+            <th onclick="sortTable('kev-table',0)" data-col="0">CVE ID <span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable('kev-table',1)" data-col="1">Vendor / Product <span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable('kev-table',2)" data-col="2">Date Added <span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable('kev-table',3)" data-col="3">Due Date <span class="sort-icon">&#8597;</span></th>
+            <th>Ransomware</th>
+          </tr>
+        </thead>
+        <tbody>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-0257" target="_blank" rel="noopener noreferrer">CVE-2026-0257</a></td><td>Palo Alto Networks / PAN-OS</td><td>2026-05-29</td><td>2026-06-01</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-48027" target="_blank" rel="noopener noreferrer">CVE-2026-48027</a></td><td>Nx / Nx Console</td><td>2026-05-27</td><td>2026-06-10</td><td><span class="badge ransomware-known">Known</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-45321" target="_blank" rel="noopener noreferrer">CVE-2026-45321</a></td><td>TanStack / TanStack</td><td>2026-05-27</td><td>2026-06-10</td><td><span class="badge ransomware-known">Known</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-8398" target="_blank" rel="noopener noreferrer">CVE-2026-8398</a></td><td>Daemon / Daemon Tools Lite</td><td>2026-05-27</td><td>2026-05-30</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-48172" target="_blank" rel="noopener noreferrer">CVE-2026-48172</a></td><td>LiteSpeed / cPanel Plugin</td><td>2026-05-26</td><td>2026-05-29</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>
+    Data sources: &nbsp;
+    <a href="https://nvd.nist.gov/" target="_blank" rel="noopener noreferrer">NVD (National Vulnerability Database)</a>
+    &nbsp;&bull;&nbsp;
+    <a href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank" rel="noopener noreferrer">CISA Known Exploited Vulnerabilities Catalog</a>
+    <br><br>
+    Generated by Vulnerability Intelligence Pipeline &bull; 2026-05-31T01:26:03Z
+  </footer>
+</div>
+
+<script>
+const sortState = {};
+function sortTable(tableId, col) {
+  const table = document.getElementById(tableId);
+  const tbody = table.querySelector('tbody');
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+  const key = tableId + ':' + col;
+  const asc = sortState[key] !== true;
+  sortState[key] = asc;
+
+  // Update sort icons
+  table.querySelectorAll('th').forEach((th, i) => {
+    th.classList.toggle('sorted', i === col);
+    const icon = th.querySelector('.sort-icon');
+    if (icon) icon.textContent = i === col ? (asc ? '↑' : '↓') : '⇅';
+  });
+
+  rows.sort((a, b) => {
+    const aText = (a.cells[col] ? a.cells[col].textContent : '').trim();
+    const bText = (b.cells[col] ? b.cells[col].textContent : '').trim();
+    const aNum = parseFloat(aText);
+    const bNum = parseFloat(bText);
+    if (!isNaN(aNum) && !isNaN(bNum)) return asc ? aNum - bNum : bNum - aNum;
+    return asc ? aText.localeCompare(bText) : bText.localeCompare(aText);
+  });
+
+  rows.forEach(r => tbody.appendChild(r));
+}
+</script>
+
+</body>
+</html>
