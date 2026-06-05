@@ -82,13 +82,13 @@ SITE_DEPENDENCIES = [
         'risk_context': 'Used in DMARC checker for live DNS lookups',
     },
     {
-        'name': 'Google Fonts CDN',
+        'name': 'Bunny Fonts CDN',
         'version': 'latest',
         'type': 'cdn',
-        'package': 'google-fonts',
-        'nvd_keywords': ['google fonts', 'fonts.googleapis.com'],
-        'cpe_keywords': ['google fonts'],
-        'risk_context': 'CDN font delivery — potential for CDN compromise or tracking',
+        'package': 'bunny-fonts',
+        'nvd_keywords': ['bunny fonts', 'fonts.bunny.net'],
+        'cpe_keywords': ['bunny fonts'],
+        'risk_context': 'CDN font delivery via fonts.bunny.net — GDPR-compliant Google Fonts mirror',
     },
     {
         'name': 'Syne Font',
@@ -97,7 +97,7 @@ SITE_DEPENDENCIES = [
         'package': 'syne',
         'nvd_keywords': ['syne font'],
         'cpe_keywords': ['syne'],
-        'risk_context': 'Font asset via Google Fonts CDN',
+        'risk_context': 'Font asset via Bunny Fonts CDN',
     },
     {
         'name': 'JetBrains Mono Font',
@@ -106,7 +106,7 @@ SITE_DEPENDENCIES = [
         'package': 'jetbrains-mono',
         'nvd_keywords': ['jetbrains mono', 'jetbrains font'],
         'cpe_keywords': ['jetbrains'],
-        'risk_context': 'Font asset via Google Fonts CDN',
+        'risk_context': 'Font asset via Bunny Fonts CDN',
     },
 ]
 
