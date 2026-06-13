@@ -1,0 +1,721 @@
+{
+  "run_date": "2026-06-13",
+  "run_timestamp": "2026-06-13T10:28:11Z",
+  "high_severity_cves": [
+    {
+      "cve_id": "CVE-2026-11849",
+      "description": "The\u00a0\niRM-IEI Remote Management developed by IEI Integration Corp has a Hardcoded Credentials vulnerability, allowing unauthenticated remote attackers to exploit hard-coded credentials to gain administrative privileges on the database.",
+      "cvss_score": 9.8,
+      "published_date": "2026-06-12T11:16:22.527"
+    },
+    {
+      "cve_id": "CVE-2026-12066",
+      "description": "A security flaw has been discovered in PbootCMS up to 3.2.12. This vulnerability affects the function retrieve of the file apps/home/controller/MemberController.php of the component Password Handler. The manipulation of the argument username/password/email/checkcode results in weak password recovery. It is possible to launch the attack remotely. The exploit has been released to the public and may be used for attacks.",
+      "cvss_score": 7.3,
+      "published_date": "2026-06-12T14:16:30.630"
+    },
+    {
+      "cve_id": "CVE-2026-10557",
+      "description": "The Yarbo Android and iOS applications contain hard-coded MQTT broker credentials that are identical for all users and all devices. These credentials are embedded in the application binary and are readily extractable via APK decompilation. The credentials provide access to cloud MQTT brokers carrying real-time telemetry for the entire global Yarbo robot fleet. They allow both wildcard subscription to all robot telemetry topics and publishing to any robot's command topic using only the robot's serial number.",
+      "cvss_score": 9.8,
+      "published_date": "2026-06-12T15:16:24.523"
+    },
+    {
+      "cve_id": "CVE-2026-44893",
+      "description": "Netty is a network application framework for development of protocol servers and clients. In netty-codec-haproxy prior to versions 4.1.135.Final and 4.2.15.Final, when decoding a PP2_TYPE_SSL TLV, HAProxyMessage.readNextTLV() first calls `header.retainedSlice(header.readerIndex(), length)` and only then reads the 1-byte client field and 4-byte verify field. If the attacker sets the TLV length below 5, the subsequent readByte/readInt throws IndexOutOfBoundsException. HAProxyMessageDecoder only catches HAProxyProtocolException around this call, so the IOOBE propagates and the retained slice on the pooled cumulation buffer is never released. Versions 4.1.135.Final and 4.2.15.Final patch the issue.",
+      "cvss_score": 7.5,
+      "published_date": "2026-06-12T15:16:26.103"
+    },
+    {
+      "cve_id": "CVE-2026-44894",
+      "description": "Netty is a network application framework for development of protocol servers and clients. NoQuicTokenHandler is the tokenHandler used when the application does not set one. Prior to version 4.2.15.Final, its writeToken() returns false (server will not send Retry \u2014 acceptable), but validateToken() unconditionally `return 0`. In QuicheQuicServerCodec.handlePacket(), a non-negative return from validateToken() is interpreted as 'token is valid, ODCID starts at offset 0', causing the server to call quiche_accept as if the client's address had been validated by a Retry round-trip. Per RFC 9000 \u00a78.1, a validated address lifts the 3\u00d7 anti-amplification send limit. Thus any attacker who includes ANY non-empty token bytes in an Initial packet \u2014 with a spoofed victim source IP \u2014 causes the Netty server to treat the victim as validated and reflect full-size handshake flights (certificates, etc.) toward it without the 3\u00d7 cap. The correct 'no token handler' semantics would be to return -1 (invalid) so the normal un-validated path and amplification limit apply. Version 4.2.15.Final patches the issue.",
+      "cvss_score": 7.5,
+      "published_date": "2026-06-12T15:16:26.240"
+    },
+    {
+      "cve_id": "CVE-2026-45416",
+      "description": "Netty is a network application framework for development of protocol servers and clients. Prior to versions 4.1.135.Final and 4.2.15.Final, SslClientHelloHandler.decode() reads the 24-bit TLS handshake length and, when the ClientHello does not fit in the first record, eagerly allocates `ctx.alloc().buffer(handshakeLength)` (line 161). The guard at line 140 is `handshakeLength > maxClientHelloLength && maxClientHelloLength != 0`, and the commonly-used SniHandler/AbstractSniHandler constructors (SniHandler(Mapping), SniHandler(AsyncMapping), AbstractSniHandler()) pass maxClientHelloLength=0 and handshakeTimeoutMillis=0, so the length guard is disabled and no timeout is scheduled. A 16 MiB request exceeds the default pooled chunk size and becomes a huge/unpooled allocation performed immediately. The buffer is retained in the handler until the channel closes. Versions 4.1.135.Final and 4.2.15.Final patch the issue.",
+      "cvss_score": 7.5,
+      "published_date": "2026-06-12T15:16:26.940"
+    },
+    {
+      "cve_id": "CVE-2026-45674",
+      "description": "Netty is a network application framework for development of protocol servers and clients. Prior to versions 4.1.135.Final and 4.2.15.Final, Netty's DnsResolveContext fails to validate the origin (bailiwick) of CNAME records in DNS responses. Versions 4.1.135.Final and 4.2.15.Final patch the issue.",
+      "cvss_score": 8.7,
+      "published_date": "2026-06-12T15:16:27.550"
+    },
+    {
+      "cve_id": "CVE-2026-46340",
+      "description": "Netty is a network application framework for development of protocol servers and clients. In versions of netty-transport-sctp prior to 4.1.135.Final and 4.2.15.Final, for each non-complete SctpMessage fragment the handler does `fragments.put(streamId, Unpooled.wrappedBuffer(frag, byteBuf))`, wrapping the previous accumulator and the new slice into a *new* CompositeByteBuf every time. After N fragments the accumulator is an N-deep chain of composites, each holding references and component arrays; readableBytes()/getBytes() on the final buffer recurse N levels. There is no limit on N, on total bytes, or on the number of streamIdentifiers an attacker can open (each gets its own map entry). A peer that never sets the `complete` flag can grow this structure indefinitely from tiny 1-byte DATA chunks. Versions 4.1.135.Final and 4.2.15.Final patch the issue.",
+      "cvss_score": 7.5,
+      "published_date": "2026-06-12T15:16:27.743"
+    },
+    {
+      "cve_id": "CVE-2026-47131",
+      "description": "vm2 is an open source vm/sandbox for Node.js. Prior to version 3.11.4, by combining Buffer.call.call({}.__lookupGetter__, Buffer, \"__proto__\"), Buffer.call.call({}.__lookupSetter__, Buffer, \"__proto__\"), and Node.js's ERR_INVALID_ARG_TYPE Error, the host's TypeError constructor can be obtained, which allows the escape from the sandbox. This allows attackers to run arbitrary code. This issue has been patched in version 3.11.4.",
+      "cvss_score": 10.0,
+      "published_date": "2026-06-12T15:16:27.870"
+    },
+    {
+      "cve_id": "CVE-2026-47135",
+      "description": "vm2 is an open source vm/sandbox for Node.js. Prior to version 3.11.4, Symbol.for override in setup-sandbox.js only intercepts 2 of 9 dangerous Node.js cross-realm symbols. Combined with the bridge's set/defineProperty/deleteProperty traps having no isDangerousCrossRealmSymbol key check, sandbox code can obtain real cross-realm symbols, write them to host objects, and control host-side behavior \u2014 verified with a full util.promisify hijack chain. This issue has been patched in version 3.11.4.",
+      "cvss_score": 8.7,
+      "published_date": "2026-06-12T15:16:28.007"
+    },
+    {
+      "cve_id": "CVE-2026-47137",
+      "description": "vm2 is an open source vm/sandbox for Node.js. Prior to version 3.11.4, the fix for GHSA-8hg8-63c5-gwmx (CVE-2023-37903) introduced a check in nodevm.js line 263 that blocks the combination nesting: true + require: false. However, the check uses strict equality (options.require === false), which is trivially bypassed by omitting the require option entirely. When require is not specified, options.require is undefined, not false. The strict equality check fails, so the security guard is skipped. Immediately after (line 280), the destructuring default require: requireOpts = false assigns requireOpts = false, producing the exact configuration the patch was designed to prevent. This issue has been patched in version 3.11.4.",
+      "cvss_score": 10.0,
+      "published_date": "2026-06-12T15:16:28.137"
+    },
+    {
+      "cve_id": "CVE-2026-47139",
+      "description": "vm2 is an open source vm/sandbox for Node.js. Prior to version 3.11.4, NodeVM supports excluding public network builtins from the wildcard builtin option. With this configuration direct access to http, https, http2, net, dgram, tls, dns, and dns/promises is blocked. However, Node.js also exposes underscored internal HTTP builtins such as _http_client and _http_server. These are not blocked when the public modules are excluded. Sandboxed code can use these internal builtins to make outbound HTTP requests and open listening HTTP sockets even though the public network modules are denied. This issue has been patched in version 3.11.4.",
+      "cvss_score": 8.6,
+      "published_date": "2026-06-12T15:16:28.273"
+    },
+    {
+      "cve_id": "CVE-2026-47140",
+      "description": "vm2 is an open source vm/sandbox for Node.js. Prior to version 3.11.4, NodeVM blocks several dangerous Node.js builtins such as module, worker_threads, cluster, vm, repl, and inspector. However, the denylist misses process and inspector/promises. Both can be used from sandboxed code to reach host-side execution primitives. This allows sandboxed code to bypass the intended builtin restrictions and execute code in the host process. This issue has been patched in version 3.11.4.",
+      "cvss_score": 10.0,
+      "published_date": "2026-06-12T15:16:28.400"
+    },
+    {
+      "cve_id": "CVE-2026-47208",
+      "description": "vm2 is an open source vm/sandbox for Node.js. Prior to version 3.11.4, VM2 suffers from a sandbox breakout vulnerability. This allows attackers to write code which can escape from the VM2 sandbox and execute arbitrary commands on the host system. This issue has been patched in version 3.11.4.",
+      "cvss_score": 10.0,
+      "published_date": "2026-06-12T15:16:28.767"
+    },
+    {
+      "cve_id": "CVE-2026-47209",
+      "description": "vm2 is an open source vm/sandbox for Node.js. Prior to version 3.11.4, the BaseHandler.set trap in bridge.js (line 1231) ignores the receiver parameter and unconditionally writes to the host target object. Per the Proxy set trap specification, when receiver !== proxy (e.g., when a child object inherits from the proxy via Object.create), the property assignment should create an own property on the receiver, not on the proxy target. The current implementation always calls otherReflectSet(object, key, value) against the host target, causing all inherited property writes to leak through to the host object. This bug provides an alternative attack vector for writing dangerous cross-realm Symbol keys (e.g., nodejs.util.promisify.custom) to host objects, bypassing any future per-trap isDangerousCrossRealmSymbol guard on the direct set path. This issue has been patched in version 3.11.4.",
+      "cvss_score": 8.6,
+      "published_date": "2026-06-12T15:16:28.900"
+    },
+    {
+      "cve_id": "CVE-2026-47210",
+      "description": "vm2 is an open source vm/sandbox for Node.js. Prior to version 3.11.4, a sandbox escape vulnerability in vm2 allows arbitrary code execution in the host process when untrusted code is executed with async support on runtimes exposing WebAssembly JSPI (WebAssembly.promising / WebAssembly.Suspending). In the tested configuration, a JSPI-backed Promise can reach Promise.prototype.finally() in a way that bypasses the expected Promise-species hardening and exposes a host-originated rejection object to attacker-controlled species logic, breaking the sandbox boundary. This issue has been patched in version 3.11.4.",
+      "cvss_score": 9.8,
+      "published_date": "2026-06-12T15:16:29.030"
+    },
+    {
+      "cve_id": "CVE-2026-53787",
+      "description": "Amasty Order Attributes for Magento 2 before version 4.0.0 contains an unauthenticated arbitrary file upload vulnerability that allows unauthenticated attackers to write arbitrary files to the store's media directory by submitting files of any type or name to the upload endpoint without authentication, session validation, or cart context. Attackers can upload PHP files to achieve remote code execution on servers where the media directory permits PHP execution, or alternatively enable malware hosting, stored cross-site scripting via HTML or SVG uploads, and path traversal to write files outside the intended upload directory.",
+      "cvss_score": 9.8,
+      "published_date": "2026-06-12T15:16:31.557"
+    },
+    {
+      "cve_id": "CVE-2026-54133",
+      "description": "jmespath.php allows users to use JMESPath, software for declaratively specifying how to extract elements from a JSON document, in PHP applications with PHP data structures. Versions prior to 2.9.1 can generate and execute attacker-controlled PHP code when `JmesPath\\CompilerRuntime` is used with an attacker-controlled JMESPath expression. The compiler emits parsed JMESPath function names into generated PHP source without sufficient escaping. A crafted expression can cause the generated cache file to contain executable attacker-controlled PHP, which is then loaded by the compiler runtime. The issue is patched in `2.9.1` and later. As a workaround, disable `JP_PHP_COMPILE` and do not use `JmesPath\\CompilerRuntime` with attacker-controlled expressions. Use the default `AstRuntime` for untrusted expressions. Applications that must continue accepting untrusted JMESPath expressions before upgrading should ensure those expressions are never evaluated by the compiler runtime.",
+      "cvss_score": 9.8,
+      "published_date": "2026-06-12T15:16:31.890"
+    },
+    {
+      "cve_id": "CVE-2026-6211",
+      "description": "Unrestricted upload of file with dangerous type vulnerability in Global IT Informatics Services Inc. WEOLL allows Accessing Functionality Not Properly Constrained by ACLs.\n\nThis issue affects WEOLL: from 2.0.9 before 3.2.45.33.",
+      "cvss_score": 8.7,
+      "published_date": "2026-06-12T15:16:32.033"
+    },
+    {
+      "cve_id": "CVE-2026-6853",
+      "description": "Improper restriction of excessive authentication attempts vulnerability in Ba\u015fbelen Group Food Cafe Businesses Industry and Trade Ltd. Co. Pause+ Mobile App allows Authentication Bypass.\n\nThis issue affects Pause+ Mobile App: from v1.0.6 before v1.5.",
+      "cvss_score": 9.8,
+      "published_date": "2026-06-12T15:16:32.160"
+    },
+    {
+      "cve_id": "CVE-2026-7368",
+      "description": "The Yarbo cloud does not enforce per-device or per-user authorization. Any client possessing valid credentials, whether the shared hard-coded credentials or legitimate per-user credentials, can subscribe to wildcard topics covering all robots globally, and can publish to any robot's command topic using only the robot's serial number (disclosed in the telemetry stream). Even after removal of hard-coded credentials from the app, a single compromised credential could still provide fleet-wide access without per-device access controls.",
+      "cvss_score": 8.1,
+      "published_date": "2026-06-12T15:16:32.290"
+    },
+    {
+      "cve_id": "CVE-2026-47691",
+      "description": "Netty is a network application framework for development of protocol servers and clients. Prior to versions 4.1.135.Final and 4.2.15.Final, Netty's `DnsResolveContext` insufficiently validates the bailiwick of NS records, enabling DNS Cache Poisoning. An attacker controlling an authoritative name server for a subdomain can poison the cache for parent domains (like `.co.uk`). In `io.netty.resolver.dns.DnsResolveContext.AuthoritativeNameServerList#add` method accepts any NS record from the AUTHORITY section as long as the record's name is a suffix of the questionName. Subsequently, the `handleWithAdditional` method caches the associated A records from the ADDITIONAL section directly into the `authoritativeDnsServerCache` under the parent domain's key. This bypasses standard bailiwick rules, where a server authoritative for a subdomain should not be trusted to provide authoritative records for its parent. The poisoned cache is then used for all future resolutions under the parent domain's key. Versions 4.1.135.Final and 4.2.15.Final patch the issue.",
+      "cvss_score": 8.7,
+      "published_date": "2026-06-12T16:16:30.310"
+    },
+    {
+      "cve_id": "CVE-2026-48748",
+      "description": "Netty is a network application framework for development of protocol servers and clients. Prior to version 4.2.15.Final, a memory exhaustion vulnerability in the Netty HTTP/3 codec allows the creation of an infinite number of blocked streams, which can cause OOM error. Version 4.2.15.Final patches the issue.",
+      "cvss_score": 7.5,
+      "published_date": "2026-06-12T16:16:30.913"
+    },
+    {
+      "cve_id": "CVE-2026-50010",
+      "description": "Netty is a network application framework for development of protocol servers and clients. Prior to versions 4.1.135.Final and 4.2.15.Final, SimpleTrustManagerFactory.engineGetTrustManagers() and related paths wrap any user-supplied plain X509TrustManager in X509TrustManagerWrapper, which extends X509ExtendedTrustManager but implements the 3-arg checkServerTrusted(chain, authType, SSLEngine) by discarding the SSLEngine and calling the 2-arg delegate. Because the object now IS an X509ExtendedTrustManager, neither SunJSSE's internal AbstractTrustManagerWrapper nor Netty's own OpenSslX509TrustManagerWrapper will re-wrap it to add endpoint-identification. Consequently, even though Netty 4.2 sets endpointIdentificationAlgorithm=\"HTTPS\" by default, a client built with `SslContextBuilder.forClient().trustManager(somePlainX509TrustManager)` performs no hostname verification at all. Versions 4.1.135.Final and 4.2.15.Final patch the issue.",
+      "cvss_score": 7.5,
+      "published_date": "2026-06-12T16:16:31.180"
+    },
+    {
+      "cve_id": "CVE-2026-50011",
+      "description": "Netty is a network application framework for development of protocol servers and clients. Prior to versions 4.1.135.Final and 4.2.15.Final, RedisArrayAggregator pre-allocates ArrayList with initial capacity equal to the RESP array element count declared in an array header. That count is taken from the wire before the corresponding child messages exist. A small malicious header can claim a huge initial capacity. Versions 4.1.135.Final and 4.2.15.Final patch the issue.",
+      "cvss_score": 7.5,
+      "published_date": "2026-06-12T16:16:31.313"
+    },
+    {
+      "cve_id": "CVE-2026-50083",
+      "description": "The Aqara IAM/SSO Gateway (gw-builder.aqara.com) used a hardcoded OAuth client credential, which is an instance of\u00a0\"CWE-798: Use of Hard-coded Credentials.\" This issue has an estimated CVSS of\u00a0CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N\u00a0(9.1 Critical). When combined with CVE-2026-50082, CVE-50084, and CVE-50085, this can lead to a fully unauthenticated, remote takeover of affected devices.",
+      "cvss_score": 9.1,
+      "published_date": "2026-06-12T16:16:31.827"
+    },
+    {
+      "cve_id": "CVE-2026-50084",
+      "description": "The Aqara Cloud Production API (open-cn.aqara.com/v3.0/open/api) would authorize any valid developer token for access to any account. This is an instance of \"CWE-862: Missing Authorization\" with an estimated CVSS of CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:N (9.6 Critical). When combined with CVE-2026-50082, CVE-50083, and CVE-50085, this can lead to a fully unauthenticated, remote takeover of affected devices.",
+      "cvss_score": 9.6,
+      "published_date": "2026-06-12T16:16:31.940"
+    },
+    {
+      "cve_id": "CVE-2026-50085",
+      "description": "The Aqara Board service (op-test.aqara.com) accepts arbitrary MQTT command payloads, and forwards them to the platfom's HiveMQ broker without authentication. This is an instance of \"CWE-306: Missing Authentication for Critical Function\" and has an estimated CVSS ofCVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:L (8.6 High). When combined with CVE-2026-50082, CVE-50083, and CVE-50084, this can lead to a fully unauthenticated, remote takeover of affected devices.",
+      "cvss_score": 8.6,
+      "published_date": "2026-06-12T16:16:32.060"
+    },
+    {
+      "cve_id": "CVE-2026-50086",
+      "description": "The Aqara IAM/SSO gateway (gw-builder.aqara.com) exposes bidirectional AES round-trups against the platform's signing key without authentication. This is an instance of \"CWE-306: Missing Authentication for Critical Function\" and \"CWE-327: Use of a Broken or Risky Cryptographic Algorithm,\" and has an estimated CVSS of CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N (7.5 High).",
+      "cvss_score": 10.0,
+      "published_date": "2026-06-12T16:16:32.187"
+    },
+    {
+      "cve_id": "CVE-2026-50087",
+      "description": "The Aqara IAM/SSO gateway (gw-builder.aqara.com) exhibits a cross-origin request sharing vulnerability, which is an instance of \"CWE-942: Permissive Cross-domain Policy with Untrusted Domains,\" and has an estimated CVSS of CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:L/A:N (8.2 High).",
+      "cvss_score": 8.2,
+      "published_date": "2026-06-12T16:16:32.297"
+    },
+    {
+      "cve_id": "CVE-2026-50088",
+      "description": "The Aqara Developer Portal (developer.aqara.com) and shared test environments (developer-test.aqara.com, aiot-test.aqara.com) exhibit cross-origin request sharing, which is an instance of \"CWE-942: Permissive Cross-domain Policy with Untrusted Domains,\" and has an estimated CVSS of CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:L/A:N (8.2 High).",
+      "cvss_score": 8.2,
+      "published_date": "2026-06-12T16:16:32.403"
+    },
+    {
+      "cve_id": "CVE-2026-50090",
+      "description": "The Aqara Cloud OAuth Authorization Endpoint (open-cn.aqara.com/oauth/authorize) is vulnerable to a redirect bypass due to lax controls on domain matching, which is an instance of \"CWE-1289: Improper Validation of Unsafe Equivalence in Input\" and has an estimated CVSS of CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:H/A:N (9.3 Critical).",
+      "cvss_score": 9.3,
+      "published_date": "2026-06-12T16:16:32.623"
+    },
+    {
+      "cve_id": "CVE-2026-50091",
+      "description": "Aqara Home Android (com.lumiunited.aqarahome) 6.0.0 (and white-label clients embedding the same liblumidevsdk.so) uses hard-coded cryptographic keys, which is an instance of \"CWE-321: Use of Hard-coded Cryptographic Key\" and has an estimated CVSS of CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N (9.1 Critical).",
+      "cvss_score": 9.1,
+      "published_date": "2026-06-12T16:16:32.737"
+    },
+    {
+      "cve_id": "CVE-2026-9638",
+      "description": "Crypt::PBKDF2 versions before 0.261630 for Perl generate insecure random values for salts.\n\nThese versions use the built-in rand function, which is predictable and unsuitable for cryptography.",
+      "cvss_score": 7.5,
+      "published_date": "2026-06-12T16:16:34.937"
+    },
+    {
+      "cve_id": "CVE-2026-3840",
+      "description": "A vulnerability in Kedro version 1.2.0 allows an attacker to exploit path traversal by providing a crafted version string. The `_get_versioned_path()` method in `kedro/io/core.py` directly interpolates user-supplied version strings into filesystem paths without sanitization. This enables an attacker to escape the intended versioned dataset directory and access files outside the expected path. The issue is also reachable through the CLI via the `--load-versions` parameter, as `_split_load_versions()` in `kedro/framework/cli/utils.py` does not validate the version string. This vulnerability can lead to unauthorized file reads, data poisoning, cross-project or cross-tenant data access, and broader downstream impacts in environments where Kedro is used with automation or orchestration layers.",
+      "cvss_score": 7.1,
+      "published_date": "2026-06-12T17:16:22.603"
+    },
+    {
+      "cve_id": "CVE-2026-53981",
+      "description": "Cap-go prior to 12.128.2 contains an account takeover vulnerability in its email change mechanism that allows an attacker with temporary authenticated session access to change the registered email address without re-authentication such as password or MFA verification. Attackers can redirect verification to an attacker-controlled email address and subsequently perform a password reset to permanently take over the victim's account.",
+      "cvss_score": 7.6,
+      "published_date": "2026-06-12T17:16:26.567"
+    },
+    {
+      "cve_id": "CVE-2026-6961",
+      "description": "Mattermost versions 11.6.x <= 11.6.1, 11.5.x <= 11.5.4, 10.11.x <= 10.11.15, 10.11.x <= 10.11.16 Mattermost fails to sanitize FileInfo.Name received from federated peers during shared channel file sync, which allows an attacker who controls a federated server to write files to arbitrary locations within the target server's filestore via path traversal sequences in the filename field.. Mattermost Advisory ID: MMSA-2026-00661",
+      "cvss_score": 7.6,
+      "published_date": "2026-06-12T17:16:27.410"
+    },
+    {
+      "cve_id": "CVE-2026-7387",
+      "description": "Mattermost versions 11.6.x <= 11.6.1, 11.5.x <= 11.5.4, 10.11.x <= 10.11.15, 10.11.x <= 10.11.16 Mattermost fails to require role-management authorization when setting the scheme_admin flag on group syncable link and patch endpoints, which allows a user with group-link permissions to escalate themselves and group members to team or channel admin via crafted API requests.. Mattermost Advisory ID: MMSA-2026-00665",
+      "cvss_score": 8.8,
+      "published_date": "2026-06-12T17:16:27.653"
+    },
+    {
+      "cve_id": "CVE-2026-44168",
+      "description": "MariaDB server is a community developed fork of MySQL server. From versions 10.6.1 to before 10.6.26, 10.11.1 to before 10.11.17, 11.4.1 to before 11.4.11, 11.8.1 to before 11.8.7, and 12.3.1, during the SST the donor node is interpolating parameters that the joiner sent into the command line. Not all parameters were properly validated which could allow a malicious joiner to execute arbitrary shell commands on the donor side via the mariabackup SST method. This issue has been patched in versions 10.6.26, 10.11.17, 11.4.11, 11.8.7, and 12.3.2.",
+      "cvss_score": 8.0,
+      "published_date": "2026-06-12T18:16:33.577"
+    },
+    {
+      "cve_id": "CVE-2026-47965",
+      "description": "Acrobat Reader versions 24.001.30365, 26.001.21651 and earlier are affected by an out-of-bounds write vulnerability that could result in arbitrary code execution in the context of the current user. Exploitation of this issue requires user interaction in that a victim must open a malicious file.",
+      "cvss_score": 7.8,
+      "published_date": "2026-06-12T18:16:34.913"
+    },
+    {
+      "cve_id": "CVE-2026-48163",
+      "description": "MariaDB server is a community developed fork of MySQL server. From versions 10.6.1 to before 10.6.27, 10.11.1 to before 10.11.18, 11.4.1 to before 11.4.12, 11.8.1 to before 11.8.8, and 12.3.1, during the SST the donor node is interpolating parameters that the joiner sent into the command line. Not all parameters were properly validated which could allow a malicious joiner to execute arbitrary shell commands on the donor side via the rsync SST method. This issue has been patched in versions 10.6.27, 10.11.18, 11.4.12, 11.8.8, and 12.3.2.",
+      "cvss_score": 8.0,
+      "published_date": "2026-06-12T18:16:35.037"
+    },
+    {
+      "cve_id": "CVE-2026-48165",
+      "description": "MariaDB server is a community developed fork of MySQL server. From versions 10.6.1 to before 10.6.27, 10.11.1 to before 10.11.18, 11.4.1 to before 11.4.12, 11.8.1 to before 11.8.8, and 12.3.1, a high-privileged MariaDB user could've used wsrep_sst_receive_address or wsrep_sst_donor global system variables to execute shell commands as the uid of the mariadbd process on the galera joiner node. This issue has been patched in versions 10.6.27, 10.11.18, 11.4.12, 11.8.8, and 12.3.2.",
+      "cvss_score": 8.0,
+      "published_date": "2026-06-12T18:16:35.177"
+    },
+    {
+      "cve_id": "CVE-2026-48558",
+      "description": "SimpleHelp versions 5.5.15 and prior and 6.0 pre-release versions contain an authentication bypass vulnerability in the OIDC authentication flow. When OIDC authentication is configured, identity tokens submitted during login are accepted without verifying their cryptographic signature. In a vulnerable configuration, a remote, unauthenticated attacker can submit a forged token containing arbitrary identity claims to obtain a fully authenticated technician session. In some configurations, this may also allow bypass of multi-factor authentication. No user interaction is required.",
+      "cvss_score": 10.0,
+      "published_date": "2026-06-12T18:16:35.317"
+    },
+    {
+      "cve_id": "CVE-2026-53406",
+      "description": "Insufficient Verification of Data Authenticity in Remote Control for Zoom Contact Center for Windows before version 7.0.0 may allow an authenticated user to enable an escalation of privilege via local access.",
+      "cvss_score": 7.8,
+      "published_date": "2026-06-12T18:16:35.457"
+    },
+    {
+      "cve_id": "CVE-2026-12043",
+      "description": "Improper handling of HPACK dynamic table size updates in the AWS Common Runtime aws-c-http library might allow a remote threat actor operating a server to cause memory corruption on a connecting client application, potentially leading to arbitrary code execution, via a crafted sequence of HTTP/2 HEADERS frames.\n\n\n\nTo remediate this issue, users should upgrade to aws-c-http version 0.11.0.",
+      "cvss_score": 8.8,
+      "published_date": "2026-06-12T19:16:26.420"
+    },
+    {
+      "cve_id": "CVE-2026-12143",
+      "description": "form-data is a library for creating readable multipart/form-data streams. In versions through 4.0.5, the `field` argument to `FormData#append` and the `filename` option are concatenated verbatim into the `Content-Disposition` header without escaping carriage return (CR), line feed (LF), or double-quote (\") characters. An application that passes attacker-controlled data as a field name or filename (for example, an API gateway that turns JSON object keys into multipart field names) allows the attacker to terminate the header line and inject additional headers, or to smuggle entire additional multipart parts, into the request the application forwards to a backend. This can let the attacker add or override form fields (e.g. set `is_admin=true`) seen by the downstream parser. This is an instance of CWE-93 (CRLF injection). The fix escapes CR, LF, and `\"` as `%0D`, `%0A`, and `%22` in field names and filenames, matching the serialization browsers use per the WHATWG HTML multipart/form-data encoding algorithm. Exploitation requires the consuming application to use untrusted input as a field name or filename; applications that use only fixed/trusted field names are not affected. Fixed in 2.5.6, 3.0.5, and 4.0.6.",
+      "cvss_score": 7.5,
+      "published_date": "2026-06-12T19:16:26.560"
+    },
+    {
+      "cve_id": "CVE-2026-28742",
+      "description": "Naxclow devices use a uniform request-signing scheme based on a hard-coded, platform-wide salt embedded in every firmware image. Once this salt is recovered from any device, an attacker can generate valid signatures for arbitrary device or account operations due to the absence of per-device keys, server-side nonce tracking, or replay protections. Combined with the system\u2019s use of plain HTTP for control-plane traffic, the construction enables broad request forgery and impersonation across the platform.",
+      "cvss_score": 9.8,
+      "published_date": "2026-06-12T19:16:26.743"
+    },
+    {
+      "cve_id": "CVE-2026-42306",
+      "description": "Moby is an open source container framework. In Docker Engine prior to version 29.5.1, Docker Daemon versions 28.5.2 and prior, and Moby Daemon prior to version 2.0.0-beta.14, a race condition during docker cp mount setup allows a malicious container to redirect a bind mount target to an arbitrary host path, potentially overwriting host files or causing denial of service. This issue has been patched in Docker Engine version 29.5.1 and Moby Daemon version 2.0.0-beta.14.",
+      "cvss_score": 7.2,
+      "published_date": "2026-06-12T19:16:27.490"
+    },
+    {
+      "cve_id": "CVE-2026-42947",
+      "description": "A flaw in Naxclow's platform\u2019s onboarding workflow allows an attacker to replay a confirm-then-bind sequence to silently reassign a device to an arbitrary account. Because the affected endpoints validate request signatures but do not confirm legitimate ownership, an attacker with any account can take over a device without user interaction while the device remains online and unaware.",
+      "cvss_score": 8.8,
+      "published_date": "2026-06-12T19:16:27.857"
+    },
+    {
+      "cve_id": "CVE-2026-50101",
+      "description": "Naxclow devices use a server-side, per-device relay credential that never rotates and is re-issued to the device on each boot. Because this credential remains valid indefinitely and cannot be reset or revoked by the legitimate owner, any party that obtains it through any exposure path can maintain persistent access to the device\u2019s relay channel. This enables long-term impersonation or interception, even after factory resets or re-onboarding.",
+      "cvss_score": 8.1,
+      "published_date": "2026-06-12T19:16:29.487"
+    },
+    {
+      "cve_id": "CVE-2026-50108",
+      "description": "The Naxclow platform API that returns device relay registration details exposes a persistent credential without verifying that the requester is the legitimate device or owner. An actor able to present a platform-valid request signature can retrieve credentials for arbitrary devices and register on the relay as that device, enabling interception and disruption of its communications.",
+      "cvss_score": 7.5,
+      "published_date": "2026-06-12T19:16:29.633"
+    },
+    {
+      "cve_id": "CVE-2026-53407",
+      "description": "Improper Authorization in Handler for Custom URL Scheme in Zoom Workplace before version 7.0.4 for Android and before 7.0.3 for iOS may allow an unauthenticated user to conduct an escalation of privilege via network access.",
+      "cvss_score": 8.1,
+      "published_date": "2026-06-12T19:16:29.973"
+    },
+    {
+      "cve_id": "CVE-2026-53408",
+      "description": "Improper Authorization in Handler for Custom URL Scheme in Zoom Workplace before version 7.0.4 for Android and before 7.0.3 for iOS may allow an unauthenticated user to conduct an escalation of privilege via network access.",
+      "cvss_score": 8.1,
+      "published_date": "2026-06-12T19:16:30.093"
+    },
+    {
+      "cve_id": "CVE-2026-42851",
+      "description": "Kitty is a cross-platform GPU based terminal. In versions prior to 0.47.0, a program able to write bytes to a kitty terminal \u2014 a remote SSH peer, a downloaded file viewed with `cat`, a log line, an email body rendered in `less`, an issue body in a TUI, etc. \u2014 can cause kitty to execute attacker-supplied Python inside the running kitty process, with the user's full privileges. There is no approval prompt, no remote-control permission requirement, no shell-integration interaction, no clipboard touch, and no editor interaction. Version 0.47.0 fixes the issue.",
+      "cvss_score": 7.8,
+      "published_date": "2026-06-12T20:16:45.420"
+    },
+    {
+      "cve_id": "CVE-2026-47260",
+      "description": "Koel is a free, open-source music streaming solution. Prior to version 9.3.5, Koel validates the podcast feed URL via the SafeUrl rule (DNS resolution + public IP check), but the individual episode <enclosure url=\"...\"> values extracted from the RSS XML are stored directly into the database without any SSRF validation. When a user plays an episode, the server downloads the full HTTP response from the unvalidated enclosure URL via Http::sink()->get() and streams it back to the user, enabling full-read SSRF against internal services. This issue has been patched in version 9.3.5.",
+      "cvss_score": 7.7,
+      "published_date": "2026-06-12T20:16:46.320"
+    },
+    {
+      "cve_id": "CVE-2026-44786",
+      "description": "Discourse is an open-source discussion platform. From versions 2026.1.0-latest to before 2026.1.4, 2026.3.0-latest to before 2026.3.1, and 2026.4.0-latest to before 2026.4.1, chat events for public category channels are published to MessageBus without permission scoping, so any MessageBus subscriber without chat enabled could receive chat message payloads in real time. This issue has been patched in versions 2026.1.4, 2026.3.1, 2026.4.1, and 2026.5.0-latest.1.",
+      "cvss_score": 7.5,
+      "published_date": "2026-06-12T21:16:22.313"
+    },
+    {
+      "cve_id": "CVE-2026-44990",
+      "description": "ApostropheCMS is an open-source Node.js content management system, and sanitize-html provides a simple HTML sanitizer with a clear API. Under the default configuration, versions of `sanitize-html` prior to 2.17.4 can turn attacker-controlled content inside a disallowed `xmp` element into live HTML or JavaScript. This is a sanitizer bypass in the default `disallowedTagsMode: 'discard'` path and can lead to stored XSS in applications that render sanitized output back to users. Version 2.17.4 patches the issue.",
+      "cvss_score": 9.3,
+      "published_date": "2026-06-12T21:16:22.447"
+    },
+    {
+      "cve_id": "CVE-2026-45011",
+      "description": "ApostropheCMS is an open-source Node.js content management system. Version 4.29.0 has a stored cross-site scripting vulnerability in the image widget functionality. A user with the Editor role can configure an image widget link to use a javascript: URL payload. Because editors have permission to publish pages, the malicious widget can be published to the live site. When another user, including an administrator or public visitor, clicks the affected image/link, arbitrary JavaScript executes in the victim\u2019s browser. As of time of publication, no known patched versions are available.",
+      "cvss_score": 7.3,
+      "published_date": "2026-06-12T21:16:22.580"
+    },
+    {
+      "cve_id": "CVE-2026-45012",
+      "description": "ApostropheCMS is an open-source Node.js content management system. Versions up to and including 4.29.0 contain an authenticated server-side request forgery (SSRF) in the rich-text widget import flow. An authenticated user who can submit/edit rich-text widget content can cause the server to fetch attacker-controlled URLs during widget validation. For image-compatible responses, the fetched content can be persisted and re-hosted by Apostrophe, allowing response exfiltration. As of time of publication, no known patched versions are available.",
+      "cvss_score": 7.6,
+      "published_date": "2026-06-12T21:16:22.720"
+    },
+    {
+      "cve_id": "CVE-2026-45013",
+      "description": "ApostropheCMS is an open-source Node.js content management system. Versions up to and including 4.29.0 have a password reset flow that constructs the reset URL using `req.hostname`, which is derived directly from the attacker-controlled HTTP `Host` header when `apos.baseUrl` is not explicitly configured. An unauthenticated attacker who knows a victim's email address can send a crafted reset request that causes the application to email the victim a reset link pointing to the attacker's domain. When the victim clicks the link, the valid reset token is delivered to the attacker, enabling full account takeover. As of time of publication, no known patched versions are available.",
+      "cvss_score": 8.1,
+      "published_date": "2026-06-12T21:16:22.850"
+    },
+    {
+      "cve_id": "CVE-2026-4870",
+      "description": "IBM Qiskit SDK 0.43.0 through 2.5.0 could allow an attacker to trigger a segmentation fault leading to a denial of service due to uncontrolled recursion in the parser.",
+      "cvss_score": 7.5,
+      "published_date": "2026-06-12T21:16:23.963"
+    },
+    {
+      "cve_id": "CVE-2026-54056",
+      "description": "Kitty is a cross-platform GPU based terminal. In versions 0.47.0 and 0.47.1, `kitten dnd` can allow a malicious remote drag-and-drop source to overwrite or truncate arbitrary files writable by the local kitty user. Remote `text/uri-list` drops are staged in a temporary directory, but on case-sensitive filesystems duplicate remote basenames are not de-duplicated. An attacker can first create a staged symlink and then send a same-name regular-file entry. The regular-file write uses `utils.CreateAt()` / `openat(O_RDWR|O_CREAT|O_TRUNC)` without `O_NOFOLLOW`, so it follows the attacker-created symlink and writes outside the staging directory before final overwrite confirmation runs. This appears related in class to the file-transfer symlink advisory, but it is a different bug: it affects `kitten dnd` remote drag-and-drop staging, uses different vulnerable code (`kittens/dnd/drop.go` and `tools/utils/file_at_fd.go`), and reproduces on commit `4aa4a5c0567a92553a8c20a88a4352da637fca5d`, after the file-transfer `O_NOFOLLOW` fix. Version 0.47.2 patches the issue.",
+      "cvss_score": 7.6,
+      "published_date": "2026-06-12T21:16:24.463"
+    },
+    {
+      "cve_id": "CVE-2025-7002",
+      "description": "Heap buffer out-of-bounds read vulnerability in Avira Antivirus engine when scanning a malformed PDF file may allow Local Execution of Code or Denial-of-Service of the antivirus engine process.\n\nThis issue affects Avira Antivirus on Windows, macOS, and Linux for engine builds before 8.3.70.68.",
+      "cvss_score": 7.8,
+      "published_date": "2026-06-12T22:16:48.107"
+    },
+    {
+      "cve_id": "CVE-2025-7003",
+      "description": "Heap buffer out-of-bounds read vulnerability in Avira Antivirus engine when scanning a malformed PDF file may allow Local Execution of Code or Denial-of-Service of the antivirus engine process.\n\nThis issue affects Avira Antivirus on Windows, macOS, and Linux for engine builds before 8.3.70.56.",
+      "cvss_score": 7.8,
+      "published_date": "2026-06-12T22:16:48.260"
+    },
+    {
+      "cve_id": "CVE-2025-7004",
+      "description": "Heap buffer out-of-bounds write vulnerability in Avast Antivirus when scanning a malformed Windows PE file may allow Local Execution of Code or Denial-of-Service of the antivirus process.\n\nThis issue affects Avast Antivirus, AVG Antivirus, Norton Antivirus, Avast One, and Avast Business Antivirus on Windows, macOS, and Linux for virus definition builds before VPS 25040308.\n\n\n\nThe affected scanning logic is delivered through a shared Gen Digital virus definition update stream. The same stream feeds the consumer antivirus products listed in this advisory and other Gen Digital products that embed the same engine. Mitigation flows through this update channel; installations at or above the listed build are not vulnerable regardless of which product consumes the stream.",
+      "cvss_score": 7.8,
+      "published_date": "2026-06-12T22:16:48.383"
+    },
+    {
+      "cve_id": "CVE-2025-7008",
+      "description": "Heap buffer out-of-bounds read vulnerability in Avast Antivirus when scanning a malformed Windows PE file with .NET metadata may allow Local Execution of Code or Denial-of-Service of the antivirus process.\n\nThis issue affects Avast Antivirus, AVG Antivirus, Norton Antivirus, Avast One, and Avast Business Antivirus on Windows, macOS, and Linux for virus definition builds before VPS 25021310.\n\n\n\nThe affected scanning logic is delivered through a shared Gen Digital virus definition update stream. The same stream feeds the consumer antivirus products listed in this advisory and other Gen Digital products that embed the same engine. Mitigation flows through this update channel; installations at or above the listed build are not vulnerable regardless of which product consumes the stream.",
+      "cvss_score": 7.8,
+      "published_date": "2026-06-12T22:16:48.807"
+    },
+    {
+      "cve_id": "CVE-2025-7009",
+      "description": "Heap buffer out-of-bounds read vulnerability in Avast Antivirus when scanning a malformed Windows PE file may allow Local Execution of Code or Denial-of-Service of the antivirus process.\n\nThis issue affects Avast Antivirus, AVG Antivirus, Norton Antivirus, Avast One, and Avast Business Antivirus on Windows, macOS, and Linux for virus definition builds before VPS 25021310.\n\n\n\nThe affected scanning logic is delivered through a shared Gen Digital virus definition update stream. The same stream feeds the consumer antivirus products listed in this advisory and other Gen Digital products that embed the same engine. Mitigation flows through this update channel; installations at or above the listed build are not vulnerable regardless of which product consumes the stream.",
+      "cvss_score": 7.8,
+      "published_date": "2026-06-12T22:16:48.943"
+    },
+    {
+      "cve_id": "CVE-2025-7011",
+      "description": "Heap out-of-bounds read vulnerability in Avast Antivirus when scanning a malformed zip file containing XML may allow Local Execution of Code or Denial-of-Service of the antivirus process.\n\nThis issue affects Avast Antivirus, AVG Antivirus, Norton Antivirus, Avast One, and Avast Business Antivirus on Windows, macOS, and Linux for virus definition builds from 25020100 before 25021208.\n\n\n\nThe affected scanning logic is delivered through a shared Gen Digital virus definition update stream. The same stream feeds the consumer antivirus products listed in this advisory and other Gen Digital products that embed the same engine. Mitigation flows through this update channel; installations at or above the listed build are not vulnerable regardless of which product consumes the stream.",
+      "cvss_score": 7.8,
+      "published_date": "2026-06-12T22:16:49.210"
+    },
+    {
+      "cve_id": "CVE-2025-7017",
+      "description": "Heap buffer out-of-bounds read vulnerability in Avira Antivirus engine when scanning a malformed Windows MSI file may allow Local Execution of Code or Denial-of-Service of the antivirus engine process.\n\nThis issue affects Avira Antivirus on Windows, macOS, and Linux for engine builds before 8.3.70.56.",
+      "cvss_score": 7.8,
+      "published_date": "2026-06-12T22:16:49.343"
+    },
+    {
+      "cve_id": "CVE-2026-46716",
+      "description": "Nezha Monitoring is a self-hostable, lightweight, servers and websites monitoring and O&M tool. From version 1.4.0 to before version 2.0.8, a RoleMember user can create a scheduled cron task with Cover=CronCoverAll, Servers=[] and an arbitrary Command. At every tick of the scheduler, the dashboard pushes that command to every server in the global ServerShared map \u2014 including servers that belong to other tenants (admin's servers, other members' servers). Each agent runs the command and returns the output, which is then sent to the attacker's own NotificationGroup \u2192 attacker-controlled webhook. This issue has been patched in version 2.0.8.",
+      "cvss_score": 9.9,
+      "published_date": "2026-06-12T22:16:50.810"
+    },
+    {
+      "cve_id": "CVE-2026-46717",
+      "description": "Nezha Monitoring is a self-hostable, lightweight, servers and websites monitoring and O&M tool. From version 1.4.0 to before version 2.0.8, nezha's dashboard supports two user roles: RoleAdmin (Role==0) and RoleMember (Role==1). The notification routes POST /api/v1/notification and PATCH /api/v1/notification/:id are wired through commonHandler rather than adminHandler \u2014 so a RoleMember user can call them. These handlers synchronously Send() an HTTP request to a user-controlled URL and reflect the entire response body (no size limit) back to the caller on any non-2xx response. This issue has been patched in version 2.0.8.",
+      "cvss_score": 7.7,
+      "published_date": "2026-06-12T22:16:50.957"
+    },
+    {
+      "cve_id": "CVE-2026-47120",
+      "description": "Nezha Monitoring is a self-hostable, lightweight, servers and websites monitoring and O&M tool. From version 1.4.0 to before version 2.0.8, a RoleMember can fire other users' cron tasks via AlertRule.FailTriggerTasks (no ownership check). This issue has been patched in version 2.0.8.",
+      "cvss_score": 7.1,
+      "published_date": "2026-06-12T22:16:51.100"
+    },
+    {
+      "cve_id": "CVE-2026-48119",
+      "description": "Nezha Monitoring is a self-hostable, lightweight, servers and websites monitoring and O&M tool. From version 0.20.0 to before version 2.0.12, authenticated agents can forge service-monitor results for other users' services. This issue has been patched in version 2.0.12.",
+      "cvss_score": 7.1,
+      "published_date": "2026-06-12T22:16:51.540"
+    },
+    {
+      "cve_id": "CVE-2026-49396",
+      "description": "Nezha Monitoring is a self-hostable, lightweight, servers and websites monitoring and O&M tool. From version 1.0.0 to before version 2.0.14, cross-site GET request can trigger stored cron commands on a victim's agents. This issue has been patched in version 2.0.14.",
+      "cvss_score": 7.1,
+      "published_date": "2026-06-12T22:16:51.677"
+    },
+    {
+      "cve_id": "CVE-2026-53519",
+      "description": "Nezha Monitoring is a self-hostable, lightweight, servers and websites monitoring and O&M tool. Prior to version 2.0.13, fallbackToFrontend in the dashboard's NoRoute handler treats any URL whose raw string starts with /dashboard as an admin-frontend asset request. The check uses strings.HasPrefix, not a path-segment match, so the input /dashboard../data/config.yaml is accepted; strings.TrimPrefix leaves ../data/config.yaml; and path.Join(\"admin-dist\", \"../data/config.yaml\") normalizes to data/config.yaml \u2014 which os.Stat finds and http.ServeFile returns. No authentication required. This issue has been patched in version 2.0.13.",
+      "cvss_score": 9.1,
+      "published_date": "2026-06-12T22:16:51.953"
+    },
+    {
+      "cve_id": "CVE-2026-53608",
+      "description": "ApostropheCMS is an open-source Node.js content management system. Versions up to and including 1.4.2 of the `@apostrophecms/seo` package injects the Google Analytics Tracking ID (`seoGoogleTrackingId`) and Google Tag Manager ID (`seoGoogleTagManager`) directly into `<script>` tag bodies using JavaScript template literals without any sanitization or validation. Any user with editor-level access (the default role for content managers) can set these fields to a malicious value, resulting in stored XSS that executes on every page for every visitor of the site. As of time of publication, no known patched versions are available.",
+      "cvss_score": 8.7,
+      "published_date": "2026-06-12T22:16:52.660"
+    },
+    {
+      "cve_id": "CVE-2026-53609",
+      "description": "ApostropheCMS is an open-source Node.js content management system. In versions up to and including 4.30.0, `apos.util.set()` traverses dot-notation paths without sanitizing `__proto__`, allowing an authenticated editor to write arbitrary values to `Object.prototype` via the `$pullAll` patch operator. A confirmed gadget in `publicApiCheck()` causes this to bypass authorization on all piece-type REST API endpoints for every subsequent unauthenticated request, for the lifetime of the Node.js process. As of time of publication, no known patched versions are available.",
+      "cvss_score": 9.1,
+      "published_date": "2026-06-12T22:16:52.803"
+    },
+    {
+      "cve_id": "CVE-2026-53821",
+      "description": "OpenClaw before 2026.5.18 accepts WebSocket client-declared operator scopes before binding to server-approved pairing or trusted-proxy authorization baseline. Unpaired or restricted trusted-proxy Control UI clients can obtain cached operator.admin authority on live WebSocket connections to execute admin-gated Gateway RPCs.",
+      "cvss_score": 8.8,
+      "published_date": "2026-06-12T22:16:53.173"
+    },
+    {
+      "cve_id": "CVE-2026-53822",
+      "description": "OpenClaw before 2026.5.18 contains a command injection vulnerability where shell wrapper argv could change between approval and execution. Attackers can rebuild command arguments after allowlist approval to execute unapproved command shapes, potentially bypassing security controls.",
+      "cvss_score": 8.8,
+      "published_date": "2026-06-12T22:16:53.317"
+    },
+    {
+      "cve_id": "CVE-2026-53823",
+      "description": "OpenClaw before 2026.5.3 contains a privilege escalation vulnerability in the allowFrom feature that binds to mutable Slack display names. Attackers with Slack account access can change display name metadata to match policy entries, potentially gaining unauthorized agent access intended for other identities.",
+      "cvss_score": 8.1,
+      "published_date": "2026-06-12T22:16:53.463"
+    },
+    {
+      "cve_id": "CVE-2026-53828",
+      "description": "OpenClaw before 2026.5.6 contains an authorization bypass vulnerability in native command handling that allows authenticated senders to execute owner-only commands without proper policy enforcement. Attackers can trigger native command handling to bypass the configured owner-command access control, potentially executing privileged commands from unauthorized users.",
+      "cvss_score": 8.8,
+      "published_date": "2026-06-12T22:16:54.203"
+    },
+    {
+      "cve_id": "CVE-2026-53829",
+      "description": "OpenClaw before 2026.5.18 contains an approval display truncation vulnerability allowing authenticated users to hide command suffixes from approvers. Attackers can submit oversized exec commands with benign prefixes and malicious suffixes to execute unauthorized operations after approval.",
+      "cvss_score": 8.0,
+      "published_date": "2026-06-12T22:16:54.347"
+    },
+    {
+      "cve_id": "CVE-2026-53831",
+      "description": "OpenClaw before 2026.5.18 contains a policy enforcement vulnerability in system.run safe-bin allowlist validation that allows shell expansion to modify command interpretation on POSIX nodes. Authenticated operators can exploit shell metacharacters in approved commands to read unintended node-local files and expose sensitive configuration data.",
+      "cvss_score": 8.3,
+      "published_date": "2026-06-12T22:16:54.643"
+    },
+    {
+      "cve_id": "CVE-2026-53832",
+      "description": "OpenClaw before 2026.5.18 contains an identity header validation vulnerability allowing local same-host callers to forge trusted-proxy identity headers. Attackers with access to the proxy-facing Gateway port can supply forged identity headers to assume operator identity and potentially escalate privileges.",
+      "cvss_score": 7.7,
+      "published_date": "2026-06-12T22:16:54.790"
+    },
+    {
+      "cve_id": "CVE-2026-53833",
+      "description": "OpenClaw before 2026.4.29 contains an authorization bypass vulnerability in the QQBot streaming command that allows authenticated senders to mutate configuration without explicit allowFrom restrictions. Attackers can modify QQBot streaming configuration outside intended admin policy by reaching the affected command without non-wildcard allowlist entry requirements.",
+      "cvss_score": 7.7,
+      "published_date": "2026-06-12T22:16:54.947"
+    },
+    {
+      "cve_id": "CVE-2026-53834",
+      "description": "OpenClaw before 2026.4.27 contains an authorization bypass vulnerability in QQBot pre-dispatch slash commands that allows authenticated senders to skip allowFrom policy checks. Attackers can invoke slash commands before configured access control policies are applied, potentially triggering command handling from blocked senders depending on operator configuration.",
+      "cvss_score": 7.5,
+      "published_date": "2026-06-12T22:16:55.090"
+    },
+    {
+      "cve_id": "CVE-2026-53836",
+      "description": "OpenClaw before 2026.5.12 contains an allowlist bypass vulnerability in PowerShell encoded-command handling that allows attackers to execute encoded commands using abbreviated flag aliases not recognized by the allowlist parser. Remote authenticated operators can bypass execution allowlist checks by using unrecognized encoded-command alias forms to execute arbitrary PowerShell content.",
+      "cvss_score": 8.8,
+      "published_date": "2026-06-12T22:16:55.413"
+    },
+    {
+      "cve_id": "CVE-2026-53838",
+      "description": "OpenClaw before 2026.5.27 contains a state mutation vulnerability in node pairing reconnection that allows paired nodes to confuse approval scope decisions. Attackers can exploit reconnection logic to restore or present broader node authority than intended, potentially bypassing approval restrictions.",
+      "cvss_score": 9.8,
+      "published_date": "2026-06-12T22:16:55.723"
+    },
+    {
+      "cve_id": "CVE-2026-53868",
+      "description": "Capgo before 12.128.2 contains a denial of service vulnerability allowing attackers to register accounts using arbitrary email addresses without verification, then initiate deletion to lock emails in pending deletion state. Attackers can permanently lock legitimate users out of the platform for 30 days by exploiting unverified email ownership in account lifecycle operations.",
+      "cvss_score": 7.5,
+      "published_date": "2026-06-12T22:16:56.153"
+    },
+    {
+      "cve_id": "CVE-2025-14098",
+      "description": "Heap buffer out-of-bounds write vulnerability due to integer overflow in Avira Antivirus engine when scanning a malformed MS-DOS executable file may allow Local Execution of Code or Denial-of-Service of the antivirus engine process.\n\nThis issue affects Avira Antivirus on Windows, macOS, and Linux for engine builds before 8.3.70.104.",
+      "cvss_score": 7.8,
+      "published_date": "2026-06-12T23:16:27.350"
+    },
+    {
+      "cve_id": "CVE-2025-9032",
+      "description": "Heap buffer out-of-bounds read vulnerability in Avira Antivirus engine when scanning a malformed Windows PE file may allow Local Execution of Code or Denial-of-Service of the antivirus engine process.\n\nThis issue affects Avira Antivirus on Windows, macOS, and Linux for engine builds before 8.3.70.98.",
+      "cvss_score": 7.8,
+      "published_date": "2026-06-12T23:16:30.977"
+    },
+    {
+      "cve_id": "CVE-2025-9033",
+      "description": "Heap buffer out-of-bounds read vulnerability in Avira Antivirus engine when scanning a malformed PDF file may allow Local Execution of Code or Denial-of-Service of the antivirus engine process.\n\nThis issue affects Avira Antivirus on Windows, macOS, and Linux for engine builds before 8.3.70.76.",
+      "cvss_score": 7.8,
+      "published_date": "2026-06-12T23:16:31.193"
+    },
+    {
+      "cve_id": "CVE-2026-12068",
+      "description": "Information disclosure vulnerability in Avira Password Manager when used with Mozilla Firefox may allow a remote attacker operating a cross-origin iframe to obtain credentials autofilled for the parent web page via incorrect autofill field selection.\n\nThis issue affects Avira Password Manager when used with Mozilla Firefox on Windows, macOS, and Linux.",
+      "cvss_score": 7.4,
+      "published_date": "2026-06-12T23:16:33.553"
+    },
+    {
+      "cve_id": "CVE-2026-6676",
+      "description": "Heap buffer out-of-bounds write vulnerability in Avira Antivirus engine when scanning a malformed POSIX tar archive may allow Local Execution of Code or Denial-of-Service of the antivirus engine process.\n\nThis issue affects Avira Antivirus on Windows, macOS, and Linux for engine builds before 8.3.27.12.",
+      "cvss_score": 7.8,
+      "published_date": "2026-06-12T23:16:45.007"
+    },
+    {
+      "cve_id": "CVE-2026-54228",
+      "description": "A time-of-check time-of-use (TOCTOU) race condition was found in the abrt-dbus D-Bus service's SetElement method. Between dump directory creation and post-create event execution, any local user can call SetElement to write arbitrary text files into the root-owned dump directory, bypassing package validation and allowing crashes of unpackaged binaries to survive post-create processing.",
+      "cvss_score": 7.8,
+      "published_date": "2026-06-13T03:16:21.440"
+    },
+    {
+      "cve_id": "CVE-2026-54229",
+      "description": "A race condition was found in the abrt-dbus D-Bus service's ChownProblemDir method. ChownProblemDir opens the dump directory with DD_OPEN_READONLY and calls dd_chown to change ownership of all files to the caller's uid, succeeding even while post-create event handlers hold a write lock. This allows an attacker to gain filesystem-level control of the dump directory while privileged event scripts are still running.",
+      "cvss_score": 7.0,
+      "published_date": "2026-06-13T03:16:21.587"
+    },
+    {
+      "cve_id": "CVE-2026-54230",
+      "description": "A symlink following vulnerability was found in the ABRT post-create event handler scripts in libreport. Event scripts write output files using shell redirections without the O_NOFOLLOW flag. If the target file is replaced with a symlink, the shell process running as root follows the symlink and writes content to the symlink target, allowing arbitrary file overwrites on the system.",
+      "cvss_score": 7.0,
+      "published_date": "2026-06-13T03:16:21.733"
+    },
+    {
+      "cve_id": "CVE-2026-9848",
+      "description": "The WP Ticket plugin for WordPress is vulnerable to SQL Injection via the WordPress search query parameter (`s`) in versions up to, and including, 6.0.4 The plugin hooks WordPress's `posts_request` filter with `wp_ticket_com_posts_request()`, which calls `emd_author_search_results()` when the current request is an unauthenticated front-end search. That function reads `$query->query_vars['s']` \u2014 already wp_unslash()'d by `WP_Query::parse_query()`, so wp_magic_quotes protection has been stripped \u2014 and concatenates the raw value into a SQL `LIKE` clause inside a UNION sub-SELECT appended to the main query, with no `$wpdb->prepare()` or escaping. This makes it possible for unauthenticated attackers to append additional SQL queries into already-existing queries that can be used to extract sensitive information from the database.",
+      "cvss_score": 7.5,
+      "published_date": "2026-06-13T03:16:22.017"
+    },
+    {
+      "cve_id": "CVE-2026-9109",
+      "description": "The GPTranslate \u2013 Multilingual AI Translation for WordPress: Automatically Translate Websites plugin for WordPress is vulnerable to Stored Cross-Site Scripting via REST API Translation Storage in all versions up to, and including, 2.31 due to insufficient input sanitization and output escaping. This makes it possible for unauthenticated attackers to inject arbitrary web scripts in pages that will execute whenever a user accesses an injected page. The deterministically derived API key (sha256 of the site URL) is printed in the HTML source of every page via the JavaScript variable gptApiKey, meaning any unauthenticated visitor can retrieve the key and submit malicious translation payloads to the /wp-json/gptranslate/v1/request endpoint without any additional precondition.",
+      "cvss_score": 7.2,
+      "published_date": "2026-06-13T07:16:14.853"
+    }
+  ],
+  "new_kev_entries": [
+    {
+      "cveID": "CVE-2026-35273",
+      "vendorProject": "Oracle",
+      "product": " PeopleSoft Enterprise PeopleTools",
+      "vulnerabilityName": "Oracle PeopleSoft Enterprise PeopleTools Missing Authentication for Critical Function Vulnerability",
+      "dateAdded": "2026-06-12",
+      "shortDescription": "Oracle PeopleSoft Enterprise PeopleTools contains a missing authentication for critical function vulnerability which could allow an unauthenticated attacker to obtain takeover of PeopleSoft Enterprise PeopleTools.",
+      "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA\u2019s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA\u2019s \u201cForensics Triage Requirements\u201d (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "dueDate": "2026-06-15",
+      "knownRansomwareCampaignUse": "Known",
+      "notes": "https://www.oracle.com/security-alerts/alert-cve-2026-35273.html ; https://support.oracle.com/signin/ ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-35273",
+      "cwes": [
+        "CWE-306"
+      ]
+    },
+    {
+      "cveID": "CVE-2026-10520",
+      "vendorProject": "Ivanti",
+      "product": "Sentry",
+      "vulnerabilityName": "Ivanti Sentry OS Command Injection Vulnerability",
+      "dateAdded": "2026-06-11",
+      "shortDescription": "Ivanti Sentry (formerly known as MobileIron Sentry) contains an OS command injection vulnerability which could allow a remote unauthenticated user to achieve root-level remote code execution. This vulnerability can be successfully exploited in cases where the Sentry appliance is in an unmanaged state with its endpoints externally reachable. The use of mTLS with EPMM or restricted HTTPS access through Neurons for MDM makes interfaces inaccessible to external actors.",
+      "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA\u2019s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA\u2019s \u201cForensics Triage Requirements\u201d (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "dueDate": "2026-06-14",
+      "knownRansomwareCampaignUse": "Unknown",
+      "notes": "https://hub.ivanti.com/s/article/Security-Advisory-Ivanti-Sentry-CVE-2026-10520-CVE-2026-10523?language=en_US ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-10520",
+      "cwes": [
+        "CWE-78"
+      ]
+    },
+    {
+      "cveID": "CVE-2026-11645",
+      "vendorProject": "Google",
+      "product": "Chromium V8",
+      "vulnerabilityName": "Google Chromium V8 Out-of-Bounds Read and Write Vulnerability",
+      "dateAdded": "2026-06-09",
+      "shortDescription": "Google Chromium V8 out-of-bounds read and write vulnerability that could allow a remote attacker to execute arbitrary code inside a sandbox via a crafted HTML page. This vulnerability could affect multiple web browsers that utilize Chromium, including, but not limited to, Google Chrome, Microsoft Edge, and Opera.",
+      "requiredAction": "Apply mitigations per vendor instructions, follow applicable BOD 22-01 guidance for cloud services, or discontinue use of the product if mitigations are unavailable.",
+      "dueDate": "2026-06-23",
+      "knownRansomwareCampaignUse": "Unknown",
+      "notes": "https://chromereleases.googleblog.com/2026/06/stable-channel-update-for-desktop_0153744567.html ; https://issues.chromium.org/issues/506689381 ; https://nvd.nist.gov/vuln/detail/CVE-2026-11645",
+      "cwes": [
+        "CWE-787",
+        "CWE-125"
+      ]
+    },
+    {
+      "cveID": "CVE-2026-7473",
+      "vendorProject": "Arista",
+      "product": "Extensible Operating System",
+      "vulnerabilityName": "Arista Extensible Operating System Incomplete Comparison with Missing Factors Vulnerability",
+      "dateAdded": "2026-06-09",
+      "shortDescription": "Arista Extensible Operating System (EOS) contains an incomplete comparison with missing factors vulnerability when the switch incorrectly decapsulate and forwards other unexpected tunneled packet with a destination IP matching its configured decapsulation IP.",
+      "requiredAction": "Apply mitigations per vendor instructions, follow applicable BOD 22-01 guidance for cloud services, or discontinue use of the product if mitigations are unavailable.",
+      "dueDate": "2026-06-23",
+      "knownRansomwareCampaignUse": "Unknown",
+      "notes": "https://www.arista.com/en/support/advisories-notices/security-advisory/24005-security-advisory-0137 ; https://nvd.nist.gov/vuln/detail/CVE-2026-7473",
+      "cwes": [
+        "CWE-1023"
+      ]
+    },
+    {
+      "cveID": "CVE-2026-20245",
+      "vendorProject": "Cisco",
+      "product": "Catalyst SD-WAN Manager",
+      "vulnerabilityName": "Cisco Catalyst SD-WAN Manager Improper Encoding or Escaping of Output Vulnerability",
+      "dateAdded": "2026-06-09",
+      "shortDescription": "Cisco Catalyst SD-WAN Manager formerly SD-WAN vManage contains an improper encoding or escaping of output vulnerability. This vulnerability could allow an authenticated, local attacker to execute arbitrary commands as root by supplying a crafted file to the affected system.",
+      "requiredAction": "Apply mitigations per vendor instructions, follow applicable BOD 22-01 guidance for cloud services, or discontinue use of the product if mitigations are unavailable.",
+      "dueDate": "2026-06-23",
+      "knownRansomwareCampaignUse": "Unknown",
+      "notes": "https://sec.cloudapps.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-sdwan-privesc-4uxFrdzx ; https://nvd.nist.gov/vuln/detail/CVE-2026-20245",
+      "cwes": [
+        "CWE-116"
+      ]
+    },
+    {
+      "cveID": "CVE-2026-42271",
+      "vendorProject": "BerriAI",
+      "product": "LiteLLM",
+      "vulnerabilityName": "BerriAI LiteLLM Command Injection Vulnerability",
+      "dateAdded": "2026-06-08",
+      "shortDescription": "BerriAI LiteLLM contains a command injection vulnerability that could allow any authenticated user, including holders of low-privilege internal-user keys, to run arbitrary commands on the host.",
+      "requiredAction": "Apply mitigations per vendor instructions, follow applicable BOD 22-01 guidance for cloud services, or discontinue use of the product if mitigations are unavailable.",
+      "dueDate": "2026-06-22",
+      "knownRansomwareCampaignUse": "Unknown",
+      "notes": "This vulnerability affects a common open-source component, third-party library, or a protocol used by different products. Please check with specific vendors for information on patching status. For more information, please see: https://github.com/BerriAI/litellm/security/advisories/GHSA-v4p8-mg3p-g94g ; https://github.com/BerriAI/litellm/releases/tag/v1.83.7-stable ; https://nvd.nist.gov/vuln/detail/CVE-2026-42271",
+      "cwes": [
+        "CWE-78",
+        "CWE-77"
+      ]
+    },
+    {
+      "cveID": "CVE-2026-50751",
+      "vendorProject": "Check Point",
+      "product": "Security Gateway",
+      "vulnerabilityName": "Check Point Security Gateway Improper Authentication Vulnerability",
+      "dateAdded": "2026-06-08",
+      "shortDescription": "Check Point Security Gateway contains an improper authentication vulnerability in IKEv1 key exchange that could allow an unauthenticated remote attacker to bypass user authentication and establish a remote access VPN connection without a valid user password.",
+      "requiredAction": "Apply mitigations per vendor instructions, follow applicable BOD 22-01 guidance for cloud services, or discontinue use of the product if mitigations are unavailable.",
+      "dueDate": "2026-06-11",
+      "knownRansomwareCampaignUse": "Known",
+      "notes": "https://blog.checkpoint.com/security/check-point-releases-important-hotfix-for-vulnerabilities-in-deprecated-ikev1-vpn-protocol/ ; https://support.checkpoint.com/results/sk/sk185033?_gl=1*1wqeqhc*_gcl_au*MTI1MzE5MjI2LjE3ODA5MzQ1NTM. ; https://nvd.nist.gov/vuln/detail/CVE-2026-50751",
+      "cwes": [
+        "CWE-287"
+      ]
+    }
+  ],
+  "monitored_hits": [],
+  "total_kev_count": 1619,
+  "executive_summary": "The organization faces critical security exposure with 99 high-severity vulnerabilities, including multiple maximum-severity (CVSS 10.0) hardcoded credential flaws. Seven new CISA Known Exploited Vulnerabilities were added this week, indicating active threat actor targeting. Critical vulnerabilities affect network infrastructure (Netty framework), industrial systems (IEI), content management platforms, and virtualization technologies. The prevalence of hardcoded credentials and authentication bypass vulnerabilities creates immediate risk of unauthorized system access and potential lateral movement across the network.",
+  "action_items": [
+    "Immediately patch or isolate systems with CVE-2026-47131 (CVSS 10.0) vm2 sandbox bypass vulnerability.",
+    "Replace or disable IEI Remote Management systems affected by CVE-2026-11849 hardcoded credentials vulnerability.",
+    "Update all Netty framework implementations to versions 4.1.135.Final or 4.2.15.Final to address multiple high-severity flaws.",
+    "Patch Oracle PeopleSoft, Ivanti Sentry, and Cisco SD-WAN systems per CISA emergency directive requirements.",
+    "Conduct emergency credential audit to identify and remediate any additional hardcoded authentication mechanisms."
+  ],
+  "risk_narrative": "The threat landscape shows sophisticated attackers actively exploiting known vulnerabilities, with CISA's emergency additions indicating imminent exploitation risk. Hardcoded credentials in multiple systems create persistent backdoors that cannot be easily remediated through standard patching. The combination of network framework vulnerabilities and industrial control system exposures suggests potential for supply chain attacks and critical infrastructure targeting. Business continuity faces immediate risk from potential system compromises, data breaches, and operational disruptions across multiple technology stacks.",
+  "pipeline_errors": []
+}
