@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vulnerability Intelligence Report — 2026-06-14</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #22263a;
+    --border: #2d3148;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --accent: #6366f1;
+    --critical: #dc2626;
+    --high: #ea580c;
+    --medium: #ca8a04;
+    --success: #16a34a;
+  }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace; line-height: 1.6; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* Header */
+  .header { background: linear-gradient(135deg, #1a1d27 0%, #0f1117 100%); border-bottom: 1px solid var(--border); padding: 24px 32px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+  .header-left h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: 0.01em; color: #f1f5f9; }
+  .header-left h1 span { color: var(--accent); }
+  .header-meta { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
+  .risk-badge { display: inline-flex; align-items: center; gap: 6px; padding: 8px 20px; border-radius: 9999px; font-weight: 700; font-size: 0.95rem; letter-spacing: 0.05em; text-transform: uppercase; background: #dc262622; color: #dc2626; border: 2px solid #dc2626; }
+  .risk-dot { width: 8px; height: 8px; border-radius: 50%; background: #dc2626; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  /* Layout */
+  .container { max-width: 1400px; margin: 0 auto; padding: 32px; }
+
+  /* KPI cards */
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 32px; }
+  .kpi-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; }
+  .kpi-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 8px; }
+  .kpi-value { font-size: 2.5rem; font-weight: 700; line-height: 1; color: #f1f5f9; }
+  .kpi-value.danger { color: var(--critical); }
+  .kpi-value.warn { color: var(--high); }
+  .kpi-sub { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+
+  /* Sections */
+  .section { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 24px; }
+  .section-title { font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+  .section p { color: var(--text-muted); line-height: 1.8; }
+
+  /* Action list */
+  .action-list { padding-left: 20px; }
+  .action-list li { color: var(--text-muted); margin-bottom: 10px; padding-left: 4px; line-height: 1.7; }
+  .action-list li::marker { color: var(--accent); font-weight: 700; }
+  .empty-msg { color: var(--text-muted); font-style: italic; }
+
+  /* Tables */
+  .table-wrapper { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+  th { background: var(--surface2); padding: 10px 14px; text-align: left; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); border-bottom: 1px solid var(--border); cursor: pointer; user-select: none; white-space: nowrap; }
+  th:hover { color: var(--text); }
+  th .sort-icon { margin-left: 4px; opacity: 0.4; }
+  th.sorted .sort-icon { opacity: 1; color: var(--accent); }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface2); }
+  .empty-row { text-align: center; color: var(--text-muted); font-style: italic; padding: 24px; }
+  .desc-cell { max-width: 500px; color: var(--text-muted); font-size: 0.8rem; }
+
+  /* Score badges */
+  .score-badge { display: inline-block; padding: 2px 8px; border-radius: 6px; font-weight: 700; font-size: 0.8rem; }
+  .score-badge.critical { background: #dc262622; color: #dc2626; border: 1px solid #dc262644; }
+  .score-badge.high { background: #ea580c22; color: #ea580c; border: 1px solid #ea580c44; }
+  .score-badge.medium { background: #ca8a0422; color: #ca8a04; border: 1px solid #ca8a0444; }
+
+  /* Misc badges */
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
+  .ransomware-known { background: #dc262622; color: #dc2626; border: 1px solid #dc262644; }
+  .ransomware-unknown { background: #37415122; color: #94a3b8; border: 1px solid #37415144; }
+  .cve-link { color: var(--accent); font-family: monospace; }
+
+  /* Warning */
+  .warning-box { background: #78350f22; border: 1px solid #92400e; border-radius: 8px; padding: 16px; margin-bottom: 24px; color: #fbbf24; font-size: 0.875rem; }
+  .warning-box ul { padding-left: 16px; margin-top: 8px; }
+
+  /* Footer */
+  footer { margin-top: 48px; padding: 24px 0; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); font-size: 0.8rem; }
+  footer a { color: var(--text-muted); }
+  footer a:hover { color: var(--text); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <h1>Vulnerability <span>Intelligence</span> Report</h1>
+    <div class="header-meta">Date: 2026-06-14 &nbsp;|&nbsp; Generated: 2026-06-14T10:48:22Z</div>
+  </div>
+  <div class="risk-badge">
+    <span class="risk-dot"></span>
+    Critical Risk
+  </div>
+</div>
+
+<div class="container">
+  
+
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">Total CVEs Found</div>
+      <div class="kpi-value warn">5</div>
+      <div class="kpi-sub">CVSS &ge; 7.0 in last 24h</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">CVSS Avg Score</div>
+      <div class="kpi-value warn">8.4</div>
+      <div class="kpi-sub">across all found CVEs</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">KEV New Entries</div>
+      <div class="kpi-value danger">7</div>
+      <div class="kpi-sub">added in last 7 days</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">KEV Due This Week</div>
+      <div class="kpi-value danger">2</div>
+      <div class="kpi-sub">remediation deadlines</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Executive Summary</div>
+    <p>Our environment faces elevated security risks with 5 high-severity vulnerabilities discovered, including a critical CVSS 9.8 authentication bypass in gas station systems and an 8.8-rated D-Link camera vulnerability. Additionally, 7 new CISA Known Exploited Vulnerabilities were added this week, targeting Oracle PeopleSoft, Ivanti Sentry, Google Chrome, Arista systems, and Cisco SD-WAN platforms. While none of our monitored CVEs appear in the KEV catalog, the high-severity findings require immediate attention to prevent potential exploitation.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Risk Narrative</div>
+    <p>The threat landscape shows active exploitation patterns with 7 new KEV entries targeting enterprise infrastructure including Oracle, Cisco, and Ivanti platforms. Our high-severity vulnerabilities span critical authentication bypasses, SQL injection, and XSS attacks across diverse systems from industrial controls to web applications. The critical gas station vulnerability poses immediate operational risks, while the D-Link camera flaw creates network infiltration opportunities. Threat actors are increasingly targeting infrastructure components, making rapid patching essential to prevent lateral movement and data compromise.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Prioritized Action Items</div>
+    <ol class='action-list'><li>Immediately patch CVE-2026-12183 in Nefteprodukttekhnika gas station systems due to critical authentication bypass vulnerability.</li>
+<li>Update D-Link DCS-935L cameras to address CVE-2026-12174 buffer overflow vulnerability affecting web interfaces.</li>
+<li>Patch LiteSpeed cPanel plugin to version 2.4.8 or later to resolve CVE-2026-54420 symlink handling issue.</li>
+<li>Apply SQL injection fixes for CVE-2026-6428 in Koha library management systems immediately.</li>
+<li>Update WordPress Bookly plugin to resolve CVE-2026-5513 stored cross-site scripting vulnerability.</li></ol>
+  </div>
+
+  <div class="section">
+    <div class="section-title">High Severity CVEs — 5 found (CVSS &ge; 7.0)</div>
+    <div class="table-wrapper">
+      <table id="cve-table">
+        <thead>
+          <tr>
+            <th onclick="sortTable('cve-table',0)" data-col="0">CVE ID <span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable('cve-table',1)" data-col="1">CVSS <span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable('cve-table',2)" data-col="2">Published <span class="sort-icon">&#8597;</span></th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-5513" target="_blank" rel="noopener noreferrer">CVE-2026-5513</a></td><td><span class="score-badge high">7.2</span></td><td>2026-06-13</td><td class="desc-cell">The Online Scheduling and Appointment Booking System – Bookly plugin for WordPress is vulnerable to Stored Cross-Site Scripting via the 'bookly-customer-full-name' cookie in versions up to, and includ…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-6428" target="_blank" rel="noopener noreferrer">CVE-2026-6428</a></td><td><span class="score-badge high">7.6</span></td><td>2026-06-13</td><td class="desc-cell">SQL Injection in reports/catalogue_out.pl in Koha Community Koha through 22.11.37, 23.x, 24.x before 24.11.16, 25.05.x before 25.05.11, 25.11.x before 25.11.05, 26.05.x before 26.05.01, and 26.11.x be…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-12183" target="_blank" rel="noopener noreferrer">CVE-2026-12183</a></td><td><span class="score-badge critical">9.8</span></td><td>2026-06-13</td><td class="desc-cell">Nefteprodukttekhnika BUK TS-G Gas Station Automation System 2.9.1 through 2.10.2 on Linux contains an Improper Authentication vulnerability (CWE-287) in the system configuration module. The /php/ajax-…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-12174" target="_blank" rel="noopener noreferrer">CVE-2026-12174</a></td><td><span class="score-badge high">8.8</span></td><td>2026-06-13</td><td class="desc-cell">A security vulnerability has been detected in D-Link DCS-935L 1.10.01. This issue affects the function snprintf of the file /web/cgi-bin/greece/rhea of the component HTTP Handler. Such manipulation of…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-54420" target="_blank" rel="noopener noreferrer">CVE-2026-54420</a></td><td><span class="score-badge high">8.5</span></td><td>2026-06-14</td><td class="desc-cell">LiteSpeed cPanel plugin before 2.4.8 (as distributed in LiteSpeed WHM PlugIn before 5.3.2.0) mishandles symlinks provided by a user with FTP or web shell access on a shared hosting server running Clou…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">CISA KEV — 7 new entries (last 7 days)</div>
+    <div class="table-wrapper">
+      <table id="kev-table">
+        <thead>
+          <tr>
+            <th onclick="sortTable('kev-table',0)" data-col="0">CVE ID <span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable('kev-table',1)" data-col="1">Vendor / Product <span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable('kev-table',2)" data-col="2">Date Added <span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable('kev-table',3)" data-col="3">Due Date <span class="sort-icon">&#8597;</span></th>
+            <th>Ransomware</th>
+          </tr>
+        </thead>
+        <tbody>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-35273" target="_blank" rel="noopener noreferrer">CVE-2026-35273</a></td><td>Oracle /  PeopleSoft Enterprise PeopleTools</td><td>2026-06-12</td><td>2026-06-15</td><td><span class="badge ransomware-known">Known</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-10520" target="_blank" rel="noopener noreferrer">CVE-2026-10520</a></td><td>Ivanti / Sentry</td><td>2026-06-11</td><td>2026-06-14</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-11645" target="_blank" rel="noopener noreferrer">CVE-2026-11645</a></td><td>Google / Chromium V8</td><td>2026-06-09</td><td>2026-06-23</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-7473" target="_blank" rel="noopener noreferrer">CVE-2026-7473</a></td><td>Arista / Extensible Operating System</td><td>2026-06-09</td><td>2026-06-23</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-20245" target="_blank" rel="noopener noreferrer">CVE-2026-20245</a></td><td>Cisco / Catalyst SD-WAN Manager</td><td>2026-06-09</td><td>2026-06-23</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-42271" target="_blank" rel="noopener noreferrer">CVE-2026-42271</a></td><td>BerriAI / LiteLLM</td><td>2026-06-08</td><td>2026-06-22</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-50751" target="_blank" rel="noopener noreferrer">CVE-2026-50751</a></td><td>Check Point / Security Gateway</td><td>2026-06-08</td><td>2026-06-11</td><td><span class="badge ransomware-known">Known</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>
+    Data sources: &nbsp;
+    <a href="https://nvd.nist.gov/" target="_blank" rel="noopener noreferrer">NVD (National Vulnerability Database)</a>
+    &nbsp;&bull;&nbsp;
+    <a href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank" rel="noopener noreferrer">CISA Known Exploited Vulnerabilities Catalog</a>
+    <br><br>
+    Generated by Vulnerability Intelligence Pipeline &bull; 2026-06-14T10:48:22Z
+  </footer>
+</div>
+
+<script>
+const sortState = {};
+function sortTable(tableId, col) {
+  const table = document.getElementById(tableId);
+  const tbody = table.querySelector('tbody');
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+  const key = tableId + ':' + col;
+  const asc = sortState[key] !== true;
+  sortState[key] = asc;
+
+  // Update sort icons
+  table.querySelectorAll('th').forEach((th, i) => {
+    th.classList.toggle('sorted', i === col);
+    const icon = th.querySelector('.sort-icon');
+    if (icon) icon.textContent = i === col ? (asc ? '↑' : '↓') : '⇅';
+  });
+
+  rows.sort((a, b) => {
+    const aText = (a.cells[col] ? a.cells[col].textContent : '').trim();
+    const bText = (b.cells[col] ? b.cells[col].textContent : '').trim();
+    const aNum = parseFloat(aText);
+    const bNum = parseFloat(bText);
+    if (!isNaN(aNum) && !isNaN(bNum)) return asc ? aNum - bNum : bNum - aNum;
+    return asc ? aText.localeCompare(bText) : bText.localeCompare(aText);
+  });
+
+  rows.forEach(r => tbody.appendChild(r));
+}
+</script>
+
+</body>
+</html>
