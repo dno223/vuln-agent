@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vulnerability Intelligence Report — 2026-06-20</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #22263a;
+    --border: #2d3148;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --accent: #6366f1;
+    --critical: #dc2626;
+    --high: #ea580c;
+    --medium: #ca8a04;
+    --success: #16a34a;
+  }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace; line-height: 1.6; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* Header */
+  .header { background: linear-gradient(135deg, #1a1d27 0%, #0f1117 100%); border-bottom: 1px solid var(--border); padding: 24px 32px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+  .header-left h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: 0.01em; color: #f1f5f9; }
+  .header-left h1 span { color: var(--accent); }
+  .header-meta { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
+  .risk-badge { display: inline-flex; align-items: center; gap: 6px; padding: 8px 20px; border-radius: 9999px; font-weight: 700; font-size: 0.95rem; letter-spacing: 0.05em; text-transform: uppercase; background: #dc262622; color: #dc2626; border: 2px solid #dc2626; }
+  .risk-dot { width: 8px; height: 8px; border-radius: 50%; background: #dc2626; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  /* Layout */
+  .container { max-width: 1400px; margin: 0 auto; padding: 32px; }
+
+  /* KPI cards */
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 32px; }
+  .kpi-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; }
+  .kpi-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 8px; }
+  .kpi-value { font-size: 2.5rem; font-weight: 700; line-height: 1; color: #f1f5f9; }
+  .kpi-value.danger { color: var(--critical); }
+  .kpi-value.warn { color: var(--high); }
+  .kpi-sub { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+
+  /* Sections */
+  .section { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 24px; }
+  .section-title { font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+  .section p { color: var(--text-muted); line-height: 1.8; }
+
+  /* Action list */
+  .action-list { padding-left: 20px; }
+  .action-list li { color: var(--text-muted); margin-bottom: 10px; padding-left: 4px; line-height: 1.7; }
+  .action-list li::marker { color: var(--accent); font-weight: 700; }
+  .empty-msg { color: var(--text-muted); font-style: italic; }
+
+  /* Tables */
+  .table-wrapper { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+  th { background: var(--surface2); padding: 10px 14px; text-align: left; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); border-bottom: 1px solid var(--border); cursor: pointer; user-select: none; white-space: nowrap; }
+  th:hover { color: var(--text); }
+  th .sort-icon { margin-left: 4px; opacity: 0.4; }
+  th.sorted .sort-icon { opacity: 1; color: var(--accent); }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface2); }
+  .empty-row { text-align: center; color: var(--text-muted); font-style: italic; padding: 24px; }
+  .desc-cell { max-width: 500px; color: var(--text-muted); font-size: 0.8rem; }
+
+  /* Score badges */
+  .score-badge { display: inline-block; padding: 2px 8px; border-radius: 6px; font-weight: 700; font-size: 0.8rem; }
+  .score-badge.critical { background: #dc262622; color: #dc2626; border: 1px solid #dc262644; }
+  .score-badge.high { background: #ea580c22; color: #ea580c; border: 1px solid #ea580c44; }
+  .score-badge.medium { background: #ca8a0422; color: #ca8a04; border: 1px solid #ca8a0444; }
+
+  /* Misc badges */
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
+  .ransomware-known { background: #dc262622; color: #dc2626; border: 1px solid #dc262644; }
+  .ransomware-unknown { background: #37415122; color: #94a3b8; border: 1px solid #37415144; }
+  .cve-link { color: var(--accent); font-family: monospace; }
+
+  /* Warning */
+  .warning-box { background: #78350f22; border: 1px solid #92400e; border-radius: 8px; padding: 16px; margin-bottom: 24px; color: #fbbf24; font-size: 0.875rem; }
+  .warning-box ul { padding-left: 16px; margin-top: 8px; }
+
+  /* Footer */
+  footer { margin-top: 48px; padding: 24px 0; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); font-size: 0.8rem; }
+  footer a { color: var(--text-muted); }
+  footer a:hover { color: var(--text); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <h1>Vulnerability <span>Intelligence</span> Report</h1>
+    <div class="header-meta">Date: 2026-06-20 &nbsp;|&nbsp; Generated: 2026-06-20T10:31:55Z</div>
+  </div>
+  <div class="risk-badge">
+    <span class="risk-dot"></span>
+    Critical Risk
+  </div>
+</div>
+
+<div class="container">
+  
+        <div class="warning-box">
+            <strong>Pipeline Warnings:</strong>
+            <ul><li>summarizer failed: Error code: 404 - {'type': 'error', 'error': {'type': 'not_found_error', 'message': 'model: claude-sonnet-4-20250514'}, 'request_id': 'req_011CcEMmDUewovG4ja3BZkFM'}</li></ul>
+        </div>
+
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">Total CVEs Found</div>
+      <div class="kpi-value danger">110</div>
+      <div class="kpi-sub">CVSS &ge; 7.0 in last 24h</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">CVSS Avg Score</div>
+      <div class="kpi-value warn">8.1</div>
+      <div class="kpi-sub">across all found CVEs</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">KEV New Entries</div>
+      <div class="kpi-value danger">4</div>
+      <div class="kpi-sub">added in last 7 days</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">KEV Due This Week</div>
+      <div class="kpi-value warn">1</div>
+      <div class="kpi-sub">remediation deadlines</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Executive Summary</div>
+    <p>No summary available.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Risk Narrative</div>
+    <p>No risk narrative available.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Prioritized Action Items</div>
+    <p class='empty-msg'>No action items available.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">High Severity CVEs — 110 found (CVSS &ge; 7.0)</div>
+    <div class="table-wrapper">
+      <table id="cve-table">
+        <thead>
+          <tr>
+            <th onclick="sortTable('cve-table',0)" data-col="0">CVE ID <span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable('cve-table',1)" data-col="1">CVSS <span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable('cve-table',2)" data-col="2">Published <span class="sort-icon">&#8597;</span></th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-50242" target="_blank" rel="noopener noreferrer">CVE-2026-50242</a></td><td><span class="score-badge critical">10.0</span></td><td>2026-06-19</td><td class="desc-cell">In JetBrains Hub before 2026.1.13757,
+2025.3.148033,
+2025.2.148048,
+2025.1.148120,
+2024.3.148430,
+2024.2.148429 authentication bypass via direct database access leading to administrative access was po…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-53915" target="_blank" rel="noopener noreferrer">CVE-2026-53915</a></td><td><span class="score-badge high">7.1</span></td><td>2026-06-19</td><td class="desc-cell">In JetBrains GoLand before 2026.1.3 remote code execution was possible via untrusted project configuration</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-56141" target="_blank" rel="noopener noreferrer">CVE-2026-56141</a></td><td><span class="score-badge critical">9.8</span></td><td>2026-06-19</td><td class="desc-cell">In JetBrains Hub before 2026.1.13757,
+2025.3.148033,
+2025.2.148048,
+2025.1.148120,
+2024.3.148430,
+2024.2.148429 account takeover via predictable restore codes was possible</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-56142" target="_blank" rel="noopener noreferrer">CVE-2026-56142</a></td><td><span class="score-badge critical">9.9</span></td><td>2026-06-19</td><td class="desc-cell">In JetBrains Hub before 2026.1.13757,
+2025.3.148033,
+2025.2.148048,
+2025.1.148120,
+2024.3.148430,
+2024.2.148429 privilege escalation by attaching authentication details to accounts was possible</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-48137" target="_blank" rel="noopener noreferrer">CVE-2026-48137</a></td><td><span class="score-badge critical">9.1</span></td><td>2026-06-19</td><td class="desc-cell">There is an untrusted pointer dereference vulnerability in the NI grpc-device sideband streaming API that may allow an attacker to cause an arbitrary memory dereference, potentially resulting in remot…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-48138" target="_blank" rel="noopener noreferrer">CVE-2026-48138</a></td><td><span class="score-badge high">7.5</span></td><td>2026-06-19</td><td class="desc-cell">There is an out-of-bounds read vulnerability in the NI grpc-device streaming API due to a missing bounds check that may result in a denial of service. Successful exploitation requires an attacker to s…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-48139" target="_blank" rel="noopener noreferrer">CVE-2026-48139</a></td><td><span class="score-badge high">7.5</span></td><td>2026-06-19</td><td class="desc-cell">There is a NULL pointer dereference vulnerability in NI grpc-device in the data moniker service that may allow an attacker to cause a denial of service by triggering a crash.  Successful exploitation …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-9142" target="_blank" rel="noopener noreferrer">CVE-2026-9142</a></td><td><span class="score-badge critical">9.1</span></td><td>2026-06-19</td><td class="desc-cell">There is an insecure default credentials vulnerability in NI grpc-device when TLS configuration is not present and the server is bound beyond loopback.  This may allow an unauthenticated user access t…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2016-20085" target="_blank" rel="noopener noreferrer">CVE-2016-20085</a></td><td><span class="score-badge high">7.8</span></td><td>2026-06-19</td><td class="desc-cell">Realtek High Definition Audio Driver 6.0.1.6730 contains an unquoted service path vulnerability that allows local attackers to escalate privileges by placing a malicious executable in the service path…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2016-20086" target="_blank" rel="noopener noreferrer">CVE-2016-20086</a></td><td><span class="score-badge high">7.8</span></td><td>2026-06-19</td><td class="desc-cell">Vembu StoreGrid 4.0 contains an unquoted service path vulnerability in the RemoteBackup and RemoteBackup_webServer services that allows local attackers to escalate privileges. Attackers can place a ma…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2016-20087" target="_blank" rel="noopener noreferrer">CVE-2016-20087</a></td><td><span class="score-badge high">7.8</span></td><td>2026-06-19</td><td class="desc-cell">Fortitude HTTP 1.0.4.0 contains an unquoted service path vulnerability that allows local users to execute arbitrary code with elevated privileges by exploiting the service binary path. Attackers can i…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2016-20088" target="_blank" rel="noopener noreferrer">CVE-2016-20088</a></td><td><span class="score-badge high">7.8</span></td><td>2026-06-19</td><td class="desc-cell">Comodo Chromodo Browser 52.15.25.664 contains an unquoted service path vulnerability in the ChromodoUpdater service that runs with SYSTEM privileges. A local attacker can insert a malicious executable…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2016-20089" target="_blank" rel="noopener noreferrer">CVE-2016-20089</a></td><td><span class="score-badge high">7.8</span></td><td>2026-06-19</td><td class="desc-cell">Iperius Remote 1.7.0 contains an unquoted service path vulnerability that allows local users to execute arbitrary code with SYSTEM privileges by exploiting the service installation path. When installe…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2016-20090" target="_blank" rel="noopener noreferrer">CVE-2016-20090</a></td><td><span class="score-badge high">7.8</span></td><td>2026-06-19</td><td class="desc-cell">Comodo Dragon Browser versions up to 52.15.25.663 contain a privilege escalation vulnerability in the DragonUpdater service due to an unquoted service path running with SYSTEM privileges. A local atta…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2016-20091" target="_blank" rel="noopener noreferrer">CVE-2016-20091</a></td><td><span class="score-badge high">7.8</span></td><td>2026-06-19</td><td class="desc-cell">Windows Firewall Control 4.8.6.0 contains an unquoted service path vulnerability that allows local attackers to escalate privileges by inserting malicious executables in the service path. Attackers ca…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2016-20092" target="_blank" rel="noopener noreferrer">CVE-2016-20092</a></td><td><span class="score-badge high">7.8</span></td><td>2026-06-19</td><td class="desc-cell">NetDrive 2.6.12 contains an unquoted service path vulnerability in the Netdrive2_Service_Netdrive2 service that allows local users to execute arbitrary code with SYSTEM privileges. Attackers can inser…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2016-20093" target="_blank" rel="noopener noreferrer">CVE-2016-20093</a></td><td><span class="score-badge high">7.8</span></td><td>2026-06-19</td><td class="desc-cell">Wise Care 365 4.27 and Wise Disk Cleaner 9.29 contain unquoted service path vulnerabilities in the WiseBootAssistant and SpyHunter 4 Service respectively, allowing local users to execute arbitrary cod…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2016-20094" target="_blank" rel="noopener noreferrer">CVE-2016-20094</a></td><td><span class="score-badge high">7.8</span></td><td>2026-06-19</td><td class="desc-cell">AnyDesk 2.5.0 contains an unquoted service path vulnerability that allows local users to execute arbitrary code with SYSTEM privileges by exploiting the service installation. Attackers can insert mali…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2016-20095" target="_blank" rel="noopener noreferrer">CVE-2016-20095</a></td><td><span class="score-badge high">7.8</span></td><td>2026-06-19</td><td class="desc-cell">Matrix42 Remote Control Host 3.20.0031 contains an unquoted service path vulnerability in the FastViewerRemoteService and FastViewerRemoteProxy services that allows local users to execute arbitrary co…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2019-25747" target="_blank" rel="noopener noreferrer">CVE-2019-25747</a></td><td><span class="score-badge high">7.8</span></td><td>2026-06-19</td><td class="desc-cell">Network Inventory Advisor 5.0.26.0 installs the niaservice service with an unquoted binary path that allows local attackers to escalate privileges by placing malicious executables in intermediate dire…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2020-37250" target="_blank" rel="noopener noreferrer">CVE-2020-37250</a></td><td><span class="score-badge high">7.8</span></td><td>2026-06-19</td><td class="desc-cell">TFTP Broadband 4.3.0.1465 contains an unquoted service path vulnerability in the tftpt.exe service binary that allows local attackers to execute arbitrary code with system privileges. Attackers can pl…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2020-37251" target="_blank" rel="noopener noreferrer">CVE-2020-37251</a></td><td><span class="score-badge high">7.8</span></td><td>2026-06-19</td><td class="desc-cell">RealTimes Desktop Service 18.1.4 contains an unquoted service path vulnerability in the rpdsvc.exe binary that allows local attackers to escalate privileges. Attackers can place malicious executables …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2020-37252" target="_blank" rel="noopener noreferrer">CVE-2020-37252</a></td><td><span class="score-badge high">7.8</span></td><td>2026-06-19</td><td class="desc-cell">Realtek Audio Service 1.0.0.55 contains an unquoted service path vulnerability in RtkAudioService64.exe that allows local attackers to escalate privileges by injecting malicious code. Attackers can pl…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2020-37253" target="_blank" rel="noopener noreferrer">CVE-2020-37253</a></td><td><span class="score-badge high">7.8</span></td><td>2026-06-19</td><td class="desc-cell">Winstep 18.06.0096 contains an unquoted service path vulnerability in the Winstep Xtreme Service that allows local attackers to escalate privileges. Attackers can place malicious executables in the Pr…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2020-37254" target="_blank" rel="noopener noreferrer">CVE-2020-37254</a></td><td><span class="score-badge high">7.8</span></td><td>2026-06-19</td><td class="desc-cell">Wondershare PDFelement 5.2.9 contains a privilege escalation vulnerability due to an unquoted service path in the WsAppService Windows service. Local attackers can place a malicious executable in the …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2021-47985" target="_blank" rel="noopener noreferrer">CVE-2021-47985</a></td><td><span class="score-badge high">7.8</span></td><td>2026-06-19</td><td class="desc-cell">Brother SAPSprint 7.60 contains an unquoted service path vulnerability in the SAPSprint service binary that allows local attackers to escalate privileges. Attackers can place a malicious executable in…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2022-50971" target="_blank" rel="noopener noreferrer">CVE-2022-50971</a></td><td><span class="score-badge high">7.8</span></td><td>2026-06-19</td><td class="desc-cell">Malwarebytes 4.5 contains an unquoted service path vulnerability in the MBAMService executable that allows local attackers to escalate privileges by injecting malicious code into the system root path.…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2023-54353" target="_blank" rel="noopener noreferrer">CVE-2023-54353</a></td><td><span class="score-badge high">7.8</span></td><td>2026-06-19</td><td class="desc-cell">Chromacam 4.0.3.0 contains an unquoted service path vulnerability in the PsyFrameGrabberService that allows local attackers to execute arbitrary code by placing malicious executables in unquoted path …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2025-71326" target="_blank" rel="noopener noreferrer">CVE-2025-71326</a></td><td><span class="score-badge high">7.8</span></td><td>2026-06-19</td><td class="desc-cell">AVAST Antivirus 25.11 contains an unquoted service path vulnerability in the SecureLine service that allows local non-privileged users to execute code with elevated SYSTEM privileges. Attackers can ex…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2017-20252" target="_blank" rel="noopener noreferrer">CVE-2017-20252</a></td><td><span class="score-badge high">8.2</span></td><td>2026-06-19</td><td class="desc-cell">Joomla NextGen Editor 2.1.0 contains an SQL injection vulnerability that allows unauthenticated attackers to execute arbitrary SQL commands through the plname parameter. Attackers can send GET request…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2017-20253" target="_blank" rel="noopener noreferrer">CVE-2017-20253</a></td><td><span class="score-badge high">8.2</span></td><td>2026-06-19</td><td class="desc-cell">Joomla! Component My Projects 2.0 contains an SQL injection vulnerability that allows unauthenticated attackers to execute arbitrary SQL queries by injecting malicious code through the VerAyari parame…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2017-20254" target="_blank" rel="noopener noreferrer">CVE-2017-20254</a></td><td><span class="score-badge high">8.2</span></td><td>2026-06-19</td><td class="desc-cell">Joomla! Component User Bench 1.0 contains an SQL injection vulnerability that allows unauthenticated attackers to execute arbitrary SQL queries by injecting malicious code through the userid parameter…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2017-20255" target="_blank" rel="noopener noreferrer">CVE-2017-20255</a></td><td><span class="score-badge high">8.2</span></td><td>2026-06-19</td><td class="desc-cell">Joomla! Component JB Visa 1.0 contains an SQL injection vulnerability that allows unauthenticated attackers to execute arbitrary SQL queries by injecting malicious code through the visatype parameter.…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2017-20256" target="_blank" rel="noopener noreferrer">CVE-2017-20256</a></td><td><span class="score-badge high">8.2</span></td><td>2026-06-19</td><td class="desc-cell">Joomla Survey Force Deluxe 3.2.4 contains an SQL injection vulnerability that allows unauthenticated attackers to execute arbitrary SQL queries by injecting malicious code through the invite parameter…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2017-20257" target="_blank" rel="noopener noreferrer">CVE-2017-20257</a></td><td><span class="score-badge high">8.2</span></td><td>2026-06-19</td><td class="desc-cell">Joomla! Component Quiz Deluxe 3.7.4 contains an SQL injection vulnerability that allows unauthenticated attackers to execute arbitrary SQL commands through the ajaxaction.flag_question task. Attackers…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2017-20258" target="_blank" rel="noopener noreferrer">CVE-2017-20258</a></td><td><span class="score-badge high">8.2</span></td><td>2026-06-19</td><td class="desc-cell">Joomla! Component RPC Responsive Portfolio 1.6.1 contains an SQL injection vulnerability that allows unauthenticated attackers to execute arbitrary SQL queries by injecting malicious code through the …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2017-20259" target="_blank" rel="noopener noreferrer">CVE-2017-20259</a></td><td><span class="score-badge high">8.2</span></td><td>2026-06-19</td><td class="desc-cell">Joomla OSDownloads 1.7.4 contains an SQL injection vulnerability that allows unauthenticated attackers to execute arbitrary SQL queries by injecting malicious code through the id parameter. Attackers …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2017-20260" target="_blank" rel="noopener noreferrer">CVE-2017-20260</a></td><td><span class="score-badge high">8.2</span></td><td>2026-06-19</td><td class="desc-cell">Joomla! Component Price Alert 3.0.2 contains an SQL injection vulnerability that allows unauthenticated attackers to execute arbitrary SQL queries by injecting malicious code through the product_id pa…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2017-20261" target="_blank" rel="noopener noreferrer">CVE-2017-20261</a></td><td><span class="score-badge high">8.2</span></td><td>2026-06-19</td><td class="desc-cell">Joomla! Component Bargain Product VM3 1.0 contains an SQL injection vulnerability that allows unauthenticated attackers to execute arbitrary SQL queries by injecting malicious code through the product…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2017-20262" target="_blank" rel="noopener noreferrer">CVE-2017-20262</a></td><td><span class="score-badge high">8.2</span></td><td>2026-06-19</td><td class="desc-cell">Joomla! Component Ajax Quiz 1.8 contains an SQL injection vulnerability that allows unauthenticated attackers to execute arbitrary SQL queries by injecting malicious code through the cid parameter. At…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2017-20263" target="_blank" rel="noopener noreferrer">CVE-2017-20263</a></td><td><span class="score-badge high">8.2</span></td><td>2026-06-19</td><td class="desc-cell">Joomla! Component FocalPoint Pro/Free 1.2.3 contains an SQL injection vulnerability that allows unauthenticated attackers to execute arbitrary SQL queries by injecting malicious code through the id pa…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2017-20264" target="_blank" rel="noopener noreferrer">CVE-2017-20264</a></td><td><span class="score-badge high">7.1</span></td><td>2026-06-19</td><td class="desc-cell">Joomla! Component Sponsor Wall 8.0 contains an SQL injection vulnerability that allows unauthenticated attackers to execute arbitrary SQL queries by injecting malicious code through the wallid paramet…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2017-20265" target="_blank" rel="noopener noreferrer">CVE-2017-20265</a></td><td><span class="score-badge high">7.1</span></td><td>2026-06-19</td><td class="desc-cell">Joomla! Component Flip Wall 8.0 contains an SQL injection vulnerability that allows unauthenticated attackers to execute arbitrary SQL queries by injecting malicious code through the wallid parameter.…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2017-20266" target="_blank" rel="noopener noreferrer">CVE-2017-20266</a></td><td><span class="score-badge high">8.2</span></td><td>2026-06-19</td><td class="desc-cell">Joomla SP Movie Database 1.3 contains an SQL injection vulnerability that allows unauthenticated attackers to execute arbitrary SQL queries by injecting malicious code through the searchword parameter…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2017-20267" target="_blank" rel="noopener noreferrer">CVE-2017-20267</a></td><td><span class="score-badge high">8.2</span></td><td>2026-06-19</td><td class="desc-cell">Joomla! Component Calendar Planner 1.0.1 contains an SQL injection vulnerability that allows unauthenticated attackers to inject SQL commands through the category_id parameter. Attackers can send GET …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2017-20268" target="_blank" rel="noopener noreferrer">CVE-2017-20268</a></td><td><span class="score-badge high">8.2</span></td><td>2026-06-19</td><td class="desc-cell">Joomla! Component Zap Calendar Lite 4.3.4 contains an SQL injection vulnerability that allows unauthenticated attackers to execute arbitrary SQL queries by injecting malicious code through the 'eid' p…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2017-20269" target="_blank" rel="noopener noreferrer">CVE-2017-20269</a></td><td><span class="score-badge high">8.2</span></td><td>2026-06-19</td><td class="desc-cell">Joomla! Component KissGallery 1.0.0 contains an SQL injection vulnerability that allows unauthenticated attackers to inject SQL commands through the component URL path. Attackers can supply malicious …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2017-20270" target="_blank" rel="noopener noreferrer">CVE-2017-20270</a></td><td><span class="score-badge high">8.2</span></td><td>2026-06-19</td><td class="desc-cell">Joomla! Component Twitch Tv 1.1 contains an SQL injection vulnerability that allows unauthenticated attackers to execute arbitrary SQL queries by injecting malicious code through the username and id p…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2017-20271" target="_blank" rel="noopener noreferrer">CVE-2017-20271</a></td><td><span class="score-badge high">8.2</span></td><td>2026-06-19</td><td class="desc-cell">Joomla StreetGuessr Game 1.1.8 contains an SQL injection vulnerability that allows unauthenticated attackers to execute arbitrary SQL queries by injecting malicious code through the catid parameter. A…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2017-20272" target="_blank" rel="noopener noreferrer">CVE-2017-20272</a></td><td><span class="score-badge high">8.2</span></td><td>2026-06-19</td><td class="desc-cell">Joomla Ultimate Property Listing 1.0.2 contains an SQL injection vulnerability that allows unauthenticated attackers to execute arbitrary SQL queries by injecting malicious code through the sf_selectu…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2017-20273" target="_blank" rel="noopener noreferrer">CVE-2017-20273</a></td><td><span class="score-badge high">8.2</span></td><td>2026-06-19</td><td class="desc-cell">Joomla Event Registration Pro Calendar 4.1.3 contains an SQL injection vulnerability that allows unauthenticated attackers to execute arbitrary SQL queries by injecting malicious code through the id p…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2017-20274" target="_blank" rel="noopener noreferrer">CVE-2017-20274</a></td><td><span class="score-badge high">8.2</span></td><td>2026-06-19</td><td class="desc-cell">Joomla LMS King Professional 3.2.4.0 contains an SQL injection vulnerability that allows unauthenticated attackers to manipulate database queries by injecting SQL code through the cp_id parameter. Att…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2017-20275" target="_blank" rel="noopener noreferrer">CVE-2017-20275</a></td><td><span class="score-badge high">8.2</span></td><td>2026-06-19</td><td class="desc-cell">Joomla! Component PHP-Bridge 1.2.3 contains an SQL injection vulnerability that allows unauthenticated attackers to execute arbitrary SQL queries by injecting malicious code through the id parameter. …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2017-20276" target="_blank" rel="noopener noreferrer">CVE-2017-20276</a></td><td><span class="score-badge high">8.2</span></td><td>2026-06-19</td><td class="desc-cell">Joomla! Component SIMGenealogy 2.1.5 contains an SQL injection vulnerability that allows unauthenticated attackers to manipulate database queries by injecting SQL code through the type parameter. Atta…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2017-20277" target="_blank" rel="noopener noreferrer">CVE-2017-20277</a></td><td><span class="score-badge high">8.2</span></td><td>2026-06-19</td><td class="desc-cell">Joomla JoomRecipe 1.0.4 component contains a blind SQL injection vulnerability in the search_author parameter on the search results page. Attackers can inject SQL code through POST requests to the sea…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2017-20278" target="_blank" rel="noopener noreferrer">CVE-2017-20278</a></td><td><span class="score-badge high">8.2</span></td><td>2026-06-19</td><td class="desc-cell">Joomla Component JoomRecipe 1.0.3 contains an SQL injection vulnerability that allows unauthenticated attackers to manipulate database queries by injecting SQL code through the category parameter. Att…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2017-20279" target="_blank" rel="noopener noreferrer">CVE-2017-20279</a></td><td><span class="score-badge high">8.2</span></td><td>2026-06-19</td><td class="desc-cell">Joomla Payage 2.05 contains an SQL injection vulnerability that allows unauthenticated attackers to manipulate database queries by injecting SQL code through the aid parameter. Attackers can send GET …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2017-20280" target="_blank" rel="noopener noreferrer">CVE-2017-20280</a></td><td><span class="score-badge high">8.2</span></td><td>2026-06-19</td><td class="desc-cell">Joomla Component Myportfolio 3.0.2 contains an SQL injection vulnerability that allows unauthenticated attackers to manipulate database queries by injecting SQL code through the pid parameter. Attacke…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2017-20281" target="_blank" rel="noopener noreferrer">CVE-2017-20281</a></td><td><span class="score-badge high">8.2</span></td><td>2026-06-19</td><td class="desc-cell">Joomla! Component Extra Search 2.2.8 contains an SQL injection vulnerability that allows unauthenticated attackers to manipulate database queries by injecting SQL code through the establename paramete…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2017-20282" target="_blank" rel="noopener noreferrer">CVE-2017-20282</a></td><td><span class="score-badge high">8.2</span></td><td>2026-06-19</td><td class="desc-cell">Joomla! Component jCart for OpenCart 2.0 contains an SQL injection vulnerability that allows unauthenticated attackers to manipulate database queries by injecting SQL code through the product_id param…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2019-25748" target="_blank" rel="noopener noreferrer">CVE-2019-25748</a></td><td><span class="score-badge high">8.2</span></td><td>2026-06-19</td><td class="desc-cell">Joomla JHotelReservation 6.0.7 contains an SQL injection vulnerability that allows unauthenticated attackers to execute arbitrary SQL queries by injecting malicious code through the rooms parameter. A…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-3195" target="_blank" rel="noopener noreferrer">CVE-2026-3195</a></td><td><span class="score-badge high">7.4</span></td><td>2026-06-19</td><td class="desc-cell">A flaw was found in QEMU. When reading input audio in the virtio-snd device input callback, the `virtio_snd_pcm_in_cb` function did not check whether the iov could fit the data buffer, potentially lea…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-49260" target="_blank" rel="noopener noreferrer">CVE-2026-49260</a></td><td><span class="score-badge high">8.2</span></td><td>2026-06-19</td><td class="desc-cell">PhpWeasyPrint is a PHP library allowing PDF generation from a URL or an HTML page. Prior to version 2.5.1, `pontedilana/php-weasyprint` builds the shell command for WeasyPrint by passing the binary pa…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-56208" target="_blank" rel="noopener noreferrer">CVE-2026-56208</a></td><td><span class="score-badge high">7.6</span></td><td>2026-06-19</td><td class="desc-cell">A heap buffer overflow vulnerability was found in libaom, the reference AV1 codec implementation. A flaw in the AV1 encoder's Look-Ahead Processing (LAP) mode causes the first-pass stats ring buffer w…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-56209" target="_blank" rel="noopener noreferrer">CVE-2026-56209</a></td><td><span class="score-badge high">7.1</span></td><td>2026-06-19</td><td class="desc-cell">An arbitrary address write vulnerability was found in libaom, the reference AV1 codec implementation. A missing bounds check in the SVC (Scalable Video Coding) layer ID control function allows an atta…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-56210" target="_blank" rel="noopener noreferrer">CVE-2026-56210</a></td><td><span class="score-badge high">7.1</span></td><td>2026-06-19</td><td class="desc-cell">A heap-buffer-overflow read vulnerability was found in libaom, the reference AV1 codec implementation. A missing bounds check in the SVC (Scalable Video Coding) layer ID control function allows settin…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-56211" target="_blank" rel="noopener noreferrer">CVE-2026-56211</a></td><td><span class="score-badge high">7.1</span></td><td>2026-06-19</td><td class="desc-cell">A remote code execution vulnerability was found in libaom, the reference AV1 codec implementation. Insufficient bounds validation in the AV1 encoder's SVC (Scalable Video Coding) layer ID control allo…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2019-25749" target="_blank" rel="noopener noreferrer">CVE-2019-25749</a></td><td><span class="score-badge high">7.1</span></td><td>2026-06-19</td><td class="desc-cell">Joomla J-CruisePortal 6.0.4 contains an SQL injection vulnerability that allows authenticated attackers to execute arbitrary SQL queries by injecting malicious code through the guest_adult parameter. …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2019-25750" target="_blank" rel="noopener noreferrer">CVE-2019-25750</a></td><td><span class="score-badge high">8.2</span></td><td>2026-06-19</td><td class="desc-cell">Joomla Component J-MultipleHotelReservation 6.0.7 contains an SQL injection vulnerability that allows unauthenticated attackers to execute arbitrary SQL queries by injecting malicious code through the…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2019-25751" target="_blank" rel="noopener noreferrer">CVE-2019-25751</a></td><td><span class="score-badge high">8.2</span></td><td>2026-06-19</td><td class="desc-cell">Joomla Component J-ClassifiedsManager 3.0.5 contains an SQL injection vulnerability that allows unauthenticated attackers to execute arbitrary SQL queries by injecting malicious code through POST para…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2019-25752" target="_blank" rel="noopener noreferrer">CVE-2019-25752</a></td><td><span class="score-badge high">8.2</span></td><td>2026-06-19</td><td class="desc-cell">Joomla! Component J-BusinessDirectory 4.9.7 contains an SQL injection vulnerability that allows unauthenticated attackers to execute arbitrary SQL queries by injecting malicious code through the type …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2019-25753" target="_blank" rel="noopener noreferrer">CVE-2019-25753</a></td><td><span class="score-badge high">8.2</span></td><td>2026-06-19</td><td class="desc-cell">Joomla! Component VMap 1.9.6 contains an SQL injection vulnerability that allows unauthenticated attackers to execute arbitrary SQL queries by injecting malicious code into the latlngbound parameter. …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2019-25754" target="_blank" rel="noopener noreferrer">CVE-2019-25754</a></td><td><span class="score-badge high">8.2</span></td><td>2026-06-19</td><td class="desc-cell">Joomla Component vRestaurant 1.9.4 contains an SQL injection vulnerability that allows unauthenticated attackers to execute arbitrary SQL queries by injecting malicious code through the keysearch para…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2019-25755" target="_blank" rel="noopener noreferrer">CVE-2019-25755</a></td><td><span class="score-badge high">8.2</span></td><td>2026-06-19</td><td class="desc-cell">Joomla Component vReview 1.9.11 contains an SQL injection vulnerability that allows unauthenticated attackers to execute arbitrary SQL queries by injecting malicious code through the cmId parameter. A…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2019-25756" target="_blank" rel="noopener noreferrer">CVE-2019-25756</a></td><td><span class="score-badge high">8.2</span></td><td>2026-06-19</td><td class="desc-cell">Joomla! Component vAccount 2.0.2 contains an SQL injection vulnerability that allows unauthenticated attackers to execute arbitrary SQL queries by injecting malicious code through the vid parameter. A…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2019-25757" target="_blank" rel="noopener noreferrer">CVE-2019-25757</a></td><td><span class="score-badge high">7.1</span></td><td>2026-06-19</td><td class="desc-cell">Joomla vWishlist 1.0.1 contains an SQL injection vulnerability that allows authenticated attackers to execute arbitrary SQL queries by injecting malicious code through the vproductid and userid parame…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2019-25758" target="_blank" rel="noopener noreferrer">CVE-2019-25758</a></td><td><span class="score-badge high">8.8</span></td><td>2026-06-19</td><td class="desc-cell">Joomla! Component vBizz 1.0.7 contains an unrestricted file upload vulnerability that allows authenticated attackers to upload arbitrary PHP files by submitting malicious files through the profile_pic…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2019-25759" target="_blank" rel="noopener noreferrer">CVE-2019-25759</a></td><td><span class="score-badge high">7.1</span></td><td>2026-06-19</td><td class="desc-cell">Joomla! Component vBizz 1.0.7 contains an SQL injection vulnerability that allows authenticated attackers to execute arbitrary SQL queries by injecting malicious code through the payid parameter. Atta…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2019-25761" target="_blank" rel="noopener noreferrer">CVE-2019-25761</a></td><td><span class="score-badge high">7.1</span></td><td>2026-06-19</td><td class="desc-cell">Joomla! Component JoomCRM 1.1.1 contains an SQL injection vulnerability that allows authenticated attackers to execute arbitrary SQL queries by injecting malicious code through the deal_id parameter. …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2019-25762" target="_blank" rel="noopener noreferrer">CVE-2019-25762</a></td><td><span class="score-badge high">7.5</span></td><td>2026-06-19</td><td class="desc-cell">Joomla! Component JoomProject 1.1.3.2 contains an information disclosure vulnerability that allows unauthenticated attackers to access sensitive user data by exploiting the projects endpoint. Attacker…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-49286" target="_blank" rel="noopener noreferrer">CVE-2026-49286</a></td><td><span class="score-badge high">8.1</span></td><td>2026-06-19</td><td class="desc-cell">PhpWeasyPrint is a PHP library allowing PDF generation from a URL or an HTML page. Prior to version 2.6.0, `pontedilana/php-weasyprint` guarded the output filename against the `phar://` stream wrapper…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-49287" target="_blank" rel="noopener noreferrer">CVE-2026-49287</a></td><td><span class="score-badge high">7.4</span></td><td>2026-06-19</td><td class="desc-cell">Statamic is a Laravel and Git powered content management system (CMS). Prior to 5.73.23 and 6.20.0, the fix for CVE-2026-41175 was incomplete. It addressed the issue in the query builder, but the same…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2023-54357" target="_blank" rel="noopener noreferrer">CVE-2023-54357</a></td><td><span class="score-badge high">7.5</span></td><td>2026-06-19</td><td class="desc-cell">Joomla com_booking component 2.4.9 contains an information disclosure vulnerability that allows unauthenticated attackers to enumerate user accounts by exploiting the getUserData function in the custo…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-49291" target="_blank" rel="noopener noreferrer">CVE-2026-49291</a></td><td><span class="score-badge high">8.1</span></td><td>2026-06-19</td><td class="desc-cell">mcp-memory-service is a semantic memory layer for AI applications. Prior to version 10.65.3, the HTTP MCP JSON-RPC endpoint at `/mcp` requires only OAuth `read` scope for all requests, then dispatches…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-49293" target="_blank" rel="noopener noreferrer">CVE-2026-49293</a></td><td><span class="score-badge high">7.5</span></td><td>2026-06-19</td><td class="desc-cell">js-toml is a TOML parser for JavaScript, fully compliant with the TOML 1.0.0 Spec. Versions up to and including 1.1.0 parse hexadecimal / octal / binary integer literals via a hand-written `parseBigIn…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-49338" target="_blank" rel="noopener noreferrer">CVE-2026-49338</a></td><td><span class="score-badge high">7.1</span></td><td>2026-06-19</td><td class="desc-cell">gonic is a music streaming server / free-software subsonic server API implementation. Prior to version 0.21.0, the Subsonic API endpoints `/rest/deletePlaylist.view` and `/rest/getPlaylist.view` perfo…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-49339" target="_blank" rel="noopener noreferrer">CVE-2026-49339</a></td><td><span class="score-badge high">7.1</span></td><td>2026-06-19</td><td class="desc-cell">gonic is a music streaming server / free-software subsonic server API implementation. The maintainer's fix in  commit `6dd71e6a3c966867ef8c900d359a7df75789f410` added an ownership check based on `play…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-49340" target="_blank" rel="noopener noreferrer">CVE-2026-49340</a></td><td><span class="score-badge high">8.1</span></td><td>2026-06-19</td><td class="desc-cell">gonic is a music streaming server / free-software subsonic server API implementation. Prior to version 0.21.0, a logic error in `ServeCreateOrUpdatePlaylist` allows any authenticated Subsonic user (in…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-9375" target="_blank" rel="noopener noreferrer">CVE-2026-9375</a></td><td><span class="score-badge high">7.5</span></td><td>2026-06-19</td><td class="desc-cell">urllib3 version 2.6.3 is vulnerable to a decompression bomb bypass in its streaming API (`preload_content=False`) when using Brotli support. The issue arises due to three independent code paths in `re…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-48772" target="_blank" rel="noopener noreferrer">CVE-2026-48772</a></td><td><span class="score-badge critical">10.0</span></td><td>2026-06-19</td><td class="desc-cell">ProxySQL is a proxy for MySQL and its forks, as well as PostgreSQL. In versions 2.0.0 through 3.0.8, the ProxySQL MySQL frontend accepts the `PROXY UNKNOWN <addr> <addr> <port> <port>\r\n` PP1 frame a…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-48773" target="_blank" rel="noopener noreferrer">CVE-2026-48773</a></td><td><span class="score-badge critical">9.8</span></td><td>2026-06-19</td><td class="desc-cell">ProxySQL is a proxy for MySQL and its forks, as well as PostgreSQL. Versions 2.0.18 through 3.0.8 have a pre-authentication heap memory corruption vulnerability in the MySQL and PostgreSQL protocol fi…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-48774" target="_blank" rel="noopener noreferrer">CVE-2026-48774</a></td><td><span class="score-badge high">7.5</span></td><td>2026-06-19</td><td class="desc-cell">ProxySQL is a proxy for MySQL and its forks, as well as PostgreSQL. In versions 3.0.0 through 3.0.8, ProxySQL's GenAI/MCP `run_sql_readonly` tool violates its documented read-only contract for MySQL t…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-32208" target="_blank" rel="noopener noreferrer">CVE-2026-32208</a></td><td><span class="score-badge high">8.8</span></td><td>2026-06-19</td><td class="desc-cell">Improper neutralization of input during web page generation ('cross-site scripting') in Microsoft Edge (Chromium-based) allows an authorized attacker to perform spoofing over a network.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-45480" target="_blank" rel="noopener noreferrer">CVE-2026-45480</a></td><td><span class="score-badge critical">10.0</span></td><td>2026-06-19</td><td class="desc-cell">Improper authentication in Azure Active Directory allows an unauthorized attacker to elevate privileges over a network.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-47645" target="_blank" rel="noopener noreferrer">CVE-2026-47645</a></td><td><span class="score-badge high">8.8</span></td><td>2026-06-19</td><td class="desc-cell">Url redirection to untrusted site ('open redirect') in Microsoft 365 Copilot's Business Chat allows an unauthorized attacker to elevate privileges over a network.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-48582" target="_blank" rel="noopener noreferrer">CVE-2026-48582</a></td><td><span class="score-badge critical">9.6</span></td><td>2026-06-19</td><td class="desc-cell">Missing authorization in Microsoft Exchange Online allows an authorized attacker to elevate privileges over a network.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-48584" target="_blank" rel="noopener noreferrer">CVE-2026-48584</a></td><td><span class="score-badge critical">9.9</span></td><td>2026-06-19</td><td class="desc-cell">Execution with unnecessary privileges in Azure Synapse allows an authorized attacker to elevate privileges over a network.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-49295" target="_blank" rel="noopener noreferrer">CVE-2026-49295</a></td><td><span class="score-badge high">7.1</span></td><td>2026-06-19</td><td class="desc-cell">libde265 is an open source implementation of the h.265 video codec. Prior to version 1.0.20, a crafted H.265 bitstream can cause an out-of-bounds array write in `decoder_context::process_reference_pic…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-49346" target="_blank" rel="noopener noreferrer">CVE-2026-49346</a></td><td><span class="score-badge high">7.1</span></td><td>2026-06-19</td><td class="desc-cell">libde265 is an open source implementation of the h.265 video codec. Prior to version 1.1.0, a crafted H.265 bitstream with large SPS dimensions and 16-bit bit depth causes a signed integer overflow in…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-50559" target="_blank" rel="noopener noreferrer">CVE-2026-50559</a></td><td><span class="score-badge high">7.5</span></td><td>2026-06-19</td><td class="desc-cell">Quarkus is a Java framework for building cloud-native applications. Prior to versions 3.37.0, 3.36.3, 3.33.2.1, 3.33.3, 3.27.4.1, 3.27.5, and 3.20.6.2, Quarkus HTTP path-based authorization policies c…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-56073" target="_blank" rel="noopener noreferrer">CVE-2026-56073</a></td><td><span class="score-badge critical">9.4</span></td><td>2026-06-19</td><td class="desc-cell">Cap-go before 12.128.2 contains an authentication bypass vulnerability in OTP verification that allows attackers to bypass email verification by modifying server responses. Attackers can intercept OTP…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-56081" target="_blank" rel="noopener noreferrer">CVE-2026-56081</a></td><td><span class="score-badge critical">9.1</span></td><td>2026-06-19</td><td class="desc-cell">Cap-go before 12.128.2 contains an authentication logic flaw that lets an attacker register and control an account bound to a victim's email address before that email is verified. By enabling two-fact…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-56082" target="_blank" rel="noopener noreferrer">CVE-2026-56082</a></td><td><span class="score-badge high">7.5</span></td><td>2026-06-19</td><td class="desc-cell">Capgo (Cap-go/capgo) before 12.128.2 contains an improper access control vulnerability in the SECURITY DEFINER PostgREST RPC function public.record_build_time, which is granted to the anon role and ca…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-11551" target="_blank" rel="noopener noreferrer">CVE-2026-11551</a></td><td><span class="score-badge critical">9.8</span></td><td>2026-06-20</td><td class="desc-cell">The Branda plugin for WordPress is vulnerable to privilege escalation via account takeover in all versions up to, and including, 3.4.29. This is due to the plugin not properly validating a user's iden…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-56214" target="_blank" rel="noopener noreferrer">CVE-2026-56214</a></td><td><span class="score-badge high">7.5</span></td><td>2026-06-20</td><td class="desc-cell">Capgo before 12.128.2 contains an information disclosure vulnerability in Supabase PostgREST RPC endpoints is_trial_org and is_paying_org that allows unauthenticated attackers to enumerate organizatio…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-56215" target="_blank" rel="noopener noreferrer">CVE-2026-56215</a></td><td><span class="score-badge high">8.3</span></td><td>2026-06-20</td><td class="desc-cell">Capgo before 12.128.12 allows authenticated users to modify their mutable public.users.email to arbitrary addresses, which the SSO provisioning endpoint trusts as an account-merge key. Attackers can p…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-56216" target="_blank" rel="noopener noreferrer">CVE-2026-56216</a></td><td><span class="score-badge high">8.8</span></td><td>2026-06-20</td><td class="desc-cell">Capgo before 12.128.2 contains a scope escalation vulnerability in the POST /functions/v1/apikey endpoint that allows app-limited API keys to mint unrestricted keys by setting empty limits. Attackers …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-9843" target="_blank" rel="noopener noreferrer">CVE-2026-9843</a></td><td><span class="score-badge high">8.1</span></td><td>2026-06-20</td><td class="desc-cell">The Database for Contact Form 7, WPforms, Elementor forms plugin for WordPress is vulnerable to arbitrary file deletion due to insufficient file path validation in the view_page function in all versio…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-11911" target="_blank" rel="noopener noreferrer">CVE-2026-11911</a></td><td><span class="score-badge high">7.5</span></td><td>2026-06-20</td><td class="desc-cell">The Simple File List plugin for WordPress is vulnerable to arbitrary file deletion due to insufficient file path validation in the eeSFL_DeleteFile function in all versions up to, and including, 6.3.7…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-11912" target="_blank" rel="noopener noreferrer">CVE-2026-11912</a></td><td><span class="score-badge high">7.5</span></td><td>2026-06-20</td><td class="desc-cell">The Simple File List plugin for WordPress is vulnerable to arbitrary file modification due to insufficient authorization checks in all versions up to, and including, 6.3.7. This makes it possible for …</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">CISA KEV — 4 new entries (last 7 days)</div>
+    <div class="table-wrapper">
+      <table id="kev-table">
+        <thead>
+          <tr>
+            <th onclick="sortTable('kev-table',0)" data-col="0">CVE ID <span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable('kev-table',1)" data-col="1">Vendor / Product <span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable('kev-table',2)" data-col="2">Date Added <span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable('kev-table',3)" data-col="3">Due Date <span class="sort-icon">&#8597;</span></th>
+            <th>Ransomware</th>
+          </tr>
+        </thead>
+        <tbody>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-20253" target="_blank" rel="noopener noreferrer">CVE-2026-20253</a></td><td>Splunk / Enterprise</td><td>2026-06-18</td><td>2026-06-21</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-48907" target="_blank" rel="noopener noreferrer">CVE-2026-48907</a></td><td>Widget Factory / Joomla Content Editor </td><td>2026-06-16</td><td>2026-06-19</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-54420" target="_blank" rel="noopener noreferrer">CVE-2026-54420</a></td><td>LiteSpeed / cPanel Plugin</td><td>2026-06-15</td><td>2026-06-18</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-20262" target="_blank" rel="noopener noreferrer">CVE-2026-20262</a></td><td>Cisco / Catalyst SD-WAN Manager</td><td>2026-06-15</td><td>2026-06-29</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>
+    Data sources: &nbsp;
+    <a href="https://nvd.nist.gov/" target="_blank" rel="noopener noreferrer">NVD (National Vulnerability Database)</a>
+    &nbsp;&bull;&nbsp;
+    <a href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank" rel="noopener noreferrer">CISA Known Exploited Vulnerabilities Catalog</a>
+    <br><br>
+    Generated by Vulnerability Intelligence Pipeline &bull; 2026-06-20T10:31:55Z
+  </footer>
+</div>
+
+<script>
+const sortState = {};
+function sortTable(tableId, col) {
+  const table = document.getElementById(tableId);
+  const tbody = table.querySelector('tbody');
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+  const key = tableId + ':' + col;
+  const asc = sortState[key] !== true;
+  sortState[key] = asc;
+
+  // Update sort icons
+  table.querySelectorAll('th').forEach((th, i) => {
+    th.classList.toggle('sorted', i === col);
+    const icon = th.querySelector('.sort-icon');
+    if (icon) icon.textContent = i === col ? (asc ? '↑' : '↓') : '⇅';
+  });
+
+  rows.sort((a, b) => {
+    const aText = (a.cells[col] ? a.cells[col].textContent : '').trim();
+    const bText = (b.cells[col] ? b.cells[col].textContent : '').trim();
+    const aNum = parseFloat(aText);
+    const bNum = parseFloat(bText);
+    if (!isNaN(aNum) && !isNaN(bNum)) return asc ? aNum - bNum : bNum - aNum;
+    return asc ? aText.localeCompare(bText) : bText.localeCompare(aText);
+  });
+
+  rows.forEach(r => tbody.appendChild(r));
+}
+</script>
+
+</body>
+</html>
