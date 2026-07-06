@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vulnerability Intelligence Report — 2026-07-06</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #22263a;
+    --border: #2d3148;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --accent: #6366f1;
+    --critical: #dc2626;
+    --high: #ea580c;
+    --medium: #ca8a04;
+    --success: #16a34a;
+  }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace; line-height: 1.6; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* Header */
+  .header { background: linear-gradient(135deg, #1a1d27 0%, #0f1117 100%); border-bottom: 1px solid var(--border); padding: 24px 32px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+  .header-left h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: 0.01em; color: #f1f5f9; }
+  .header-left h1 span { color: var(--accent); }
+  .header-meta { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
+  .risk-badge { display: inline-flex; align-items: center; gap: 6px; padding: 8px 20px; border-radius: 9999px; font-weight: 700; font-size: 0.95rem; letter-spacing: 0.05em; text-transform: uppercase; background: #dc262622; color: #dc2626; border: 2px solid #dc2626; }
+  .risk-dot { width: 8px; height: 8px; border-radius: 50%; background: #dc2626; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  /* Layout */
+  .container { max-width: 1400px; margin: 0 auto; padding: 32px; }
+
+  /* KPI cards */
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 32px; }
+  .kpi-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; }
+  .kpi-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 8px; }
+  .kpi-value { font-size: 2.5rem; font-weight: 700; line-height: 1; color: #f1f5f9; }
+  .kpi-value.danger { color: var(--critical); }
+  .kpi-value.warn { color: var(--high); }
+  .kpi-sub { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+
+  /* Sections */
+  .section { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 24px; }
+  .section-title { font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+  .section p { color: var(--text-muted); line-height: 1.8; }
+
+  /* Action list */
+  .action-list { padding-left: 20px; }
+  .action-list li { color: var(--text-muted); margin-bottom: 10px; padding-left: 4px; line-height: 1.7; }
+  .action-list li::marker { color: var(--accent); font-weight: 700; }
+  .empty-msg { color: var(--text-muted); font-style: italic; }
+
+  /* Tables */
+  .table-wrapper { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+  th { background: var(--surface2); padding: 10px 14px; text-align: left; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); border-bottom: 1px solid var(--border); cursor: pointer; user-select: none; white-space: nowrap; }
+  th:hover { color: var(--text); }
+  th .sort-icon { margin-left: 4px; opacity: 0.4; }
+  th.sorted .sort-icon { opacity: 1; color: var(--accent); }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface2); }
+  .empty-row { text-align: center; color: var(--text-muted); font-style: italic; padding: 24px; }
+  .desc-cell { max-width: 500px; color: var(--text-muted); font-size: 0.8rem; }
+
+  /* Score badges */
+  .score-badge { display: inline-block; padding: 2px 8px; border-radius: 6px; font-weight: 700; font-size: 0.8rem; }
+  .score-badge.critical { background: #dc262622; color: #dc2626; border: 1px solid #dc262644; }
+  .score-badge.high { background: #ea580c22; color: #ea580c; border: 1px solid #ea580c44; }
+  .score-badge.medium { background: #ca8a0422; color: #ca8a04; border: 1px solid #ca8a0444; }
+
+  /* Misc badges */
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
+  .ransomware-known { background: #dc262622; color: #dc2626; border: 1px solid #dc262644; }
+  .ransomware-unknown { background: #37415122; color: #94a3b8; border: 1px solid #37415144; }
+  .cve-link { color: var(--accent); font-family: monospace; }
+
+  /* Warning */
+  .warning-box { background: #78350f22; border: 1px solid #92400e; border-radius: 8px; padding: 16px; margin-bottom: 24px; color: #fbbf24; font-size: 0.875rem; }
+  .warning-box ul { padding-left: 16px; margin-top: 8px; }
+
+  /* Footer */
+  footer { margin-top: 48px; padding: 24px 0; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); font-size: 0.8rem; }
+  footer a { color: var(--text-muted); }
+  footer a:hover { color: var(--text); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <h1>Vulnerability <span>Intelligence</span> Report</h1>
+    <div class="header-meta">Date: 2026-07-06 &nbsp;|&nbsp; Generated: 2026-07-06T12:03:56Z</div>
+  </div>
+  <div class="risk-badge">
+    <span class="risk-dot"></span>
+    Critical Risk
+  </div>
+</div>
+
+<div class="container">
+  
+        <div class="warning-box">
+            <strong>Pipeline Warnings:</strong>
+            <ul><li>summarizer failed: Error code: 404 - {'type': 'error', 'error': {'type': 'not_found_error', 'message': 'model: claude-sonnet-4-20250514'}, 'request_id': 'req_011CckmiZBQFSLRxXSa5gWKL'}</li></ul>
+        </div>
+
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">Total CVEs Found</div>
+      <div class="kpi-value danger">31</div>
+      <div class="kpi-sub">CVSS &ge; 7.0 in last 24h</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">CVSS Avg Score</div>
+      <div class="kpi-value warn">7.6</div>
+      <div class="kpi-sub">across all found CVEs</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">KEV New Entries</div>
+      <div class="kpi-value warn">2</div>
+      <div class="kpi-sub">added in last 7 days</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">KEV Due This Week</div>
+      <div class="kpi-value ">0</div>
+      <div class="kpi-sub">remediation deadlines</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Executive Summary</div>
+    <p>No summary available.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Risk Narrative</div>
+    <p>No risk narrative available.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Prioritized Action Items</div>
+    <p class='empty-msg'>No action items available.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">High Severity CVEs — 31 found (CVSS &ge; 7.0)</div>
+    <div class="table-wrapper">
+      <table id="cve-table">
+        <thead>
+          <tr>
+            <th onclick="sortTable('cve-table',0)" data-col="0">CVE ID <span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable('cve-table',1)" data-col="1">CVSS <span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable('cve-table',2)" data-col="2">Published <span class="sort-icon">&#8597;</span></th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-14743" target="_blank" rel="noopener noreferrer">CVE-2026-14743</a></td><td><span class="score-badge high">7.3</span></td><td>2026-07-05</td><td class="desc-cell">A vulnerability was identified in code-projects Real State Services 1.0. The impacted element is an unknown function of the file /normalHomeSale.php. Such manipulation of the argument loc leads to sql…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-14744" target="_blank" rel="noopener noreferrer">CVE-2026-14744</a></td><td><span class="score-badge high">7.3</span></td><td>2026-07-05</td><td class="desc-cell">A security flaw has been discovered in code-projects Real State Services 1.0. This affects an unknown function of the file /normalHomeRent.php. Performing a manipulation of the argument loc results in…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-14745" target="_blank" rel="noopener noreferrer">CVE-2026-14745</a></td><td><span class="score-badge high">7.3</span></td><td>2026-07-05</td><td class="desc-cell">A weakness has been identified in code-projects Real State Services 1.0. This impacts an unknown function of the file /single-list_rent.php. Executing a manipulation of the argument ID can lead to sql…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-14746" target="_blank" rel="noopener noreferrer">CVE-2026-14746</a></td><td><span class="score-badge high">7.3</span></td><td>2026-07-05</td><td class="desc-cell">A security vulnerability has been detected in code-projects Real State Services 1.0. Affected is an unknown function of the file /addprojectrent.php. The manipulation of the argument amen leads to sql…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-14747" target="_blank" rel="noopener noreferrer">CVE-2026-14747</a></td><td><span class="score-badge high">7.3</span></td><td>2026-07-05</td><td class="desc-cell">A vulnerability was detected in code-projects Real State Services 1.0. Affected by this vulnerability is an unknown functionality of the file /addprojectsale.php. The manipulation of the argument amen…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-14749" target="_blank" rel="noopener noreferrer">CVE-2026-14749</a></td><td><span class="score-badge high">7.3</span></td><td>2026-07-05</td><td class="desc-cell">A vulnerability was identified in mjperpinosa stumasy up to 327d1b0f2915ba79d7ef8ebb74553e987609d9be. Impacted is the function eval of the file application/pages/imba_calculator/calculate.php. The man…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-14750" target="_blank" rel="noopener noreferrer">CVE-2026-14750</a></td><td><span class="score-badge high">7.3</span></td><td>2026-07-05</td><td class="desc-cell">A security flaw has been discovered in mjperpinosa stumasy up to 327d1b0f2915ba79d7ef8ebb74553e987609d9be. The affected element is the function Notes_controller::accessing_dictionary_authorization of …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-14753" target="_blank" rel="noopener noreferrer">CVE-2026-14753</a></td><td><span class="score-badge high">7.3</span></td><td>2026-07-05</td><td class="desc-cell">A vulnerability was detected in mjperpinosa stumasy up to 327d1b0f2915ba79d7ef8ebb74553e987609d9be. This impacts an unknown function of the file /PHP/objects/notes of the component Note Handler/Assign…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-14754" target="_blank" rel="noopener noreferrer">CVE-2026-14754</a></td><td><span class="score-badge high">7.3</span></td><td>2026-07-05</td><td class="desc-cell">A flaw has been found in code-projects Hotel and Tourism Reservation 1.0. Affected is an unknown function of the file /admin/add_room.php. Executing a manipulation of the argument delete_image/edit/de…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-12250" target="_blank" rel="noopener noreferrer">CVE-2026-12250</a></td><td><span class="score-badge high">7.9</span></td><td>2026-07-05</td><td class="desc-cell">Invocation of process using visible sensitive information vulnerability in TUBITAK BILGEM Software Technologies Research Institute Pardus Domain Joiner allows Excavation.
+
+This issue affects Pardus Do…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-14755" target="_blank" rel="noopener noreferrer">CVE-2026-14755</a></td><td><span class="score-badge high">7.3</span></td><td>2026-07-05</td><td class="desc-cell">A vulnerability has been found in code-projects Hotel and Tourism Reservation 1.0. Affected by this vulnerability is an unknown functionality of the file /admin/reservations.php of the component Reser…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-14756" target="_blank" rel="noopener noreferrer">CVE-2026-14756</a></td><td><span class="score-badge high">7.3</span></td><td>2026-07-05</td><td class="desc-cell">A vulnerability was found in code-projects Hotel and Tourism Reservation 1.0. Affected by this issue is some unknown functionality of the file /admin/add_tour.php of the component Tour Management Page…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-6509" target="_blank" rel="noopener noreferrer">CVE-2026-6509</a></td><td><span class="score-badge high">7.8</span></td><td>2026-07-05</td><td class="desc-cell">Missing Authorization vulnerability in TUBITAK BILGEM Software Technologies Research Institute Pardus Update allows Privilege Escalation.
+
+This issue affects Pardus Update: from <=0.6.3 before 0.6.6.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-9085" target="_blank" rel="noopener noreferrer">CVE-2026-9085</a></td><td><span class="score-badge high">8.8</span></td><td>2026-07-05</td><td class="desc-cell">Incorrect Permission Assignment for Critical Resource, Improper Access Control vulnerability in TUBITAK BILGEM Software Technologies Research Institute Pardus-Parental-Control allows DNS Spoofing.
+
+Th…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-14762" target="_blank" rel="noopener noreferrer">CVE-2026-14762</a></td><td><span class="score-badge high">7.3</span></td><td>2026-07-05</td><td class="desc-cell">A vulnerability was detected in code-projects Hotel and Tourism Reservation 1.0. The impacted element is an unknown function of the file /admin/rooms.php of the component Room Management Page. The man…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-14763" target="_blank" rel="noopener noreferrer">CVE-2026-14763</a></td><td><span class="score-badge high">7.3</span></td><td>2026-07-05</td><td class="desc-cell">A flaw has been found in code-projects Hotel and Tourism Reservation 1.0. This affects an unknown function of the file /admin/tour_reserves.php of the component Tour Reservations Page. This manipulati…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-14764" target="_blank" rel="noopener noreferrer">CVE-2026-14764</a></td><td><span class="score-badge high">7.3</span></td><td>2026-07-05</td><td class="desc-cell">A vulnerability has been found in code-projects Hotel and Tourism Reservation 1.0. This impacts an unknown function of the file /admin/add_event.php of the component Event Management Page. Such manipu…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-14768" target="_blank" rel="noopener noreferrer">CVE-2026-14768</a></td><td><span class="score-badge high">7.3</span></td><td>2026-07-05</td><td class="desc-cell">A weakness has been identified in code-projects Real State Services 1.0. This vulnerability affects unknown code of the file /builderHome.php. This manipulation of the argument loc causes sql injectio…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-14769" target="_blank" rel="noopener noreferrer">CVE-2026-14769</a></td><td><span class="score-badge high">7.3</span></td><td>2026-07-05</td><td class="desc-cell">A security vulnerability has been detected in code-projects Real State Services 1.0. This issue affects some unknown processing of the file /pay.php. Such manipulation of the argument Bankname leads t…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-14770" target="_blank" rel="noopener noreferrer">CVE-2026-14770</a></td><td><span class="score-badge high">7.3</span></td><td>2026-07-05</td><td class="desc-cell">A vulnerability was detected in SourceCodester Class and Exam Timetabling System 1.0. Impacted is an unknown function of the file /edit_room.php. Performing a manipulation of the argument ID results i…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-14771" target="_blank" rel="noopener noreferrer">CVE-2026-14771</a></td><td><span class="score-badge high">7.3</span></td><td>2026-07-05</td><td class="desc-cell">A flaw has been found in SourceCodester Class and Exam Timetabling System 1.0/1.php. The affected element is an unknown function of the file /edit_exam1.php. Executing a manipulation of the argument I…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-14772" target="_blank" rel="noopener noreferrer">CVE-2026-14772</a></td><td><span class="score-badge high">7.3</span></td><td>2026-07-05</td><td class="desc-cell">A vulnerability has been found in SourceCodester Class and Exam Timetabling System 1.0/1.php. The impacted element is an unknown function of the file /edit_course1.php. The manipulation of the argumen…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-14778" target="_blank" rel="noopener noreferrer">CVE-2026-14778</a></td><td><span class="score-badge high">7.3</span></td><td>2026-07-06</td><td class="desc-cell">A security vulnerability has been detected in SourceCodester Onlne Examination & Learning Management System 1.0. This affects an unknown part of the file /ajax_enroll.php of the component Enrollment M…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-14802" target="_blank" rel="noopener noreferrer">CVE-2026-14802</a></td><td><span class="score-badge high">7.3</span></td><td>2026-07-06</td><td class="desc-cell">A vulnerability was detected in react create-react-app up to 5.0.1 on macOS. This affects the function startBrowserProcess of the file openBrowser.js of the component react-dev-utils. Performing a man…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-14807" target="_blank" rel="noopener noreferrer">CVE-2026-14807</a></td><td><span class="score-badge critical">9.8</span></td><td>2026-07-06</td><td class="desc-cell">ERP App developed by PROG MIS has a Use of Hard-coded Credentials vulnerability, allowing unauthenticated remote attackers to log in to view application code and obtain the database account and passwo…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-14808" target="_blank" rel="noopener noreferrer">CVE-2026-14808</a></td><td><span class="score-badge critical">9.8</span></td><td>2026-07-06</td><td class="desc-cell">Prog
+  Management System developed by PROG MIS has a Exposure of Sensitive
+  Information vulnerability, allowing unauthenticated remote attackers to view
+  a specific page and obtain the database acco…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-14809" target="_blank" rel="noopener noreferrer">CVE-2026-14809</a></td><td><span class="score-badge high">7.5</span></td><td>2026-07-06</td><td class="desc-cell">Prog Management System developed by PROG MIS has a SQL Injection vulnerability, allowing unauthenticated remote attackers to inject arbitrary SQL commands to read database contents.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-9165" target="_blank" rel="noopener noreferrer">CVE-2026-9165</a></td><td><span class="score-badge high">7.7</span></td><td>2026-07-06</td><td class="desc-cell">A flaw was found in Red Hat Advanced Cluster Security for Kubernetes (RHACS). Central does not limit the depth of GraphQL queries served on the authenticated GraphQL API. An authenticated user with a …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-4249" target="_blank" rel="noopener noreferrer">CVE-2026-4249</a></td><td><span class="score-badge high">8.6</span></td><td>2026-07-06</td><td class="desc-cell">The throttling event handling mechanism in multiple WSO2 products accepts user-supplied JSON payloads without sufficient validation of their structure and content. This allows an unauthenticated remot…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-6900" target="_blank" rel="noopener noreferrer">CVE-2026-6900</a></td><td><span class="score-badge high">7.4</span></td><td>2026-07-06</td><td class="desc-cell">Improper certificate validation vulnerability in B&R Industrial Automation GmbH APROL.
+
+This issue affects APROL: before R 4.4-01P5.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-6901" target="_blank" rel="noopener noreferrer">CVE-2026-6901</a></td><td><span class="score-badge high">7.7</span></td><td>2026-07-06</td><td class="desc-cell">Untrusted Search Path vulnerability in B&R Industrial Automation GmbH APROL.
+
+This issue affects APROL: before R 4.4-01P5.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">CISA KEV — 2 new entries (last 7 days)</div>
+    <div class="table-wrapper">
+      <table id="kev-table">
+        <thead>
+          <tr>
+            <th onclick="sortTable('kev-table',0)" data-col="0">CVE ID <span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable('kev-table',1)" data-col="1">Vendor / Product <span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable('kev-table',2)" data-col="2">Date Added <span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable('kev-table',3)" data-col="3">Due Date <span class="sort-icon">&#8597;</span></th>
+            <th>Ransomware</th>
+          </tr>
+        </thead>
+        <tbody>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-45659" target="_blank" rel="noopener noreferrer">CVE-2026-45659</a></td><td>Microsoft / SharePoint Server</td><td>2026-07-01</td><td>2026-07-04</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-48558" target="_blank" rel="noopener noreferrer">CVE-2026-48558</a></td><td>SimpleHelp  / SimpleHelp</td><td>2026-06-29</td><td>2026-07-02</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>
+    Data sources: &nbsp;
+    <a href="https://nvd.nist.gov/" target="_blank" rel="noopener noreferrer">NVD (National Vulnerability Database)</a>
+    &nbsp;&bull;&nbsp;
+    <a href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank" rel="noopener noreferrer">CISA Known Exploited Vulnerabilities Catalog</a>
+    <br><br>
+    Generated by Vulnerability Intelligence Pipeline &bull; 2026-07-06T12:03:56Z
+  </footer>
+</div>
+
+<script>
+const sortState = {};
+function sortTable(tableId, col) {
+  const table = document.getElementById(tableId);
+  const tbody = table.querySelector('tbody');
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+  const key = tableId + ':' + col;
+  const asc = sortState[key] !== true;
+  sortState[key] = asc;
+
+  // Update sort icons
+  table.querySelectorAll('th').forEach((th, i) => {
+    th.classList.toggle('sorted', i === col);
+    const icon = th.querySelector('.sort-icon');
+    if (icon) icon.textContent = i === col ? (asc ? '↑' : '↓') : '⇅';
+  });
+
+  rows.sort((a, b) => {
+    const aText = (a.cells[col] ? a.cells[col].textContent : '').trim();
+    const bText = (b.cells[col] ? b.cells[col].textContent : '').trim();
+    const aNum = parseFloat(aText);
+    const bNum = parseFloat(bText);
+    if (!isNaN(aNum) && !isNaN(bNum)) return asc ? aNum - bNum : bNum - aNum;
+    return asc ? aText.localeCompare(bText) : bText.localeCompare(aText);
+  });
+
+  rows.forEach(r => tbody.appendChild(r));
+}
+</script>
+
+</body>
+</html>
