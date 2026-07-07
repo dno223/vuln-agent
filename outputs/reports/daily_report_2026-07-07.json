@@ -1,0 +1,439 @@
+{
+  "run_date": "2026-07-07",
+  "run_timestamp": "2026-07-07T10:54:08Z",
+  "high_severity_cves": [
+    {
+      "cve_id": "CVE-2026-46587",
+      "description": "Improper Input Validation vulnerability in Apache Camel.\n\nThis issue affects Apache Camel: through 4.14.7, from 4.15.0 through 4.18.2, from 4.19.0 through 4.20.0.\n\nUsers are recommended to upgrade to version 4.14.8, 4.18.3, 4.21.0, which fixes the issue.",
+      "cvss_score": 7.3,
+      "published_date": "2026-07-06T11:16:28.677"
+    },
+    {
+      "cve_id": "CVE-2026-46588",
+      "description": "Improper Input Validation vulnerability in Apache Camel.\n\nThis issue affects Apache Camel: through 4.14.7, from 4.15.0 through 4.18.2, from 4.19.0 through 4.20.0.\n\nUsers are recommended to upgrade to version 4.14.8, 4.18.3, 4.21.0, which fixes the issue.",
+      "cvss_score": 7.3,
+      "published_date": "2026-07-06T11:16:28.777"
+    },
+    {
+      "cve_id": "CVE-2026-49042",
+      "description": "Improper Input Validation vulnerability in Apache Camel.\n\nThis issue affects Apache Camel: from 4.8.0 through 4.18.2, from 4.19.0 through 4.20.0.\n\nUsers are recommended to upgrade to version 4.18.3, 4.21.0, which fixes the issue.",
+      "cvss_score": 7.3,
+      "published_date": "2026-07-06T11:16:29.607"
+    },
+    {
+      "cve_id": "CVE-2026-49297",
+      "description": "Apache Airflow's Google provider operators `GCSToSFTPOperator` and `GCSTimeSpanFileTransformOperator` joined GCS object names returned by the bucket listing API directly to a destination filesystem path without normalisation or containment check. A user with write access to the source GCS bucket (typically a different trust principal than the DAG author \u2014 partner uploads, ingest-only service accounts, public-data buckets) could create an object whose name contains `..` segments and cause the DAG run to write the downloaded blob outside the configured destination (the SFTP `destination_path` for `GCSToSFTPOperator`; the worker-local temp directory for `GCSTimeSpanFileTransformOperator`), enabling overwrite of arbitrary files on the SFTP server or the worker host. Affects deployments that ingest from buckets writable by less-trusted principals. Users are advised to upgrade to `apache-airflow-providers-google` 22.2.1 or later.",
+      "cvss_score": 8.1,
+      "published_date": "2026-07-06T11:16:30.207"
+    },
+    {
+      "cve_id": "CVE-2026-4249",
+      "description": "The throttling event handling mechanism in multiple WSO2 products accepts user-supplied JSON payloads without sufficient validation of their structure and content. This allows an unauthenticated remote attacker to inject malicious JSON data that can lead to a persistent denial of service condition.\n\nSuccessful exploitation of this vulnerability can disrupt the API Gateway, preventing legitimate API traffic from being processed and impacting complete service availability. The denial of service is persistent, requiring manual intervention to restore normal operations.",
+      "cvss_score": 8.6,
+      "published_date": "2026-07-06T11:16:30.433"
+    },
+    {
+      "cve_id": "CVE-2026-6900",
+      "description": "Improper certificate validation vulnerability in B&R Industrial Automation GmbH APROL.\n\nThis issue affects APROL: before R 4.4-01P5.",
+      "cvss_score": 7.4,
+      "published_date": "2026-07-06T11:16:31.297"
+    },
+    {
+      "cve_id": "CVE-2026-6901",
+      "description": "Untrusted Search Path vulnerability in B&R Industrial Automation GmbH APROL.\n\nThis issue affects APROL: before R 4.4-01P5.",
+      "cvss_score": 7.7,
+      "published_date": "2026-07-06T11:16:31.433"
+    },
+    {
+      "cve_id": "CVE-2026-13705",
+      "description": "Imager versions before 1.032 for Perl have a heap out-of-bounds read in the bundled Imager::File::SGI reader via a 16-bit RLE literal run in read_rgb_16_rle.\n\nread_rgb_16_rle guards each literal run with if (count > data_left), but count is a pixel count while every 16-bit sample consumes two bytes. The copy loop reads inp[0] * 256 + inp[1] and advances two bytes per pixel, so a run with data_left / 2 < count <= data_left passes the guard yet consumes 2 * count bytes and reads past the end of the buffer. The 8-bit path is unaffected because there one pixel is one byte.\n\nReading a crafted SGI image through Imager->read triggers the over-read before the parser rejects the malformed image, which can crash the process.",
+      "cvss_score": 7.1,
+      "published_date": "2026-07-06T13:16:32.447"
+    },
+    {
+      "cve_id": "CVE-2026-13708",
+      "description": "Imager::File::JPEG versions before 1.003 for Perl leak heap memory when reading a JPEG with repeated APP13 markers in i_readjpeg_wiol.\n\ni_readjpeg_wiol walks the marker list libjpeg returns and, for each APP13 marker, allocates a new buffer with *iptc_itext = mymalloc(...) and overwrites the previous pointer without freeing it. Only the final payload is later turned into a Perl scalar and freed, so a JPEG with N such markers leaks the first N-1 payloads on every read.\n\nIn a long-lived process, such as an upload or thumbnailing service, repeated reads accumulate these leaks and exhaust available memory, a denial of service.\n\nThe same handler ships bundled in the Imager distribution, where versions before 1.032 are affected and the fix ships in 1.032.",
+      "cvss_score": 7.5,
+      "published_date": "2026-07-06T13:16:32.567"
+    },
+    {
+      "cve_id": "CVE-2026-58380",
+      "description": "A flaw was found in GIMP's PNM file format parser. When parsing a specially crafted PNM file, the pnmscanner_gettoken() function writes a null terminator one byte past the end of a stack-allocated buffer due to an off-by-one error in the loop boundary check. This could lead to memory corruption, potentially resulting in denial of service or arbitrary code execution.",
+      "cvss_score": 7.3,
+      "published_date": "2026-07-06T15:16:40.020"
+    },
+    {
+      "cve_id": "CVE-2025-53827",
+      "description": "ownCloud Core is the server-side component of the file storage, synchronization, and sharing application ownCloud Classic. In versions prior to 10.15.3, the Updater on ownCloud 10 before 10.15.3 has an exposed dangerous method or function. Attackers with administrative privileges may leverage functionality to execute arbitrary code. This issue has been fixed in version 10.15.3.",
+      "cvss_score": 9.1,
+      "published_date": "2026-07-06T16:16:26.740"
+    },
+    {
+      "cve_id": "CVE-2025-53828",
+      "description": "SharePoint for ownCloud is an application for using SharePoint with the file storage, synchronization, and sharing application ownCloud Classic. In SharePoint for ownCloud prior to version 0.4.1, which corresponds to ownCloud 10 prior to 10.15.3, an attacker with administrative privileges can use a SSRF vulnerability in the SharePoint app to execute arbitrary code on the system. Upgrade ownCloud 10 to version 10.15.3 or later to receive SharePoint for ownCloud 0.4.1, the fixed version.",
+      "cvss_score": 8.5,
+      "published_date": "2026-07-06T16:16:26.903"
+    },
+    {
+      "cve_id": "CVE-2025-53829",
+      "description": "ownCloud is a file storage, synchronization, and sharing application. In ownCloud 10 prior to version 10.15.3, an attacker with administrative privileges can exploit a path traversal vulnerability in the system to execute arbitrary code. Upgrade ownCloud 10 to version 10.15.3 or later to receive a patch.",
+      "cvss_score": 8.0,
+      "published_date": "2026-07-06T16:16:27.033"
+    },
+    {
+      "cve_id": "CVE-2025-53830",
+      "description": "Anti-Virus for ownCloud is an anti-virus application for file storage, synchronization, and sharing application ownCloud. Versions of Anti-Virus for ownCloud before 1.2.3 are vulnerable to Server-Side Request Forgery (SSRF). This corresponds to versions of ownCloud 10 prior to 10.15.3. Upgrade ownCloud 10 to version 10.15.3 or later or upgrade Anti-Virus for ownCloud 10 to version 1.2.3 or later to receive a fix.",
+      "cvss_score": 9.1,
+      "published_date": "2026-07-06T16:16:27.157"
+    },
+    {
+      "cve_id": "CVE-2026-59194",
+      "description": "pnpm is a package manager. Prior to 10.34.4 and 11.7.0, a crafted patch entry could resolve outside the configured patches directory and cause pnpm patch-remove to delete an arbitrary reachable file. This vulnerability is fixed in 10.34.4 and 11.7.0.",
+      "cvss_score": 7.1,
+      "published_date": "2026-07-06T16:16:37.550"
+    },
+    {
+      "cve_id": "CVE-2026-59195",
+      "description": "pnpm is a package manager. Prior to 10.34.4 and 11.8.0, pnpm accepts package names from the env lockfile configDependencies section and uses those names directly when creating config dependency symlinks under node_modules/.pnpm-config. A malicious repository can commit a crafted pnpm-lock.yaml whose env-lockfile document contains a traversal-shaped config dependency name. During pnpm install, pnpm installs the config dependency and creates a symlink at a path derived from that name. This vulnerability is fixed in 10.34.4 and 11.8.0.",
+      "cvss_score": 8.2,
+      "published_date": "2026-07-06T16:16:37.683"
+    },
+    {
+      "cve_id": "CVE-2026-59196",
+      "description": "pnpm is a package manager. Prior to 10.34.4 and 11.7.0, a crafted lockfile alias could be joined directly under a hoisted node_modules directory. Traversal aliases could escape that directory, while reserved aliases such as .bin or .pnpm could overwrite pnpm-owned layout.  This vulnerability is fixed in 10.34.4 and 11.7.0.",
+      "cvss_score": 7.1,
+      "published_date": "2026-07-06T16:16:37.810"
+    },
+    {
+      "cve_id": "CVE-2026-5268",
+      "description": "An authentication bypass vulnerability exists in\nthe default SFTP server component utilized across the Ciena products listed. This vulnerability allows a remote, unauthenticated attacker to bypass\nsecurity controls and gain unauthorized access to the underlying filesystem.\nSuccessful exploitation could allow an attacker to read or modify system files.",
+      "cvss_score": 9.1,
+      "published_date": "2026-07-06T16:16:38.433"
+    },
+    {
+      "cve_id": "CVE-2025-53831",
+      "description": "DrawIO for ownCloud is an application for using DrawIO with the file storage, synchronization, and sharing application ownCloud Classic. In DrawIO for ownCloud prior to version 1.0.2, which corresponds to ownCloud 10 prior to version 10.15.3, attackers with access to the DrawIO app can leverage improper neutralization of input during web page generation to achieve stored XSS. Upgrade ownCloud 10 to version 10.15.3 or later or upgrade DrawIO for ownCloud 10 to version 1.0.2 or later to receive a patch.",
+      "cvss_score": 8.2,
+      "published_date": "2026-07-06T17:16:26.870"
+    },
+    {
+      "cve_id": "CVE-2026-43825",
+      "description": "Untrusted Java Deserialization in Apache OpenNLP SvmDoccatModel\n\nVersions Affected:\n\u00a0 before 3.0.0-M4 (libsvm document categorization module; introduced in\n\u00a0 OPENNLP-1808 and only present on the 3.x line)\n\nDescription:\nSvmDoccatModel.deserialize(InputStream) reads an attacker-controlled\nstream with java.io.ObjectInputStream and calls readObject() without an\nObjectInputFilter installed. ObjectInputStream materialises every class\nreferenced in the stream before the resulting object is cast to\nSvmDoccatModel, so the cast that follows readObject() executes only\nafter the foreign object graph has already been deserialised in full.\n\nIf a Java deserialization gadget chain is available on the consumer's\nclasspath, a crafted payload supplied to\ndeserialize() executes arbitrary code in the JVM that loads it. Apache\nOpenNLP itself does not ship a known gadget chain, so the realistic\nrisk is to downstream applications that embed the libsvm module\nalongside vulnerable transitive dependencies. The method is public and\nstatic, so any caller can pass an untrusted stream to it directly.\n\nThe practical impact is remote code execution against processes that\nload SvmDoccatModel instances from untrusted or semi-trusted origins.\n\nMitigation:\n\n3.x users should upgrade to 3.0.0-M4.\n\nUsers who cannot upgrade immediately should treat all serialized\nSvmDoccatModel streams as untrusted input unless their provenance is\nverified, and should avoid invoking SvmDoccatModel.deserialize() on\nstreams supplied by end users or fetched from third-party sources\nwithout integrity checks.",
+      "cvss_score": 7.3,
+      "published_date": "2026-07-06T17:16:31.570"
+    },
+    {
+      "cve_id": "CVE-2026-48316",
+      "description": "ColdFusion versions 2025.9, 2023.20 and earlier are affected by an Improper Input Validation vulnerability that could result in arbitrary code execution in the context of the current user. Exploitation of this issue does not require user interaction. Scope is changed.",
+      "cvss_score": 10.0,
+      "published_date": "2026-07-06T17:16:32.010"
+    },
+    {
+      "cve_id": "CVE-2026-48614",
+      "description": "An improper authorization vulnerability in the Plesk XML API allows an authenticated user to inject arbitrary configuration directives, resulting in arbitrary file write as root and full privilege escalation on the underlying server.",
+      "cvss_score": 9.9,
+      "published_date": "2026-07-06T18:16:46.130"
+    },
+    {
+      "cve_id": "CVE-2026-13753",
+      "description": "A missing authorization vulnerability exists in the embedded webserver of HP Deskjet 2800 Series Printers running firmware version <=TBP1CN2612AR. An unauthenticated attacker with network access can send GET requests to multiple exposed administrative API endpoints and retrieve sensitive configuration data such as plaintext Wi\u2011Fi Direct credentials, unique device identity information, and other administrative security state details. When accessed through the web interface, these setting pages explicitly require administrator credentials before sensitive information is displayed.",
+      "cvss_score": 7.5,
+      "published_date": "2026-07-06T19:16:55.963"
+    },
+    {
+      "cve_id": "CVE-2026-54059",
+      "description": "Pillow is a Python imaging library. Prior to 12.3.0, PIL/PcfFontFile.py _load_bitmaps() read glyph dimensions from the PCF METRICS section and passed them directly to Image.frombytes() without calling Image._decompression_bomb_check(), allowing crafted PCF font data to cause excessive memory allocation. This issue is fixed in version 12.3.0.",
+      "cvss_score": 7.5,
+      "published_date": "2026-07-06T19:17:08.127"
+    },
+    {
+      "cve_id": "CVE-2026-54060",
+      "description": "Pillow is a Python imaging library. Prior to 12.3.0, PIL/FontFile.py FontFile.compile() assembled per-glyph images into a combined bitmap with Image.new(\"1\", (xsize, ysize)) without calling Image._decompression_bomb_check(), allowing a font to trigger excessive allocation during conversion or saving. This issue is fixed in version 12.3.0.",
+      "cvss_score": 7.5,
+      "published_date": "2026-07-06T19:17:08.270"
+    },
+    {
+      "cve_id": "CVE-2026-55379",
+      "description": "Pillow is a Python imaging library. Prior to 12.3.0, PIL/BdfFontFile.py bdf_char() read the BBX width and height field from a BDF font file and passed attacker-controlled dimensions to Image.new() without calling Image._decompression_bomb_check(), bypassing Pillow's documented decompression bomb protection and allowing excessive memory allocation. This issue is fixed in version 12.3.0.",
+      "cvss_score": 7.5,
+      "published_date": "2026-07-06T19:17:08.577"
+    },
+    {
+      "cve_id": "CVE-2026-55380",
+      "description": "Pillow is a Python imaging library. Prior to 12.3.0, PIL/GdImageFile.py GdImageFile._open() read image dimensions from the GD 2.x header and stored them in self._size without calling Image._decompression_bomb_check(), allowing a crafted .gd file to trigger excessive C-heap allocation when loaded. This issue is fixed in version 12.3.0.",
+      "cvss_score": 7.5,
+      "published_date": "2026-07-06T19:17:08.703"
+    },
+    {
+      "cve_id": "CVE-2026-9181",
+      "description": "ArcGIS Server contains a directory traversal vulnerability.  An unauthenticated attacker could exploit this issue by sending crafted path parameters.  Successful exploitation could allow access to sensitive files on the system. This issue impacts all versions of ArcGIS Server 12.0 and prior.",
+      "cvss_score": 9.8,
+      "published_date": "2026-07-06T19:17:09.553"
+    },
+    {
+      "cve_id": "CVE-2026-14468",
+      "description": "HashiCorp Terraform Enterprise contained an issue in its version control system (VCS) ingestion of registry modules that did not correctly enforce the intended boundary on packaged module content. This may allow an authenticated user to include files from outside the intended repository content in a module and then download them, potentially exposing sensitive files readable by the ingestion process. This vulnerability, CVE-2026-14468, is fixed in Terraform Enterprise v2.0.4 and v1.2.4.",
+      "cvss_score": 7.7,
+      "published_date": "2026-07-06T21:16:53.000"
+    },
+    {
+      "cve_id": "CVE-2026-14471",
+      "description": "Improper Neutralization of Special Elements in the metrics-service retention policy management component in Amazon mcp-gateway-registry before 1.0.13 might allow an authenticated remote user to execute arbitrary SQL queries via a crafted table_name value that is interpolated into SQL statements in identifier position.\n\n\n\nTo remediate this issue, users should upgrade to version 1.0.13 or later.",
+      "cvss_score": 8.1,
+      "published_date": "2026-07-06T21:16:53.123"
+    },
+    {
+      "cve_id": "CVE-2026-21379",
+      "description": "Memory Corruption when allocating memory with sizes that exceed the maximum allowed value.",
+      "cvss_score": 7.8,
+      "published_date": "2026-07-06T21:16:53.850"
+    },
+    {
+      "cve_id": "CVE-2026-21383",
+      "description": "Cryptographic Issue when using a static initialization vector for AES-GCM key wrapping, which requires a unique value for each call to ensure security.",
+      "cvss_score": 7.1,
+      "published_date": "2026-07-06T21:16:53.973"
+    },
+    {
+      "cve_id": "CVE-2026-25268",
+      "description": "Memory Corruption when processing invalid HT40 channel layouts during dynamic channel switching operations.",
+      "cvss_score": 8.8,
+      "published_date": "2026-07-06T21:16:54.730"
+    },
+    {
+      "cve_id": "CVE-2026-25271",
+      "description": "Memory Corruption when processing asynchronous input parameters due to improper handling of modified values between check and use.",
+      "cvss_score": 7.8,
+      "published_date": "2026-07-06T21:16:54.903"
+    },
+    {
+      "cve_id": "CVE-2026-34038",
+      "description": "Coolify is an open-source and self-hostable tool for managing servers, applications, and databases. Prior to 4.0.0-beta.469, an authenticated remote command injection vulnerability in application deployment handling allows users with application write permissions to achieve remote code execution and exfiltrate sensitive environment variables through deployment logs via fields such as dockerfile_location and deployment commands. This issue is fixed in version 4.0.0-beta.469.",
+      "cvss_score": 9.9,
+      "published_date": "2026-07-06T21:16:55.370"
+    },
+    {
+      "cve_id": "CVE-2026-54234",
+      "description": "vLLM is a high-throughput and memory-efficient inference and serving engine for LLMs. Prior to 0.24.0, a frontend-legal multi-request speculative decoding workload can cause the rejection sampler to produce a recovered token equal to the model vocabulary size boundary value, which is then converted to negative one when the engine selects the next live token for a request and is written back into the drafter's input ids; that out-of-vocabulary value is later consumed by the model's embedding and attention path and crashes the engine worker with a GPU device-side assertion. The same triggering request sequence is reachable through the public gRPC Generate and Abort endpoints, so a remote client that can send generation requests can crash the shared engine worker, aborting concurrent requests and causing a service-wide denial of service for other clients of the deployment until the worker is restarted. This issue is fixed in version 0.24.0.",
+      "cvss_score": 7.5,
+      "published_date": "2026-07-06T21:16:56.477"
+    },
+    {
+      "cve_id": "CVE-2026-55727",
+      "description": "A flaw in the authentication mechanism for video stream requests in Genetec Security Center 5.14.0.0 prior to build 5.14.178.18 may allow an unauthenticated attacker to access live video streams.",
+      "cvss_score": 7.5,
+      "published_date": "2026-07-06T21:16:57.580"
+    },
+    {
+      "cve_id": "CVE-2026-57571",
+      "description": "Crawl4AI is an open-source LLM-friendly web crawler and scraper. Prior to 0.9.0, when the crawler saves a downloaded file, the destination filename was taken from attacker-influenced input and joined to the downloads directory with no confinement. A filename containing an absolute path or traversal escaped the downloads directory, giving an arbitrary file write with attacker-controlled contents; the HTTP crawler path uses the response Content-Disposition filename and the browser crawler path uses the download's suggested filename. Because the written bytes are attacker-controlled, this can escalate to remote code execution. This issue is fixed in version 0.9.0.",
+      "cvss_score": 9.6,
+      "published_date": "2026-07-06T21:16:57.907"
+    },
+    {
+      "cve_id": "CVE-2026-57572",
+      "description": "Crawl4AI is an open-source LLM-friendly web crawler and scraper. Prior to 0.9.0, the Docker API server accepted request-supplied browser_config.extra_args, which flowed into Chromium's launch arguments. An attacker could inject Chromium switches that replace a child-process launch command together with --no-zygote, causing Chromium to fork or exec an attacker-controlled command as the container's runtime user. The Docker API is unauthenticated by default, so a single request yields arbitrary command execution. This issue is fixed in version 0.9.0.",
+      "cvss_score": 10.0,
+      "published_date": "2026-07-06T21:16:58.047"
+    },
+    {
+      "cve_id": "CVE-2026-57573",
+      "description": "Crawl4AI is an open-source LLM-friendly web crawler and scraper. Prior to 0.9.0, the Docker API server applied its SSRF destination check on the non-streaming /crawl path but not on the streaming path. handle_stream_crawl_request passed seed URLs straight to the crawler with no destination validation, allowing a remote unauthenticated client to call POST /crawl/stream or POST /crawl with crawler_config.stream=true with a URL pointing at an internal, private, or link-local address; the server fetched it and streamed the response body back. This issue is fixed in version 0.9.0.",
+      "cvss_score": 8.6,
+      "published_date": "2026-07-06T21:16:58.197"
+    },
+    {
+      "cve_id": "CVE-2026-59712",
+      "description": "Leantime's Users::getUser method in the JSON-RPC API lacks proper authorization checks, allowing authenticated users to retrieve full user credential rows including password hashes, TOTP secrets, and session tokens. Attackers can exploit this by calling users.getUser with arbitrary user IDs to enumerate all accounts and obtain credentials for offline password cracking, 2FA bypass, and session hijacking.",
+      "cvss_score": 8.1,
+      "published_date": "2026-07-06T21:16:58.793"
+    },
+    {
+      "cve_id": "CVE-2026-59713",
+      "description": "Leantime contains an OIDC login CSRF vulnerability in the verifyState() method that unconditionally returns true without validating state parameters. Attackers can craft malicious callback URLs with attacker-controlled authorization codes to perform session fixation, logging victims in as the attacker.",
+      "cvss_score": 8.1,
+      "published_date": "2026-07-06T21:16:58.930"
+    },
+    {
+      "cve_id": "CVE-2026-34153",
+      "description": "Coolify is an open-source and self-hostable tool for managing servers, applications, and databases. Prior to 4.0.0-beta.471, LocalFileVolume::saveStorageOnServer builds shell commands using unescaped fs_path and parent_dir values before validation, and submitFileStorage does not validate the user-controlled file-mount path before creating a volume, allowing an authenticated user who can add file storage to execute commands when the storage is saved. This issue is fixed in version 4.0.0-beta.471.",
+      "cvss_score": 8.8,
+      "published_date": "2026-07-06T22:16:48.370"
+    },
+    {
+      "cve_id": "CVE-2026-34599",
+      "description": "Coolify is an open-source and self-hostable tool for managing servers, applications, and databases. Prior to 4.0.0-beta.471, there is an authenticated command injection vulnerability in the GetLogs Livewire component which allows users with team membership (lowest privilege member role) to execute arbitrary commands as root on managed servers. The $container Livewire public property is interpolated directly into shell commands (docker logs, docker service logs) without sanitization, and can be modified by any client via the Livewire wire protocol because it lacks the #[Locked] attribute. This issue is fixed in version 4.0.0-beta.471.",
+      "cvss_score": 8.8,
+      "published_date": "2026-07-06T22:16:48.623"
+    },
+    {
+      "cve_id": "CVE-2026-42153",
+      "description": "Coolify is an open-source and self-hostable tool for managing servers, applications, and databases. Prior to 4.0.0-beta.474, PostgreSQL healthcheck command generation used attacker-controlled database settings (postgres_user and postgres_db) in shell-form commands, allowing an authenticated user to inject commands executed in the database container. This issue is fixed in version 4.0.0-beta.474.",
+      "cvss_score": 8.8,
+      "published_date": "2026-07-06T22:16:49.383"
+    },
+    {
+      "cve_id": "CVE-2026-42204",
+      "description": "Coolify is an open-source and self-hostable tool for managing servers, applications, and databases. From 4.0.0-beta.471 through 4.0.0-beta.473, a regression in SHELL_SAFE_COMMAND_PATTERN allowed ampersands in custom Docker Compose build, start, and pre/post-deployment command fields, allowing an authenticated team member to inject shell commands that execute on the host. This issue is fixed in version 4.0.0-beta.474.",
+      "cvss_score": 8.8,
+      "published_date": "2026-07-06T22:16:49.510"
+    },
+    {
+      "cve_id": "CVE-2026-34034",
+      "description": "Coolify is an open-source and self-hostable tool for managing servers, applications, and databases. Prior to 4.0.0-beta.466, the sentinel_token setting is used in shell commands without sufficient validation, allowing an authenticated user with access to server Sentinel settings to inject shell syntax and execute commands on the host when Sentinel is restarted. This issue is fixed in version 4.0.0-beta.466.",
+      "cvss_score": 8.8,
+      "published_date": "2026-07-07T04:17:47.603"
+    },
+    {
+      "cve_id": "CVE-2026-34035",
+      "description": "Coolify is an open-source and self-hostable tool for managing servers, applications, and databases. Prior to 4.0.0-beta.466, log drain secret and environment values were interpolated into shell commands without sufficient encoding, allowing an authenticated user to inject commands executed on the host. This issue is fixed in version 4.0.0-beta.466.",
+      "cvss_score": 8.8,
+      "published_date": "2026-07-07T04:17:47.873"
+    },
+    {
+      "cve_id": "CVE-2026-34037",
+      "description": "Coolify is an open-source and self-hostable tool for managing servers, applications, and databases. Prior to 4.0.0-beta.464, the cloneTo() Livewire action in ResourceOperations.php authorizes the source resource but resolves destination resources with unscoped Eloquent lookups, allowing an authenticated user to clone resources into destinations owned by other teams and access cross-tenant resources. This issue is fixed in version 4.0.0-beta.464.",
+      "cvss_score": 9.9,
+      "published_date": "2026-07-07T04:17:48.020"
+    },
+    {
+      "cve_id": "CVE-2026-34044",
+      "description": "Coolify is an open-source and self-hostable tool for managing servers, applications, and databases. Prior to 4.0.0-beta.466, the Logs::mount() component looks up resources by UUID without scoping the lookup to the current team, allowing an authenticated user to access logs for applications owned by other teams by supplying a victim resource UUID. This issue is fixed in version 4.0.0-beta.466.",
+      "cvss_score": 7.7,
+      "published_date": "2026-07-07T04:17:48.153"
+    },
+    {
+      "cve_id": "CVE-2026-34047",
+      "description": "Coolify is an open-source and self-hostable tool for managing servers, applications, and databases. Prior to 4.0.0-beta.471, terminal WebSocket bootstrap routes did not enforce the expected authorization middleware, allowing an authenticated user to access terminal functionality for resources outside the authorized scope and potentially execute commands. This issue is fixed in version 4.0.0-beta.471.",
+      "cvss_score": 9.9,
+      "published_date": "2026-07-07T04:17:48.287"
+    },
+    {
+      "cve_id": "CVE-2026-34048",
+      "description": "Coolify is an open-source and self-hostable tool for managing servers, applications, and databases. Prior to 4.0.0-beta.471, terminal websocket bootstrap routes only check authentication and do not enforce terminal authorization, allowing a low-privileged team member to connect to terminal routes and execute commands on team servers. This issue is fixed in version 4.0.0-beta.471.",
+      "cvss_score": 9.9,
+      "published_date": "2026-07-07T04:17:48.417"
+    },
+    {
+      "cve_id": "CVE-2026-34057",
+      "description": "Coolify is an open-source and self-hostable tool for managing servers, applications, and databases. Prior to 4.0.0-beta.471, the database import Livewire component (app/Livewire/Project/Database/Import.php) allows client-controlled container and server properties to reach shell commands without locking or validation, allowing an authenticated user to inject commands through a database import container name. This issue is fixed in version 4.0.0-beta.471.",
+      "cvss_score": 8.8,
+      "published_date": "2026-07-07T04:17:48.647"
+    },
+    {
+      "cve_id": "CVE-2026-34058",
+      "description": "Coolify is an open-source and self-hostable tool for managing servers, applications, and databases. Prior to 4.0.0-beta.471, the Livewire component Server\\Resources exposes public methods (startUnmanaged, stopUnmanaged, restartUnmanaged) that accept a container ID parameter directly from the browser without any sanitization or escaping. This parameter is interpolated directly into shell commands executed via SSH on managed servers, enabling any authenticated team member to execute arbitrary OS commands on remote servers. This issue is fixed in version 4.0.0-beta.471.",
+      "cvss_score": 8.8,
+      "published_date": "2026-07-07T04:17:49.193"
+    },
+    {
+      "cve_id": "CVE-2026-34152",
+      "description": "Coolify is an open-source and self-hostable tool for managing servers, applications, and databases. Prior to 4.0.0-beta.471, pre-deployment and post-deployment commands are single-quote escaped but then sent through SSH heredoc transport that preserves newlines, allowing an authenticated user to inject additional shell statements that execute on the remote server during deployment. This issue is fixed in version 4.0.0-beta.471.",
+      "cvss_score": 8.8,
+      "published_date": "2026-07-07T04:17:50.043"
+    },
+    {
+      "cve_id": "CVE-2026-34168",
+      "description": "Coolify is an open-source and self-hostable tool for managing servers, applications, and databases. Prior to 4.0.0-beta.471, the LocalPersistentVolume.name field is interpolated directly into docker volume shell commands without shell argument escaping, allowing an authenticated user to set a storage name containing shell metacharacters and execute commands on managed servers when the resource is deleted. This issue is fixed in version 4.0.0-beta.471.",
+      "cvss_score": 8.8,
+      "published_date": "2026-07-07T04:17:50.180"
+    },
+    {
+      "cve_id": "CVE-2026-34171",
+      "description": "Coolify is an open-source and self-hostable tool for managing servers, applications, and databases. Prior to 4.0.0-beta.471, the GET /invitations/{uuid} endpoint can perform a state-changing password reset using an attacker-known invitation UUID, allowing an attacker who can cause a victim to visit the crafted invitation URL to reset the victim account password to a predictable value. This issue is fixed in version 4.0.0-beta.471.",
+      "cvss_score": 8.0,
+      "published_date": "2026-07-07T04:17:50.513"
+    },
+    {
+      "cve_id": "CVE-2026-42143",
+      "description": "Coolify is an open-source and self-hostable tool for managing servers, applications, and databases. Prior to 4.0.0-beta.471, user-controlled persistent volume names are interpolated into shell commands executed on managed servers without escaping or validation, allowing an authenticated member to inject shell metacharacters and execute commands as root when volume operations are triggered. This issue appears to be fixed in version 4.0.0-beta.471.",
+      "cvss_score": 8.8,
+      "published_date": "2026-07-07T04:17:51.200"
+    },
+    {
+      "cve_id": "CVE-2026-42200",
+      "description": "Coolify is an open-source and self-hostable tool for managing servers, applications, and databases. Prior to 4.0.0-beta.474, PostgreSQL initialization script (generate_init_scripts() method in app/Actions/Database/StartPostgresql.php) filename handling did not sufficiently restrict paths, allowing an authenticated user to write files outside the intended directory and achieve command execution through database initialization. This issue is fixed in version 4.0.0-beta.474.",
+      "cvss_score": 8.8,
+      "published_date": "2026-07-07T04:17:52.923"
+    },
+    {
+      "cve_id": "CVE-2026-34158",
+      "description": "Coolify is an open-source and self-hostable tool for managing servers, applications, and databases. Prior to 4.0.0-beta.469, the executeInDocker() helper wraps user-controlled commands in single quotes without escaping embedded single quotes. Attackers who can edit application settings can inject a single quote into docker_compose_custom_build_command or docker_compose_custom_start_command to break out of the quoted context and execute arbitrary commands on the managed server host during deployments, escaping the intended Docker container confinement. This issue is fixed in version 4.0.0-beta.469.",
+      "cvss_score": 8.8,
+      "published_date": "2026-07-07T05:16:50.730"
+    },
+    {
+      "cve_id": "CVE-2026-14345",
+      "description": "The WPFunnels \u2013 Funnel Builder for WooCommerce with Checkout & One Click Upsell plugin for WordPress is vulnerable to Remote Code Execution in all versions up to, and including, 3.12.7 via the 'postData' parameter parameter. This is due to unsanitized write of attacker-controlled postData values into a PHP-includeable .log file combined with the use of include_once to render that file in wpfnl_show_log. This makes it possible for unauthenticated attackers to execute code on the server. Exploitation requires that the Log Settings \"Enable Logs\" toggle is on and that an administrator subsequently opens the polluted log file via the plugin's Log Settings View UI; however, the nonce required to reach the optin endpoint is publicly emitted on every funnel step page, so the injection step itself is fully unauthenticated.",
+      "cvss_score": 9.8,
+      "published_date": "2026-07-07T06:16:22.113"
+    },
+    {
+      "cve_id": "CVE-2026-5730",
+      "description": "Authorization bypass through User-Controlled key vulnerability in Idvlabs Software and Consulting Services Inc. Ontime allows Exploitation of Trusted Identifiers.\n\nThis issue affects Ontime: through 04052026.",
+      "cvss_score": 7.5,
+      "published_date": "2026-07-07T08:16:25.540"
+    },
+    {
+      "cve_id": "CVE-2026-5799",
+      "description": "Authorization bypass through User-Controlled key vulnerability in Idvlabs Software and Consulting Services Inc. Ontime allows Exploitation of Trusted Identifiers.\n\nThis issue affects Ontime: through 04052026.",
+      "cvss_score": 7.5,
+      "published_date": "2026-07-07T08:16:25.677"
+    },
+    {
+      "cve_id": "CVE-2026-8377",
+      "description": "Missing Authorization vulnerability in Armiya Information Technologies Ltd. Co. Access Control System (GKS) allows Collect Data from Common Resource Locations.\n\nThis issue affects Access Control System (GKS): before Version 2.",
+      "cvss_score": 8.2,
+      "published_date": "2026-07-07T08:16:26.127"
+    },
+    {
+      "cve_id": "CVE-2026-58384",
+      "description": "A flaw was found in GIMP's PSD parser. An integer overflow in read_RLE_channel() can cause an undersized heap allocation for the RLE row-length table, after which subsequent per-row writes corrupt heap memory. This could lead to memory corruption, potentially resulting in denial of service or arbitrary code execution.",
+      "cvss_score": 7.3,
+      "published_date": "2026-07-07T09:16:30.003"
+    },
+    {
+      "cve_id": "CVE-2026-11610",
+      "description": "A heap buffer overflow flaw was found in the SASL I/O layer of 389 Directory Server\n(389-ds-base). After a successful SASL bind with integrity protection (SSF > 0),\nan authenticated attacker can send a specially crafted oversized LDAP UNBIND packet\nthat is copied into a 512-byte heap receive buffer without a bounds check in\nsasl_io_recv() in sasl_io.c. This allows up to approximately 2 megabytes of\nattacker-controlled data to overflow the buffer, causing a denial of service (server\ncrash). In FreeIPA and Red Hat Identity Management deployments, any domain user with\na valid Kerberos ticket, any enrolled host, or any service account can trigger this\nvulnerability over the network after authenticating via GSSAPI.\nThe vulnerable code path has existed since approximately 2013 (389-ds-base 1.3.2) and\nwas not addressed by the CVE-2025-14905 fix, which patched a separate heap overflow\nin schema.c only.",
+      "cvss_score": 8.8,
+      "published_date": "2026-07-07T10:16:39.690"
+    },
+    {
+      "cve_id": "CVE-2026-14474",
+      "description": "A flaw was found in SSSD's LDAP sudo provider. When the ldap_sudo_search_base option is not explicitly configured, SSSD searches the entire LDAP directory tree for sudoRole objects. An authenticated attacker with write access to any subtree can inject a sudoRole object granting root-level sudo privileges on all SSSD-enrolled hosts.",
+      "cvss_score": 8.8,
+      "published_date": "2026-07-07T10:16:39.870"
+    },
+    {
+      "cve_id": "CVE-2026-14476",
+      "description": "A path traversal flaw was found in SSSD's AD GPO provider. The ad_gpo_extract_smb_components() function does not sanitize .. sequences in the gPCFileSysPath LDAP attribute, allowing an attacker with AD GPO management access to write files outside the GPO cache directory as root. On default RHEL configurations with SELinux enforcing, this can be used to inject Kerberos configuration leading to authentication bypass.",
+      "cvss_score": 8.0,
+      "published_date": "2026-07-07T10:16:39.993"
+    }
+  ],
+  "new_kev_entries": [
+    {
+      "cveID": "CVE-2026-45659",
+      "vendorProject": "Microsoft",
+      "product": "SharePoint Server",
+      "vulnerabilityName": "Microsoft SharePoint Server Deserialization of Untrusted Data Vulnerability",
+      "dateAdded": "2026-07-01",
+      "shortDescription": "Microsoft SharePoint Server contains a deserialization of untrusted data vulnerability which allows an authorized attacker to execute code over a network.",
+      "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA\u2019s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA\u2019s \u201cForensics Triage Requirements\u201d (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "dueDate": "2026-07-04",
+      "knownRansomwareCampaignUse": "Unknown",
+      "notes": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-45659 ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-45659",
+      "cwes": [
+        "CWE-502"
+      ]
+    }
+  ],
+  "monitored_hits": [],
+  "total_kev_count": 1631,
+  "executive_summary": "",
+  "action_items": [],
+  "risk_narrative": "",
+  "pipeline_errors": [
+    "summarizer failed: Error code: 404 - {'type': 'error', 'error': {'type': 'not_found_error', 'message': 'model: claude-sonnet-4-20250514'}, 'request_id': 'req_011CcnaD3iXJbA9t7sgTWCzA'}"
+  ]
+}
