@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vulnerability Intelligence Report — 2026-07-13</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #22263a;
+    --border: #2d3148;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --accent: #6366f1;
+    --critical: #dc2626;
+    --high: #ea580c;
+    --medium: #ca8a04;
+    --success: #16a34a;
+  }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace; line-height: 1.6; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* Header */
+  .header { background: linear-gradient(135deg, #1a1d27 0%, #0f1117 100%); border-bottom: 1px solid var(--border); padding: 24px 32px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+  .header-left h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: 0.01em; color: #f1f5f9; }
+  .header-left h1 span { color: var(--accent); }
+  .header-meta { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
+  .risk-badge { display: inline-flex; align-items: center; gap: 6px; padding: 8px 20px; border-radius: 9999px; font-weight: 700; font-size: 0.95rem; letter-spacing: 0.05em; text-transform: uppercase; background: #dc262622; color: #dc2626; border: 2px solid #dc2626; }
+  .risk-dot { width: 8px; height: 8px; border-radius: 50%; background: #dc2626; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  /* Layout */
+  .container { max-width: 1400px; margin: 0 auto; padding: 32px; }
+
+  /* KPI cards */
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 32px; }
+  .kpi-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; }
+  .kpi-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 8px; }
+  .kpi-value { font-size: 2.5rem; font-weight: 700; line-height: 1; color: #f1f5f9; }
+  .kpi-value.danger { color: var(--critical); }
+  .kpi-value.warn { color: var(--high); }
+  .kpi-sub { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+
+  /* Sections */
+  .section { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 24px; }
+  .section-title { font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+  .section p { color: var(--text-muted); line-height: 1.8; }
+
+  /* Action list */
+  .action-list { padding-left: 20px; }
+  .action-list li { color: var(--text-muted); margin-bottom: 10px; padding-left: 4px; line-height: 1.7; }
+  .action-list li::marker { color: var(--accent); font-weight: 700; }
+  .empty-msg { color: var(--text-muted); font-style: italic; }
+
+  /* Tables */
+  .table-wrapper { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+  th { background: var(--surface2); padding: 10px 14px; text-align: left; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); border-bottom: 1px solid var(--border); cursor: pointer; user-select: none; white-space: nowrap; }
+  th:hover { color: var(--text); }
+  th .sort-icon { margin-left: 4px; opacity: 0.4; }
+  th.sorted .sort-icon { opacity: 1; color: var(--accent); }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface2); }
+  .empty-row { text-align: center; color: var(--text-muted); font-style: italic; padding: 24px; }
+  .desc-cell { max-width: 500px; color: var(--text-muted); font-size: 0.8rem; }
+
+  /* Score badges */
+  .score-badge { display: inline-block; padding: 2px 8px; border-radius: 6px; font-weight: 700; font-size: 0.8rem; }
+  .score-badge.critical { background: #dc262622; color: #dc2626; border: 1px solid #dc262644; }
+  .score-badge.high { background: #ea580c22; color: #ea580c; border: 1px solid #ea580c44; }
+  .score-badge.medium { background: #ca8a0422; color: #ca8a04; border: 1px solid #ca8a0444; }
+
+  /* Misc badges */
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
+  .ransomware-known { background: #dc262622; color: #dc2626; border: 1px solid #dc262644; }
+  .ransomware-unknown { background: #37415122; color: #94a3b8; border: 1px solid #37415144; }
+  .cve-link { color: var(--accent); font-family: monospace; }
+
+  /* Warning */
+  .warning-box { background: #78350f22; border: 1px solid #92400e; border-radius: 8px; padding: 16px; margin-bottom: 24px; color: #fbbf24; font-size: 0.875rem; }
+  .warning-box ul { padding-left: 16px; margin-top: 8px; }
+
+  /* Footer */
+  footer { margin-top: 48px; padding: 24px 0; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); font-size: 0.8rem; }
+  footer a { color: var(--text-muted); }
+  footer a:hover { color: var(--text); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <h1>Vulnerability <span>Intelligence</span> Report</h1>
+    <div class="header-meta">Date: 2026-07-13 &nbsp;|&nbsp; Generated: 2026-07-13T11:09:24Z</div>
+  </div>
+  <div class="risk-badge">
+    <span class="risk-dot"></span>
+    Critical Risk
+  </div>
+</div>
+
+<div class="container">
+  
+        <div class="warning-box">
+            <strong>Pipeline Warnings:</strong>
+            <ul><li>summarizer failed: Error code: 404 - {'type': 'error', 'error': {'type': 'not_found_error', 'message': 'model: claude-sonnet-4-20250514'}, 'request_id': 'req_011CcyxDufid18ZK2dnQ8Zvw'}</li></ul>
+        </div>
+
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">Total CVEs Found</div>
+      <div class="kpi-value danger">137</div>
+      <div class="kpi-sub">CVSS &ge; 7.0 in last 24h</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">CVSS Avg Score</div>
+      <div class="kpi-value warn">7.9</div>
+      <div class="kpi-sub">across all found CVEs</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">KEV New Entries</div>
+      <div class="kpi-value danger">6</div>
+      <div class="kpi-sub">added in last 7 days</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">KEV Due This Week</div>
+      <div class="kpi-value danger">2</div>
+      <div class="kpi-sub">remediation deadlines</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Executive Summary</div>
+    <p>No summary available.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Risk Narrative</div>
+    <p>No risk narrative available.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Prioritized Action Items</div>
+    <p class='empty-msg'>No action items available.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">High Severity CVEs — 137 found (CVSS &ge; 7.0)</div>
+    <div class="table-wrapper">
+      <table id="cve-table">
+        <thead>
+          <tr>
+            <th onclick="sortTable('cve-table',0)" data-col="0">CVE ID <span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable('cve-table',1)" data-col="1">CVSS <span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable('cve-table',2)" data-col="2">Published <span class="sort-icon">&#8597;</span></th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-15497" target="_blank" rel="noopener noreferrer">CVE-2026-15497</a></td><td><span class="score-badge high">7.3</span></td><td>2026-07-12</td><td class="desc-cell">A vulnerability was determined in SonicCloudOrg sonic-agent up to 2.7.2. This affects an unknown function of the file sonic-server-controller/src/main/java/org/cloud/sonic/controller/controller/Exchan…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-15498" target="_blank" rel="noopener noreferrer">CVE-2026-15498</a></td><td><span class="score-badge high">7.3</span></td><td>2026-07-12</td><td class="desc-cell">A vulnerability was identified in sergomanov SmartHomeAdatum up to cf495353d81b680675eb8d9aa14a318aa45ce12c. This impacts an unknown function of the file users.php of the component Login. Such manipul…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-56238" target="_blank" rel="noopener noreferrer">CVE-2026-56238</a></td><td><span class="score-badge high">7.5</span></td><td>2026-07-12</td><td class="desc-cell">Capgo before 12.128.2 contains an information disclosure vulnerability in the Supabase PostgREST global_stats endpoint that allows unauthenticated attackers to read sensitive financial and operational…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-56241" target="_blank" rel="noopener noreferrer">CVE-2026-56241</a></td><td><span class="score-badge high">8.3</span></td><td>2026-07-12</td><td class="desc-cell">Capgo before 12.128.2 contains a privilege escalation vulnerability where demoted super_admin users retain access to delete_non_compliant_bundles and count_non_compliant_bundles RPCs due to stale org_…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-56259" target="_blank" rel="noopener noreferrer">CVE-2026-56259</a></td><td><span class="score-badge high">8.2</span></td><td>2026-07-12</td><td class="desc-cell">Crawl4AI before 0.8.8 contains credential exfiltration vulnerabilities in the Docker API server that allow attackers to redirect LLM API calls to attacker-controlled endpoints and read arbitrary envir…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-56260" target="_blank" rel="noopener noreferrer">CVE-2026-56260</a></td><td><span class="score-badge critical">9.1</span></td><td>2026-07-12</td><td class="desc-cell">Crawl4AI before 0.8.7 contains an arbitrary file write vulnerability in the Docker API server's /screenshot and /pdf endpoints. The output_path parameter accepts arbitrary filesystem paths without val…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-56271" target="_blank" rel="noopener noreferrer">CVE-2026-56271</a></td><td><span class="score-badge critical">9.8</span></td><td>2026-07-12</td><td class="desc-cell">Flowise before 3.1.0 (affected versions 3.0.13 and earlier) uses weak hardcoded default JWT secrets ('auth_token', 'refresh_token') and default audience and issuer values ('AUDIENCE', 'ISSUER') in the…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-56308" target="_blank" rel="noopener noreferrer">CVE-2026-56308</a></td><td><span class="score-badge high">7.3</span></td><td>2026-07-12</td><td class="desc-cell">Capgo before 12.128.2 allows email address changes without requiring current password re-authentication or verification of the existing email address. An attacker with access to a valid session cookie…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-56313" target="_blank" rel="noopener noreferrer">CVE-2026-56313</a></td><td><span class="score-badge high">8.1</span></td><td>2026-07-12</td><td class="desc-cell">Capgo before 12.128.2 contains a cross-organization account disruption vulnerability in the SSO prelink endpoint that allows enterprise administrators to delete password identities of users in foreign…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-59260" target="_blank" rel="noopener noreferrer">CVE-2026-59260</a></td><td><span class="score-badge high">8.8</span></td><td>2026-07-12</td><td class="desc-cell">OpenWrt luci-app-samba4 read ACL grants file.exec permission on /usr/sbin/smbd, allowing authenticated delegated users to execute the Samba daemon with caller-controlled command-line arguments. Attack…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-61875" target="_blank" rel="noopener noreferrer">CVE-2026-61875</a></td><td><span class="score-badge high">8.8</span></td><td>2026-07-12</td><td class="desc-cell">luci-app-upnp contains a stored cross-site scripting vulnerability that allows unauthenticated LAN clients to inject JavaScript via UPnP IGD AddPortMapping SOAP requests. Attackers can send malicious …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-61876" target="_blank" rel="noopener noreferrer">CVE-2026-61876</a></td><td><span class="score-badge high">8.8</span></td><td>2026-07-12</td><td class="desc-cell">LuCI versions fail to properly encode DHCPv6 lease hostnames before rendering in status tables, allowing adjacent network attackers to inject HTML markup. Attackers can send a DHCPv6 Client FQDN conta…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-58596" target="_blank" rel="noopener noreferrer">CVE-2026-58596</a></td><td><span class="score-badge high">8.3</span></td><td>2026-07-12</td><td class="desc-cell">Untrusted pointer dereference in Microsoft Edge (Chromium-based) allows an unauthorized attacker to elevate privileges over a network.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-10665" target="_blank" rel="noopener noreferrer">CVE-2026-10665</a></td><td><span class="score-badge high">7.4</span></td><td>2026-07-12</td><td class="desc-cell">In Zephyr's WireGuard subsystem (subsys/net/lib/wireguard), wg_process_data_message() in wg_crypto.c linearizes an inbound transport-data payload into a fixed pool buffer of CONFIG_WIREGUARD_BUF_LEN b…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-10666" target="_blank" rel="noopener noreferrer">CVE-2026-10666</a></td><td><span class="score-badge high">8.1</span></td><td>2026-07-12</td><td class="desc-cell">parse_ipv4() in subsys/net/ip/utils.c (reached via net_ipaddr_parse() for strings of the form "a.b.c.d:port") copies the port substring into a fixed 17-byte stack buffer (char ipaddr[NET_IPV4_ADDR_LEN…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-10667" target="_blank" rel="noopener noreferrer">CVE-2026-10667</a></td><td><span class="score-badge high">7.8</span></td><td>2026-07-12</td><td class="desc-cell">Zephyr's dynamic kernel-object tracking (kernel/userspace/userspace.c, formerly kernel/userspace.c) maintains a doubly-linked list (obj_list) of dynamically allocated kernel objects. Iteration over th…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-15506" target="_blank" rel="noopener noreferrer">CVE-2026-15506</a></td><td><span class="score-badge high">7.8</span></td><td>2026-07-12</td><td class="desc-cell">A security vulnerability has been detected in SecureAge CatchPulse up to 10.9.3. The affected element is an unknown function in the library saappctl.sys of the component Driver. Such manipulation lead…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-15511" target="_blank" rel="noopener noreferrer">CVE-2026-15511</a></td><td><span class="score-badge critical">9.8</span></td><td>2026-07-12</td><td class="desc-cell">A vulnerability was determined in Comfast CF-WR631AX V3 up to 2.7.0.8. Affected by this vulnerability is the function system_wl_upload_pic_file of the file /usr/bin/webmgnt of the component FastCGI Ba…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-15514" target="_blank" rel="noopener noreferrer">CVE-2026-15514</a></td><td><span class="score-badge high">7.3</span></td><td>2026-07-13</td><td class="desc-cell">A weakness has been identified in Metasoft 美特软件 MetaCRM up to 6.4.0 Beta06. This vulnerability affects the function RPCService.query of the file /customizemt/xkq/rpc.jsp of the component PHPRPC Remote…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-15515" target="_blank" rel="noopener noreferrer">CVE-2026-15515</a></td><td><span class="score-badge high">7.0</span></td><td>2026-07-13</td><td class="desc-cell">A security vulnerability has been detected in Tencent PC Manager 18.1.30242.301. This issue affects some unknown processing in the library qmudisk64.sys of the component QMUDisk Driver. The manipulati…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-15517" target="_blank" rel="noopener noreferrer">CVE-2026-15517</a></td><td><span class="score-badge high">7.3</span></td><td>2026-07-13</td><td class="desc-cell">A flaw has been found in Jinher OA 1.0. The affected element is an unknown function of the file /C6/JHSoft.Web.PlanSummarize/PlanGiveOut.aspx. This manipulation of the argument httpOID causes sql inje…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-7162" target="_blank" rel="noopener noreferrer">CVE-2026-7162</a></td><td><span class="score-badge high">7.8</span></td><td>2026-07-13</td><td class="desc-cell">Successful
+exploitation of the integer overflow vulnerability could allow an attacker to
+achieve system-level access to the affected software.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-9492" target="_blank" rel="noopener noreferrer">CVE-2026-9492</a></td><td><span class="score-badge high">7.8</span></td><td>2026-07-13</td><td class="desc-cell">The MBStorage DRAM lighting control module within Gigabyte Control Center (GCC) developed by GIGABYTE Technology has an Improper Access Control vulnerability. Authenticated local attackers can send sp…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-15537" target="_blank" rel="noopener noreferrer">CVE-2026-15537</a></td><td><span class="score-badge high">7.3</span></td><td>2026-07-13</td><td class="desc-cell">A security flaw has been discovered in SourceCodester Online Book Store System 1.0. This vulnerability affects unknown code of the file admin/login.php. The manipulation of the argument Username resul…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-14165" target="_blank" rel="noopener noreferrer">CVE-2026-14165</a></td><td><span class="score-badge high">7.5</span></td><td>2026-07-13</td><td class="desc-cell">An Authorization Bypass Through User-Controlled Key vulnerability affecting Tuleap Enterprise Edition from 17.0 through 17.5 could allow an attacker to access data of other users without authorization…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-15541" target="_blank" rel="noopener noreferrer">CVE-2026-15541</a></td><td><span class="score-badge high">7.3</span></td><td>2026-07-13</td><td class="desc-cell">A flaw has been found in will-moss Isaiah up to 1.36.9. The impacted element is the function Server.Handle of the file app/server/server/server.go of the component Master Websocket Handler. Executing …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-15542" target="_blank" rel="noopener noreferrer">CVE-2026-15542</a></td><td><span class="score-badge high">7.3</span></td><td>2026-07-13</td><td class="desc-cell">A vulnerability has been found in will-moss Isaiah up to 1.36.9. This affects an unknown function of the file app/main.go of the component Websocket Connection Authentication. The manipulation leads t…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-15543" target="_blank" rel="noopener noreferrer">CVE-2026-15543</a></td><td><span class="score-badge high">8.8</span></td><td>2026-07-13</td><td class="desc-cell">A vulnerability was found in Tenda CH22 1.0.0.1. This impacts the function formCertListInfo of the file /goform/CertListInfo. The manipulation of the argument Name results in buffer overflow. The atta…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-15544" target="_blank" rel="noopener noreferrer">CVE-2026-15544</a></td><td><span class="score-badge high">8.8</span></td><td>2026-07-13</td><td class="desc-cell">A vulnerability was determined in Shibby Tomato up to 1.28.0000. Affected is the function getupsvar of the file www/apcupsd/tomatodata.cgi of the component apcupsd. This manipulation of the argument F…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-4769" target="_blank" rel="noopener noreferrer">CVE-2026-4769</a></td><td><span class="score-badge critical">9.8</span></td><td>2026-07-13</td><td class="desc-cell">Certain devices in the WAGO System I/O Field series activate an internal diagnostic capability during the initial startup sequence. This functionality is not formally documented and becomes accessible…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-14453" target="_blank" rel="noopener noreferrer">CVE-2026-14453</a></td><td><span class="score-badge critical">9.6</span></td><td>2026-07-13</td><td class="desc-cell">This vulnerability is a critical Server-Side Template Injection (SSTI) in Centreon's centreon-open-tickets module that leads to Remote Code Execution. The message_confirm field is stored without sanit…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-15545" target="_blank" rel="noopener noreferrer">CVE-2026-15545</a></td><td><span class="score-badge high">8.8</span></td><td>2026-07-13</td><td class="desc-cell">A vulnerability was identified in Shibby Tomato up to 1.28.0000. Affected by this vulnerability is the function main of the file www/apcupsd/tomatodata.cgi of the component apcupsd. Such manipulation …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-15574" target="_blank" rel="noopener noreferrer">CVE-2026-15574</a></td><td><span class="score-badge high">7.5</span></td><td>2026-07-13</td><td class="desc-cell">A flaw was found in the vllm-orchestrator-gateway component. The system's production binary logs all incoming authorization headers and full chat payloads, which may contain personally identifiable in…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-15548" target="_blank" rel="noopener noreferrer">CVE-2026-15548</a></td><td><span class="score-badge high">8.8</span></td><td>2026-07-13</td><td class="desc-cell">A security vulnerability has been detected in Shibby Tomato up to 1.28.0000. This vulnerability affects the function sub_407220 of the file /usr/sbin/httpd of the component DNS List Rendering. The man…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-15557" target="_blank" rel="noopener noreferrer">CVE-2026-15557</a></td><td><span class="score-badge high">7.3</span></td><td>2026-07-13</td><td class="desc-cell">A weakness has been identified in waooAI waoowaoo up to 0.4.1. Affected by this vulnerability is the function getInternalTaskSession/getAuthSession/requireUserAuth/requireProjectAuth/requireProjectAut…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57363" target="_blank" rel="noopener noreferrer">CVE-2026-57363</a></td><td><span class="score-badge high">7.1</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') vulnerability in QuantumCloud ChatBot chatbot allows Stored XSS.This issue affects ChatBot: from n/a through <= 8.3…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57368" target="_blank" rel="noopener noreferrer">CVE-2026-57368</a></td><td><span class="score-badge high">7.1</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') vulnerability in NooTheme Jobmonster noo-jobmonster allows Reflected XSS.This issue affects Jobmonster: from n/a th…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57369" target="_blank" rel="noopener noreferrer">CVE-2026-57369</a></td><td><span class="score-badge high">7.1</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') vulnerability in themifyme Themify Builder themify-builder allows Reflected XSS.This issue affects Themify Builder:…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57371" target="_blank" rel="noopener noreferrer">CVE-2026-57371</a></td><td><span class="score-badge high">8.8</span></td><td>2026-07-13</td><td class="desc-cell">Deserialization of Untrusted Data vulnerability in denishua WPJAM Basic wpjam-basic allows Object Injection.This issue affects WPJAM Basic: from n/a through <= 7.0.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57372" target="_blank" rel="noopener noreferrer">CVE-2026-57372</a></td><td><span class="score-badge high">7.2</span></td><td>2026-07-13</td><td class="desc-cell">Server-Side Request Forgery (SSRF) vulnerability in denishua WPJAM Basic wpjam-basic allows Server Side Request Forgery.This issue affects WPJAM Basic: from n/a through <= 7.0.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57376" target="_blank" rel="noopener noreferrer">CVE-2026-57376</a></td><td><span class="score-badge high">7.1</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') vulnerability in Element Invader ElementInvader Addons for Elementor elementinvader-addons-for-elementor allows DOM…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57378" target="_blank" rel="noopener noreferrer">CVE-2026-57378</a></td><td><span class="score-badge high">7.5</span></td><td>2026-07-13</td><td class="desc-cell">Missing Authorization vulnerability in Phil Kurth Advanced Forms advanced-forms allows Exploiting Incorrectly Configured Access Control Security Levels.This issue affects Advanced Forms: from n/a thro…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57379" target="_blank" rel="noopener noreferrer">CVE-2026-57379</a></td><td><span class="score-badge high">7.1</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') vulnerability in WPPOOL FormyChat social-contact-form allows Stored XSS.This issue affects FormyChat: from n/a thro…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57380" target="_blank" rel="noopener noreferrer">CVE-2026-57380</a></td><td><span class="score-badge high">7.1</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') vulnerability in hupe13 Extensions for Leaflet Map extensions-leaflet-map allows DOM-Based XSS.This issue affects E…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57381" target="_blank" rel="noopener noreferrer">CVE-2026-57381</a></td><td><span class="score-badge high">7.1</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') vulnerability in Property Hive PropertyHive propertyhive allows Reflected XSS.This issue affects PropertyHive: from…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57382" target="_blank" rel="noopener noreferrer">CVE-2026-57382</a></td><td><span class="score-badge high">7.1</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') vulnerability in Mitchell Bennis Simple File List simple-file-list allows Reflected XSS.This issue affects Simple F…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57383" target="_blank" rel="noopener noreferrer">CVE-2026-57383</a></td><td><span class="score-badge high">7.1</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') vulnerability in eyecix JobSearch wp-jobsearch allows Stored XSS.This issue affects JobSearch: from n/a through <= …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57385" target="_blank" rel="noopener noreferrer">CVE-2026-57385</a></td><td><span class="score-badge high">8.5</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') vulnerability in appsbd Vitepos vitepos-lite allows Blind SQL Injection.This issue affects Vitepos: from n/a throug…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57386" target="_blank" rel="noopener noreferrer">CVE-2026-57386</a></td><td><span class="score-badge high">8.8</span></td><td>2026-07-13</td><td class="desc-cell">Incorrect Privilege Assignment vulnerability in Kodezen LLC aBlocks ablocks allows Privilege Escalation.This issue affects aBlocks: from n/a through < 2.9.1.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57387" target="_blank" rel="noopener noreferrer">CVE-2026-57387</a></td><td><span class="score-badge high">7.1</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') vulnerability in picu picu picu allows Stored XSS.This issue affects picu: from n/a through <= 3.5.1.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57388" target="_blank" rel="noopener noreferrer">CVE-2026-57388</a></td><td><span class="score-badge high">7.1</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') vulnerability in Themefic Hydra Booking hydra-booking allows Stored XSS.This issue affects Hydra Booking: from n/a …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57389" target="_blank" rel="noopener noreferrer">CVE-2026-57389</a></td><td><span class="score-badge high">8.6</span></td><td>2026-07-13</td><td class="desc-cell">Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal') vulnerability in Adrian Tobey Groundhogg groundhogg allows Path Traversal.This issue affects Groundhogg: from n/a through…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57394" target="_blank" rel="noopener noreferrer">CVE-2026-57394</a></td><td><span class="score-badge high">7.1</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') vulnerability in Tribulant Software Newsletters newsletters-lite allows Reflected XSS.This issue affects Newsletter…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57396" target="_blank" rel="noopener noreferrer">CVE-2026-57396</a></td><td><span class="score-badge high">7.1</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') vulnerability in Flintop Free Gifts for WooCommerce free-gifts-for-woocommerce allows Stored XSS.This issue affects…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57398" target="_blank" rel="noopener noreferrer">CVE-2026-57398</a></td><td><span class="score-badge high">7.1</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') vulnerability in WebCodingPlace Real Estate Manager Pro real-estate-manager-pro allows Reflected XSS.This issue aff…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57399" target="_blank" rel="noopener noreferrer">CVE-2026-57399</a></td><td><span class="score-badge high">7.1</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') vulnerability in Proxy &amp; VPN Blocker Proxy &amp; VPN Blocker proxy-vpn-blocker allows Stored XSS.This issue aff…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57401" target="_blank" rel="noopener noreferrer">CVE-2026-57401</a></td><td><span class="score-badge critical">9.9</span></td><td>2026-07-13</td><td class="desc-cell">Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal') vulnerability in Brainstorm Force SureDash suredash allows Path Traversal.This issue affects SureDash: from n/a through <…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57403" target="_blank" rel="noopener noreferrer">CVE-2026-57403</a></td><td><span class="score-badge high">7.1</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') vulnerability in Milan Petrovic GD Security Headers gd-security-headers allows Reflected XSS.This issue affects GD …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57405" target="_blank" rel="noopener noreferrer">CVE-2026-57405</a></td><td><span class="score-badge high">7.1</span></td><td>2026-07-13</td><td class="desc-cell">Missing Authorization vulnerability in themehunk Open Shop open-shop allows Exploiting Incorrectly Configured Access Control Security Levels.This issue affects Open Shop: from n/a through <= 1.7.1.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57407" target="_blank" rel="noopener noreferrer">CVE-2026-57407</a></td><td><span class="score-badge high">7.2</span></td><td>2026-07-13</td><td class="desc-cell">Server-Side Request Forgery (SSRF) vulnerability in WP Swings PDF Generator for WordPress pdf-generator-for-wp allows Server Side Request Forgery.This issue affects PDF Generator for WordPress: from n…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57409" target="_blank" rel="noopener noreferrer">CVE-2026-57409</a></td><td><span class="score-badge high">7.1</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') vulnerability in RealMag777 Active Products Tables for WooCommerce profit-products-tables-for-woocommerce allows DO…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57410" target="_blank" rel="noopener noreferrer">CVE-2026-57410</a></td><td><span class="score-badge high">8.8</span></td><td>2026-07-13</td><td class="desc-cell">Incorrect Privilege Assignment vulnerability in MailerPress Team MailerPress mailerpress allows Privilege Escalation.This issue affects MailerPress: from n/a through <= 2.0.2.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57411" target="_blank" rel="noopener noreferrer">CVE-2026-57411</a></td><td><span class="score-badge high">7.1</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') vulnerability in Aman CF7 Views &#8211; Complete Entry Management for Contact Form 7 cf7-views allows DOM-Based XSS…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57415" target="_blank" rel="noopener noreferrer">CVE-2026-57415</a></td><td><span class="score-badge high">7.1</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') vulnerability in Codemenschen Gift Vouchers gift-voucher allows Stored XSS.This issue affects Gift Vouchers: from n…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57416" target="_blank" rel="noopener noreferrer">CVE-2026-57416</a></td><td><span class="score-badge high">7.1</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') vulnerability in SiteGround SiteGround Email Marketing siteground-email-marketing allows Stored XSS.This issue affe…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57417" target="_blank" rel="noopener noreferrer">CVE-2026-57417</a></td><td><span class="score-badge high">7.1</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') vulnerability in RexTheme Cart Lift cart-lift allows Stored XSS.This issue affects Cart Lift: from n/a through <= 3…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57421" target="_blank" rel="noopener noreferrer">CVE-2026-57421</a></td><td><span class="score-badge high">7.1</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') vulnerability in CRM Perks CRM Perks Forms crm-perks-forms allows Reflected XSS.This issue affects CRM Perks Forms:…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57422" target="_blank" rel="noopener noreferrer">CVE-2026-57422</a></td><td><span class="score-badge high">7.1</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') vulnerability in VillaTheme Bopo – WooCommerce Product Bundle Builder bopo-woo-product-bundle-builder allows Reflec…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57423" target="_blank" rel="noopener noreferrer">CVE-2026-57423</a></td><td><span class="score-badge high">7.1</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') vulnerability in Kofi Mokome Message Filter for Contact Form 7 cf7-message-filter allows Reflected XSS.This issue a…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57668" target="_blank" rel="noopener noreferrer">CVE-2026-57668</a></td><td><span class="score-badge high">7.1</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') vulnerability in Basix NEX-Forms nex-forms-express-wp-form-builder allows Stored XSS.This issue affects NEX-Forms: …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57695" target="_blank" rel="noopener noreferrer">CVE-2026-57695</a></td><td><span class="score-badge high">7.1</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') vulnerability in Dan Rossiter Document Gallery document-gallery allows Reflected XSS.This issue affects Document Ga…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57697" target="_blank" rel="noopener noreferrer">CVE-2026-57697</a></td><td><span class="score-badge high">7.5</span></td><td>2026-07-13</td><td class="desc-cell">Authentication Bypass Using an Alternate Path or Channel vulnerability in Metagauss ProfileGrid  profilegrid-user-profiles-groups-and-communities allows Password Recovery Exploitation.This issue affec…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57702" target="_blank" rel="noopener noreferrer">CVE-2026-57702</a></td><td><span class="score-badge critical">9.3</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') vulnerability in Melograno Venture Studio Amelia ameliabooking allows Blind SQL Injection.This issue affects Amelia…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57705" target="_blank" rel="noopener noreferrer">CVE-2026-57705</a></td><td><span class="score-badge high">7.5</span></td><td>2026-07-13</td><td class="desc-cell">Missing Authorization vulnerability in Nexcess Event Tickets event-tickets allows Exploiting Incorrectly Configured Access Control Security Levels.This issue affects Event Tickets: from n/a through <=…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57706" target="_blank" rel="noopener noreferrer">CVE-2026-57706</a></td><td><span class="score-badge high">7.1</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') vulnerability in Dokan, Inc. Dokan dokan-lite allows Reflected XSS.This issue affects Dokan: from n/a through <= 5.…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57707" target="_blank" rel="noopener noreferrer">CVE-2026-57707</a></td><td><span class="score-badge critical">9.3</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') vulnerability in quantumcloud Simple Business Directory Pro simple-business-directory-pro allows SQL Injection.This…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57708" target="_blank" rel="noopener noreferrer">CVE-2026-57708</a></td><td><span class="score-badge high">7.1</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') vulnerability in CRM Perks Contact Form Entries contact-form-entries allows Reflected XSS.This issue affects Contac…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57709" target="_blank" rel="noopener noreferrer">CVE-2026-57709</a></td><td><span class="score-badge high">8.6</span></td><td>2026-07-13</td><td class="desc-cell">Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal') vulnerability in WP Swings Membership For WooCommerce membership-for-woocommerce allows Path Traversal.This issue affects…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57710" target="_blank" rel="noopener noreferrer">CVE-2026-57710</a></td><td><span class="score-badge critical">9.9</span></td><td>2026-07-13</td><td class="desc-cell">Unrestricted Upload of File with Dangerous Type vulnerability in quantumcloud WoowBot Pro Max woowbot-pro-max allows Using Malicious Files.This issue affects WoowBot Pro Max: from n/a through <= 14.1.…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57712" target="_blank" rel="noopener noreferrer">CVE-2026-57712</a></td><td><span class="score-badge high">7.1</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') vulnerability in WPZOOM WPZOOM Portfolio wpzoom-portfolio allows Reflected XSS.This issue affects WPZOOM Portfolio:…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57713" target="_blank" rel="noopener noreferrer">CVE-2026-57713</a></td><td><span class="score-badge high">8.8</span></td><td>2026-07-13</td><td class="desc-cell">Deserialization of Untrusted Data vulnerability in Marcus (aka @msykes) Events Manager events-manager allows Object Injection.This issue affects Events Manager: from n/a through <= 7.3.6.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57714" target="_blank" rel="noopener noreferrer">CVE-2026-57714</a></td><td><span class="score-badge critical">9.3</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') vulnerability in LatePoint LatePoint latepoint allows Blind SQL Injection.This issue affects LatePoint: from n/a th…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57715" target="_blank" rel="noopener noreferrer">CVE-2026-57715</a></td><td><span class="score-badge high">7.1</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') vulnerability in WPManageNinja Fluent CRM fluent-crm allows Reflected XSS.This issue affects Fluent CRM: from n/a t…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57718" target="_blank" rel="noopener noreferrer">CVE-2026-57718</a></td><td><span class="score-badge high">7.1</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') vulnerability in Unlimited Elements Unlimited Elements For Elementor (Free Widgets, Addons, Templates) unlimited-el…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57719" target="_blank" rel="noopener noreferrer">CVE-2026-57719</a></td><td><span class="score-badge critical">10.0</span></td><td>2026-07-13</td><td class="desc-cell">Unrestricted Upload of File with Dangerous Type vulnerability in CodeRevolution Aimogen Pro aimogen-pro allows Using Malicious Files.This issue affects Aimogen Pro: from n/a through <= 2.8.3.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57724" target="_blank" rel="noopener noreferrer">CVE-2026-57724</a></td><td><span class="score-badge critical">9.8</span></td><td>2026-07-13</td><td class="desc-cell">Deserialization of Untrusted Data vulnerability in Themeum Kirki kirki allows Object Injection.This issue affects Kirki: from n/a through <= 6.0.12.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57725" target="_blank" rel="noopener noreferrer">CVE-2026-57725</a></td><td><span class="score-badge high">7.1</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') vulnerability in Themeum Kirki kirki allows Stored XSS.This issue affects Kirki: from n/a through <= 6.0.11.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57726" target="_blank" rel="noopener noreferrer">CVE-2026-57726</a></td><td><span class="score-badge critical">9.3</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') vulnerability in Themeum Kirki kirki allows Blind SQL Injection.This issue affects Kirki: from n/a through <= 6.0.1…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57727" target="_blank" rel="noopener noreferrer">CVE-2026-57727</a></td><td><span class="score-badge high">7.5</span></td><td>2026-07-13</td><td class="desc-cell">Missing Authorization vulnerability in Themeum Kirki kirki allows Exploiting Incorrectly Configured Access Control Security Levels.This issue affects Kirki: from n/a through <= 6.0.13.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57728" target="_blank" rel="noopener noreferrer">CVE-2026-57728</a></td><td><span class="score-badge high">7.1</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') vulnerability in UX-themes Flatsome flatsome allows Reflected XSS.This issue affects Flatsome: from n/a through <= …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57729" target="_blank" rel="noopener noreferrer">CVE-2026-57729</a></td><td><span class="score-badge high">7.5</span></td><td>2026-07-13</td><td class="desc-cell">Missing Authorization vulnerability in UX-themes Flatsome flatsome allows Exploiting Incorrectly Configured Access Control Security Levels.This issue affects Flatsome: from n/a through <= 3.20.5.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57732" target="_blank" rel="noopener noreferrer">CVE-2026-57732</a></td><td><span class="score-badge high">7.1</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') vulnerability in tagDiv tagDiv Opt-In Builder td-subscription allows DOM-Based XSS.This issue affects tagDiv Opt-In…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57733" target="_blank" rel="noopener noreferrer">CVE-2026-57733</a></td><td><span class="score-badge high">7.1</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') vulnerability in tagDiv tagDiv Cloud Library td-cloud-library allows DOM-Based XSS.This issue affects tagDiv Cloud …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57734" target="_blank" rel="noopener noreferrer">CVE-2026-57734</a></td><td><span class="score-badge high">7.1</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') vulnerability in tagDiv tagDiv Composer td-composer allows Reflected XSS.This issue affects tagDiv Composer: from n…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57738" target="_blank" rel="noopener noreferrer">CVE-2026-57738</a></td><td><span class="score-badge critical">9.8</span></td><td>2026-07-13</td><td class="desc-cell">Deserialization of Untrusted Data vulnerability in axiomthemes 777 triple-seven allows Object Injection.This issue affects 777: from n/a through <= 1.13.0.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57739" target="_blank" rel="noopener noreferrer">CVE-2026-57739</a></td><td><span class="score-badge critical">9.3</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') vulnerability in AcyMailing Newsletter Team AcyMailing SMTP Newsletter acymailing allows Blind SQL Injection.This i…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57740" target="_blank" rel="noopener noreferrer">CVE-2026-57740</a></td><td><span class="score-badge high">7.1</span></td><td>2026-07-13</td><td class="desc-cell">Missing Authorization vulnerability in AcyMailing Newsletter Team AcyMailing SMTP Newsletter acymailing allows Exploiting Incorrectly Configured Access Control Security Levels.This issue affects AcyMa…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57741" target="_blank" rel="noopener noreferrer">CVE-2026-57741</a></td><td><span class="score-badge high">7.1</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') vulnerability in AcyMailing Newsletter Team AcyMailing SMTP Newsletter acymailing allows Stored XSS.This issue affe…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57743" target="_blank" rel="noopener noreferrer">CVE-2026-57743</a></td><td><span class="score-badge high">8.1</span></td><td>2026-07-13</td><td class="desc-cell">Improper Control of Filename for Include/Require Statement in PHP Program ('PHP Remote File Inclusion') vulnerability in stmcan RT-Theme 18 | Extensions rt18-extensions allows PHP Local File Inclusion…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57744" target="_blank" rel="noopener noreferrer">CVE-2026-57744</a></td><td><span class="score-badge critical">9.8</span></td><td>2026-07-13</td><td class="desc-cell">Deserialization of Untrusted Data vulnerability in stmcan RT-Theme 18 | Extensions rt18-extensions allows Object Injection.This issue affects RT-Theme 18 | Extensions: from n/a through <= 2.5.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57745" target="_blank" rel="noopener noreferrer">CVE-2026-57745</a></td><td><span class="score-badge high">7.1</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') vulnerability in stmcan RT-Theme 18 | Extensions rt18-extensions allows Reflected XSS.This issue affects RT-Theme 1…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57768" target="_blank" rel="noopener noreferrer">CVE-2026-57768</a></td><td><span class="score-badge high">8.2</span></td><td>2026-07-13</td><td class="desc-cell">Incorrect Privilege Assignment vulnerability in favethemes Houzez Login Register houzez-login-register allows Privilege Escalation.This issue affects Houzez Login Register: from n/a through <= 3.3.3.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57770" target="_blank" rel="noopener noreferrer">CVE-2026-57770</a></td><td><span class="score-badge critical">9.8</span></td><td>2026-07-13</td><td class="desc-cell">Deserialization of Untrusted Data vulnerability in ThemeGoods Grand Photography grandphotography allows Object Injection.This issue affects Grand Photography: from n/a through <= 5.7.8.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57771" target="_blank" rel="noopener noreferrer">CVE-2026-57771</a></td><td><span class="score-badge high">8.5</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') vulnerability in Milan Petrovic GD Rating System gd-rating-system allows Blind SQL Injection.This issue affects GD …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57772" target="_blank" rel="noopener noreferrer">CVE-2026-57772</a></td><td><span class="score-badge high">8.5</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') vulnerability in WP Inventory WP Inventory Manager wp-inventory-manager allows Blind SQL Injection.This issue affec…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57773" target="_blank" rel="noopener noreferrer">CVE-2026-57773</a></td><td><span class="score-badge high">7.6</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') vulnerability in Zorem Advanced Shipment Tracking for WooCommerce woo-advanced-shipment-tracking allows Blind SQL I…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57786" target="_blank" rel="noopener noreferrer">CVE-2026-57786</a></td><td><span class="score-badge high">8.8</span></td><td>2026-07-13</td><td class="desc-cell">Cross-Site Request Forgery (CSRF) vulnerability in purethemes WorkScout-Core workscout-core allows Authentication Bypass.This issue affects WorkScout-Core: from n/a through <= 1.7.08.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57787" target="_blank" rel="noopener noreferrer">CVE-2026-57787</a></td><td><span class="score-badge high">8.5</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') vulnerability in CreativeWS CWS SVGicons cws-svgicons allows Blind SQL Injection.This issue affects CWS SVGicons: f…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57788" target="_blank" rel="noopener noreferrer">CVE-2026-57788</a></td><td><span class="score-badge high">7.5</span></td><td>2026-07-13</td><td class="desc-cell">Improper Control of Filename for Include/Require Statement in PHP Program ('PHP Remote File Inclusion') vulnerability in Edge-Themes Aalto aalto allows PHP Local File Inclusion.This issue affects Aalt…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57789" target="_blank" rel="noopener noreferrer">CVE-2026-57789</a></td><td><span class="score-badge high">7.5</span></td><td>2026-07-13</td><td class="desc-cell">Improper Control of Filename for Include/Require Statement in PHP Program ('PHP Remote File Inclusion') vulnerability in jwsthemes Aqua aqua allows PHP Local File Inclusion.This issue affects Aqua: fr…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57790" target="_blank" rel="noopener noreferrer">CVE-2026-57790</a></td><td><span class="score-badge high">7.5</span></td><td>2026-07-13</td><td class="desc-cell">Improper Control of Filename for Include/Require Statement in PHP Program ('PHP Remote File Inclusion') vulnerability in ThemeMove Billey billey allows PHP Local File Inclusion.This issue affects Bill…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57791" target="_blank" rel="noopener noreferrer">CVE-2026-57791</a></td><td><span class="score-badge high">7.5</span></td><td>2026-07-13</td><td class="desc-cell">Improper Control of Filename for Include/Require Statement in PHP Program ('PHP Remote File Inclusion') vulnerability in ThemeMove Brook brook allows PHP Local File Inclusion.This issue affects Brook:…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57792" target="_blank" rel="noopener noreferrer">CVE-2026-57792</a></td><td><span class="score-badge high">7.5</span></td><td>2026-07-13</td><td class="desc-cell">Improper Control of Filename for Include/Require Statement in PHP Program ('PHP Remote File Inclusion') vulnerability in Mikado-Themes Dør dor allows PHP Local File Inclusion.This issue affects Dør: f…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57793" target="_blank" rel="noopener noreferrer">CVE-2026-57793</a></td><td><span class="score-badge high">7.5</span></td><td>2026-07-13</td><td class="desc-cell">Improper Control of Filename for Include/Require Statement in PHP Program ('PHP Remote File Inclusion') vulnerability in Elated-Themes Flow flow allows PHP Local File Inclusion.This issue affects Flow…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57794" target="_blank" rel="noopener noreferrer">CVE-2026-57794</a></td><td><span class="score-badge high">7.5</span></td><td>2026-07-13</td><td class="desc-cell">Improper Control of Filename for Include/Require Statement in PHP Program ('PHP Remote File Inclusion') vulnerability in uxper Golo Framework golo-framework allows PHP Local File Inclusion.This issue …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57795" target="_blank" rel="noopener noreferrer">CVE-2026-57795</a></td><td><span class="score-badge high">7.5</span></td><td>2026-07-13</td><td class="desc-cell">Improper Control of Filename for Include/Require Statement in PHP Program ('PHP Remote File Inclusion') vulnerability in themelexus Kitchor kitchor allows PHP Local File Inclusion.This issue affects K…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57796" target="_blank" rel="noopener noreferrer">CVE-2026-57796</a></td><td><span class="score-badge high">7.5</span></td><td>2026-07-13</td><td class="desc-cell">Improper Control of Filename for Include/Require Statement in PHP Program ('PHP Remote File Inclusion') vulnerability in VLThemes Leedo leedo allows PHP Local File Inclusion.This issue affects Leedo: …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57798" target="_blank" rel="noopener noreferrer">CVE-2026-57798</a></td><td><span class="score-badge high">7.5</span></td><td>2026-07-13</td><td class="desc-cell">Improper Control of Filename for Include/Require Statement in PHP Program ('PHP Remote File Inclusion') vulnerability in SaurabhSharma NewsPlus Shortcodes newsplus-shortcodes allows PHP Local File Inc…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57799" target="_blank" rel="noopener noreferrer">CVE-2026-57799</a></td><td><span class="score-badge high">7.5</span></td><td>2026-07-13</td><td class="desc-cell">Improper Control of Filename for Include/Require Statement in PHP Program ('PHP Remote File Inclusion') vulnerability in uxper Nuss nuss allows PHP Local File Inclusion.This issue affects Nuss: from n…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57800" target="_blank" rel="noopener noreferrer">CVE-2026-57800</a></td><td><span class="score-badge high">7.5</span></td><td>2026-07-13</td><td class="desc-cell">Improper Control of Filename for Include/Require Statement in PHP Program ('PHP Remote File Inclusion') vulnerability in Edge-Themes Overworld overworld allows PHP Local File Inclusion.This issue affe…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57801" target="_blank" rel="noopener noreferrer">CVE-2026-57801</a></td><td><span class="score-badge high">7.5</span></td><td>2026-07-13</td><td class="desc-cell">Improper Control of Filename for Include/Require Statement in PHP Program ('PHP Remote File Inclusion') vulnerability in Select-Themes SetSail setsail allows PHP Local File Inclusion.This issue affect…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57802" target="_blank" rel="noopener noreferrer">CVE-2026-57802</a></td><td><span class="score-badge high">7.5</span></td><td>2026-07-13</td><td class="desc-cell">Improper Control of Filename for Include/Require Statement in PHP Program ('PHP Remote File Inclusion') vulnerability in Select-Themes Struktur struktur allows PHP Local File Inclusion.This issue affe…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57803" target="_blank" rel="noopener noreferrer">CVE-2026-57803</a></td><td><span class="score-badge high">7.5</span></td><td>2026-07-13</td><td class="desc-cell">Improper Control of Filename for Include/Require Statement in PHP Program ('PHP Remote File Inclusion') vulnerability in Select-Themes Struktur Core struktur-core allows PHP Local File Inclusion.This …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57804" target="_blank" rel="noopener noreferrer">CVE-2026-57804</a></td><td><span class="score-badge high">7.5</span></td><td>2026-07-13</td><td class="desc-cell">Improper Control of Filename for Include/Require Statement in PHP Program ('PHP Remote File Inclusion') vulnerability in CodexThemes TheGem Theme Elements (for Elementor) thegem-elements-elementor all…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57805" target="_blank" rel="noopener noreferrer">CVE-2026-57805</a></td><td><span class="score-badge high">7.5</span></td><td>2026-07-13</td><td class="desc-cell">Improper Control of Filename for Include/Require Statement in PHP Program ('PHP Remote File Inclusion') vulnerability in Select-Themes Tonda tonda allows PHP Local File Inclusion.This issue affects To…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57810" target="_blank" rel="noopener noreferrer">CVE-2026-57810</a></td><td><span class="score-badge high">8.5</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') vulnerability in Saad Iqbal APIExperts Square for WooCommerce woosquare allows Blind SQL Injection.This issue affec…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57811" target="_blank" rel="noopener noreferrer">CVE-2026-57811</a></td><td><span class="score-badge critical">10.0</span></td><td>2026-07-13</td><td class="desc-cell">Improper Control of Generation of Code ('Code Injection') vulnerability in Realtyna Realtyna Organic IDX plugin real-estate-listing-realtyna-wpl allows Remote Code Inclusion.This issue affects Realtyn…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57813" target="_blank" rel="noopener noreferrer">CVE-2026-57813</a></td><td><span class="score-badge critical">9.8</span></td><td>2026-07-13</td><td class="desc-cell">Incorrect Privilege Assignment vulnerability in properfraction MailOptin mailoptin allows Privilege Escalation.This issue affects MailOptin: from n/a through <= 1.2.77.3.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57814" target="_blank" rel="noopener noreferrer">CVE-2026-57814</a></td><td><span class="score-badge high">7.1</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') vulnerability in WPMU DEV - Your All-in-One WordPress Platform Forminator forminator allows DOM-Based XSS.This issu…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57815" target="_blank" rel="noopener noreferrer">CVE-2026-57815</a></td><td><span class="score-badge high">7.5</span></td><td>2026-07-13</td><td class="desc-cell">Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal') vulnerability in WPMU DEV - Your All-in-One WordPress Platform Forminator forminator allows Path Traversal.This issue aff…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-57816" target="_blank" rel="noopener noreferrer">CVE-2026-57816</a></td><td><span class="score-badge high">7.1</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') vulnerability in FunnelKit Funnel Builder by FunnelKit funnel-builder allows Reflected XSS.This issue affects Funne…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-59515" target="_blank" rel="noopener noreferrer">CVE-2026-59515</a></td><td><span class="score-badge critical">9.3</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') vulnerability in Sergey AIWU ai-copilot-content-generator allows Blind SQL Injection.This issue affects AIWU: from …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-59516" target="_blank" rel="noopener noreferrer">CVE-2026-59516</a></td><td><span class="score-badge high">7.1</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') vulnerability in Room 34 Creative Services, LLC ICS Calendar ics-calendar allows Reflected XSS.This issue affects I…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-59518" target="_blank" rel="noopener noreferrer">CVE-2026-59518</a></td><td><span class="score-badge critical">9.8</span></td><td>2026-07-13</td><td class="desc-cell">Deserialization of Untrusted Data vulnerability in wpWax Directorist directorist allows Object Injection.This issue affects Directorist: from n/a through <= 8.8.2.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-59521" target="_blank" rel="noopener noreferrer">CVE-2026-59521</a></td><td><span class="score-badge high">7.2</span></td><td>2026-07-13</td><td class="desc-cell">Deserialization of Untrusted Data vulnerability in ShapedPlugin LLC Real Testimonials testimonial-free allows Object Injection.This issue affects Real Testimonials: from n/a through <= 3.1.15.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-61955" target="_blank" rel="noopener noreferrer">CVE-2026-61955</a></td><td><span class="score-badge high">7.6</span></td><td>2026-07-13</td><td class="desc-cell">Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') vulnerability in Hannan گرویتی فرم فارسی persian-gravity-forms allows Blind SQL Injection.This issue affects گرویتی…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-61956" target="_blank" rel="noopener noreferrer">CVE-2026-61956</a></td><td><span class="score-badge high">7.1</span></td><td>2026-07-13</td><td class="desc-cell">Cross-Site Request Forgery (CSRF) vulnerability in hamsalam ووسلام &#8211; همگام سازی ووکامرس و باسلام sync-basalam allows Cross Site Request Forgery.This issue affects ووسلام &#8211; همگام سازی ووکام…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">CISA KEV — 6 new entries (last 7 days)</div>
+    <div class="table-wrapper">
+      <table id="kev-table">
+        <thead>
+          <tr>
+            <th onclick="sortTable('kev-table',0)" data-col="0">CVE ID <span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable('kev-table',1)" data-col="1">Vendor / Product <span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable('kev-table',2)" data-col="2">Date Added <span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable('kev-table',3)" data-col="3">Due Date <span class="sort-icon">&#8597;</span></th>
+            <th>Ransomware</th>
+          </tr>
+        </thead>
+        <tbody>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-56291" target="_blank" rel="noopener noreferrer">CVE-2026-56291</a></td><td>Balbooa / Forms</td><td>2026-07-10</td><td>2026-07-13</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-48939" target="_blank" rel="noopener noreferrer">CVE-2026-48939</a></td><td>iCagenda / iCagenda</td><td>2026-07-10</td><td>2026-07-13</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-48908" target="_blank" rel="noopener noreferrer">CVE-2026-48908</a></td><td>JoomShaper / SP Page Builder</td><td>2026-07-07</td><td>2026-07-10</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-55255" target="_blank" rel="noopener noreferrer">CVE-2026-55255</a></td><td>Langflow / Langflow</td><td>2026-07-07</td><td>2026-07-10</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-56290" target="_blank" rel="noopener noreferrer">CVE-2026-56290</a></td><td>Joomlack / Page Builder</td><td>2026-07-07</td><td>2026-07-10</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-48282" target="_blank" rel="noopener noreferrer">CVE-2026-48282</a></td><td>Adobe / ColdFusion</td><td>2026-07-07</td><td>2026-07-10</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>
+    Data sources: &nbsp;
+    <a href="https://nvd.nist.gov/" target="_blank" rel="noopener noreferrer">NVD (National Vulnerability Database)</a>
+    &nbsp;&bull;&nbsp;
+    <a href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank" rel="noopener noreferrer">CISA Known Exploited Vulnerabilities Catalog</a>
+    <br><br>
+    Generated by Vulnerability Intelligence Pipeline &bull; 2026-07-13T11:09:24Z
+  </footer>
+</div>
+
+<script>
+const sortState = {};
+function sortTable(tableId, col) {
+  const table = document.getElementById(tableId);
+  const tbody = table.querySelector('tbody');
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+  const key = tableId + ':' + col;
+  const asc = sortState[key] !== true;
+  sortState[key] = asc;
+
+  // Update sort icons
+  table.querySelectorAll('th').forEach((th, i) => {
+    th.classList.toggle('sorted', i === col);
+    const icon = th.querySelector('.sort-icon');
+    if (icon) icon.textContent = i === col ? (asc ? '↑' : '↓') : '⇅';
+  });
+
+  rows.sort((a, b) => {
+    const aText = (a.cells[col] ? a.cells[col].textContent : '').trim();
+    const bText = (b.cells[col] ? b.cells[col].textContent : '').trim();
+    const aNum = parseFloat(aText);
+    const bNum = parseFloat(bText);
+    if (!isNaN(aNum) && !isNaN(bNum)) return asc ? aNum - bNum : bNum - aNum;
+    return asc ? aText.localeCompare(bText) : bText.localeCompare(aText);
+  });
+
+  rows.forEach(r => tbody.appendChild(r));
+}
+</script>
+
+</body>
+</html>
