@@ -1,0 +1,265 @@
+{
+  "run_date": "2026-08-02",
+  "run_timestamp": "2026-08-02T09:55:05Z",
+  "high_severity_cves": [
+    {
+      "cve_id": "CVE-2025-71403",
+      "description": "better-auth versions before 1.1.20 contain a bypass vulnerability in trustedOrigins validation logic affecting absolute URLs and wildcard domains. Attackers can construct malicious callbackURL parameters that pass origin checks and trigger open redirects to steal sensitive tokens for account takeover.",
+      "cvss_score": 7.1,
+      "published_date": "2026-08-01T13:16:56.607"
+    },
+    {
+      "cve_id": "CVE-2026-66402",
+      "description": "FreeRDP before 3.29.0 (affected versions <= 3.28.0) contains multiple TLS certificate identity validation weaknesses in tls_verify_certificate(), tls_match_hostname(), and x509_utils_get_dns_names(). Because FreeRDP performs custom Common Name and DNS SAN string matching instead of using OpenSSL's length-aware identity validation APIs, it (1) truncates DNS SAN values at embedded NUL bytes (accepting e.g. 'victim.example\\0.attacker.example' as 'victim.example'), (2) accepts a matching Common Name even when non-matching DNS SAN entries are present, and (3) accepts IP-literal targets via DNS/CN matching without comparing iPAddress SANs. Under a trusted or misissued certificate chain, an attacker positioned to present such a certificate can bypass server identity verification, weakening TLS server authentication.",
+      "cvss_score": 9.8,
+      "published_date": "2026-08-01T13:16:57.487"
+    },
+    {
+      "cve_id": "CVE-2026-67288",
+      "description": "FreeRDP before 3.29.0 contains a null pointer dereference vulnerability in smartcard cache request decoders that accept NULL NDR pointers for LookupName in SCARD_IOCTL_READCACHEA and SCARD_IOCTL_WRITECACHEA operations. When smartcard emulation is enabled, attackers can send crafted smartcard cache requests with NULL lookup-name pointers to trigger strlen() on a null pointer, causing client process termination.",
+      "cvss_score": 7.5,
+      "published_date": "2026-08-01T13:16:57.650"
+    },
+    {
+      "cve_id": "CVE-2026-67289",
+      "description": "FreeRDP before 3.29.0 (affected versions <= 3.28.0) does not validate CRLF and control characters in the server-controlled RDP redirection TargetNetAddress field. This value is copied into the client's ServerHostname and, when the client connects through an HTTP proxy, is written directly into the proxy CONNECT request line and Host header by http_proxy_connect() without filtering. A malicious or compromised RDP server can send a crafted redirection PDU containing embedded control characters to inject arbitrary headers/requests into the HTTP proxy CONNECT request.",
+      "cvss_score": 9.8,
+      "published_date": "2026-08-01T13:16:57.803"
+    },
+    {
+      "cve_id": "CVE-2026-67290",
+      "description": "FreeRDP before 3.29.0 contains a heap out-of-bounds read vulnerability in the TSMF FFmpeg decoder when parsing AVC1 MPEG2VIDEOINFO media types with insufficient ExtraData. Attackers can send malformed media format data from a server to trigger a crash by reading fixed offsets without validating source buffer length.",
+      "cvss_score": 7.5,
+      "published_date": "2026-08-01T13:16:57.940"
+    },
+    {
+      "cve_id": "CVE-2026-67291",
+      "description": "FreeRDP before 3.29.0 (affected versions <= 3.28.0) contains a heap out-of-bounds read in update_process_glyph_fragments()/glyph_cache_fragment_put() in libfreerdp/cache/glyph.c. When handling a GLYPH_FRAGMENT_ADD update, the code reads a one-byte server-controlled declared fragment size but does not verify it fits within the remaining received buffer before allocating and copying that many bytes. A malicious RDP server can send a short fragment with an oversized declared size, causing the client to read beyond the allocated buffer, resulting in an out-of-bounds read and client crash.",
+      "cvss_score": 7.5,
+      "published_date": "2026-08-01T13:16:58.097"
+    },
+    {
+      "cve_id": "CVE-2026-67296",
+      "description": "FreeRDP before 3.29.0 contains a denial of service vulnerability in the RDPEI server channel handler that fails to validate maximum PDU body length before stream allocation. A malicious RDP client can send a header-only RDPEI message with a large declared body length to force excessive memory allocation on the server.",
+      "cvss_score": 7.5,
+      "published_date": "2026-08-01T13:16:58.830"
+    },
+    {
+      "cve_id": "CVE-2026-67297",
+      "description": "FreeRDP before 3.29.0 fails to enforce the RESPONSE_SIZE_LIMIT when processing Transfer-Encoding: chunked HTTP responses in http_response_recv_body(). Attackers controlling a malicious RD Gateway endpoint can send oversized chunked response bodies to exhaust client memory resources without triggering the configured size limit.",
+      "cvss_score": 7.5,
+      "published_date": "2026-08-01T13:16:58.967"
+    },
+    {
+      "cve_id": "CVE-2026-67298",
+      "description": "FreeRDP versions 3.28.0 and earlier contain a heap buffer overflow in the server-side RAIL channel handler (rail_server_handle_messages() in channels/rail/server/rail_main.c). When processing a RAIL PDU header, the code subtracts RAIL_PDU_HEADER_LENGTH from the peer-controlled orderLength field without first verifying orderLength is at least the header length. For orderLength values 0..3 this causes an unsigned integer underflow to a very large size, which bypasses the Stream_EnsureRemainingCapacity() capacity check (due to pointer arithmetic wraparound) and is then passed to WTSVirtualChannelRead(), resulting in an out-of-bounds heap write. A malicious or compromised RDP client can exploit this to corrupt the heap and crash the server. Fixed in FreeRDP 3.29.0.",
+      "cvss_score": 7.5,
+      "published_date": "2026-08-01T13:16:59.107"
+    },
+    {
+      "cve_id": "CVE-2026-67299",
+      "description": "FreeRDP before 3.29.0 contains a client-side heap use-after-free in the async update message proxy for WINDOW_ICON_ORDER when AsyncUpdate is enabled (e.g. xfreerdp /async-update). In update_message_WindowIcon() a shallow CopyMemory() overwrites a freshly allocated lParam->iconInfo with the parser-owned windowIcon->iconInfo pointer. After the parser callback returns, update_recv_window_info_order() frees window_icon.iconInfo, but the queued async message still retains and later dispatches that stale pointer. A malicious or compromised RDP server sending a crafted RAIL Window Alternate Secondary Order with WINDOW_ORDER_ICON can trigger use-after-free, leading to memory corruption and client crash.",
+      "cvss_score": 7.5,
+      "published_date": "2026-08-01T13:16:59.250"
+    },
+    {
+      "cve_id": "CVE-2026-67300",
+      "description": "FreeRDP before 3.29.0 contains client-side heap use-after-free vulnerabilities in the async update message proxy for RAIL WINDOW_STATE_ORDER and NOTIFY_ICON_STATE_ORDER when AsyncUpdate is enabled. When a malicious or compromised RDP server sends crafted update orders, the message proxy shallow-copies structures containing nested parser-owned pointers (e.g., titleInfo.string, windowRects, visibilityRects, icon buffers). The parser frees those nested buffers after the callback returns, so the queued async message later dispatches stale pointers, potentially causing memory corruption or a client crash.",
+      "cvss_score": 7.5,
+      "published_date": "2026-08-01T13:16:59.393"
+    },
+    {
+      "cve_id": "CVE-2026-67301",
+      "description": "FreeRDP before 3.29.0 contains out-of-bounds read vulnerabilities in the async update message proxy for the PolygonSC and PolygonCB primary drawing orders. When AsyncUpdate is enabled (e.g., xfreerdp /async-update), update_message_PolygonSC() and update_message_PolygonCB() allocate a fresh points array but copy point data from the address of the order structure instead of from polygonSC->points / polygonCB->points, resulting in a client-side out-of-bounds read. A malicious or compromised RDP server sending crafted PolygonSC/PolygonCB update orders can trigger memory disclosure or a client crash.",
+      "cvss_score": 7.5,
+      "published_date": "2026-08-01T13:16:59.530"
+    },
+    {
+      "cve_id": "CVE-2026-67304",
+      "description": "FreeRDP before 3.29.0 contains a null pointer dereference vulnerability in smartcard device control request cleanup when reader-state decoding fails. Attackers can send malformed smartcard IRP requests with non-zero cReaders and truncated reader-state data to crash the process via null pointer access in free_reader_states functions.",
+      "cvss_score": 7.5,
+      "published_date": "2026-08-01T13:16:59.970"
+    },
+    {
+      "cve_id": "CVE-2026-67308",
+      "description": "Wazuh workflows before 44bf114 contain a shell injection vulnerability in GitHub Actions that allows attackers to execute arbitrary commands by submitting pull requests with crafted VERSION.json files. Attackers can inject shell metacharacters into environment variables that are directly interpolated into run steps, enabling command execution and exfiltration of secrets including GITHUB_TOKEN and AWS credentials on self-hosted runners.",
+      "cvss_score": 10.0,
+      "published_date": "2026-08-01T13:17:00.553"
+    },
+    {
+      "cve_id": "CVE-2026-67322",
+      "description": "GitPython before 3.1.52 is vulnerable to environment-variable exfiltration in Repo.clone_from(). The caller-supplied remote URL is passed through Git.polish_url(), which on non-Cygwin platforms calls os.path.expandvars() on the URL before invoking git clone. An attacker who controls the clone URL can embed $NAME or ${NAME} tokens that are expanded to the values of the hosting process's environment variables (e.g., AWS_SECRET_ACCESS_KEY or GITHUB_TOKEN). The resulting URL, now containing the secret, is transmitted over the network to an attacker-controlled host during the clone attempt, disclosing the secret.",
+      "cvss_score": 7.5,
+      "published_date": "2026-08-01T13:17:02.493"
+    },
+    {
+      "cve_id": "CVE-2026-67323",
+      "description": "GitPython before 3.1.51 fails to guard against dangerous Git options passed as keyword arguments in Repo.archive() and git.ls_remote(), allowing command injection via options such as --exec/--upload-pack (leading to arbitrary command execution). Additionally, Repo.iter_commits() and Repo.blame() do not check for leading-dash revision arguments, so a revision like --output=<path> can cause Git to open and truncate an arbitrary file. Exploitation requires an application that passes attacker-controlled arguments to these methods.",
+      "cvss_score": 8.4,
+      "published_date": "2026-08-01T13:17:02.637"
+    },
+    {
+      "cve_id": "CVE-2026-67324",
+      "description": "GitPython 3.1.50 fails to recognize joined short-option forms such as -u<value> (the short form of --upload-pack=<value>) when enforcing its default unsafe-option gate. When an application passes attacker-influenced clone options into Repo.clone_from(..., multi_options=..., allow_unsafe_options=False), an attacker can supply -u<helper> to bypass the gate that blocks --upload-pack/-u, causing Git to execute the specified helper command during clone. Fixed in 3.1.51.",
+      "cvss_score": 9.8,
+      "published_date": "2026-08-01T13:17:02.770"
+    },
+    {
+      "cve_id": "CVE-2026-67325",
+      "description": "GitPython before 3.1.51 contains an incomplete command injection blocklist that fails to account for git's long-option prefix abbreviation feature. Attackers can bypass the unsafe options guard by using abbreviated option names like upload_p instead of upload_pack, which git resolves to dangerous options and executes arbitrary commands.",
+      "cvss_score": 8.8,
+      "published_date": "2026-08-01T13:17:02.923"
+    },
+    {
+      "cve_id": "CVE-2026-67326",
+      "description": "GitPython before 3.1.50 fails to validate newline characters in the section parameter of config_writer(), allowing attackers to inject arbitrary section headers into .git/config. Attackers can inject newlines to create a forged [core] section with hooksPath pointing to attacker-controlled directories, achieving remote code execution when git hooks are triggered.",
+      "cvss_score": 7.0,
+      "published_date": "2026-08-01T13:17:03.063"
+    },
+    {
+      "cve_id": "CVE-2026-67327",
+      "description": "better-auth versions >= 1.1.3 and < 1.6.22 (and pre-release versions >= 1.7.0-beta.0 and < 1.7.0-beta.10) are vulnerable to account takeover via pre-account hijacking on magic-link and email-OTP sign-in when open email/password registration is enabled. An attacker registers an account with the victim's email address and an attacker-chosen password; the account remains unverified. When the legitimate owner later signs in via the magic-link or email-OTP passwordless flow, the account is marked verified without removing the pre-existing password or revoking existing sessions, so the attacker's password remains valid, granting persistent access to the victim's account. Fixed in 1.6.22 and 1.7.0-beta.10.",
+      "cvss_score": 8.3,
+      "published_date": "2026-08-01T13:17:03.227"
+    },
+    {
+      "cve_id": "CVE-2026-67328",
+      "description": "@better-auth/sso versions before 1.6.21 contain multiple authentication bypass vulnerabilities in SSO provider handling that allow attackers to sign in as arbitrary users. Attackers can exploit domain verification parsing mismatches, orphaned provider accounts, unbound SAML assertions, or reflected XSS on logout endpoints to gain unauthorized session access and account takeover.",
+      "cvss_score": 8.1,
+      "published_date": "2026-08-01T13:17:03.380"
+    },
+    {
+      "cve_id": "CVE-2026-67329",
+      "description": "@better-auth/stripe versions >= 1.4.11 and < 1.6.21, and >= 1.7.0-beta.0 and < 1.7.0-beta.10, contain an authorization bypass in organization subscription actions. The middleware validates the organization ID taken from the request query string against the authorizeReference callback, but the handler reads the organization ID only from the request body and falls back to the caller's active organization from their session. When these differ, an authenticated member of multiple organizations can perform subscription actions (cancel, change plan, restore, billing portal access) against an organization they belong to but should not manage, and can access another organization's billing details including payment methods, invoices, and subscription state.",
+      "cvss_score": 7.1,
+      "published_date": "2026-08-01T13:17:03.523"
+    },
+    {
+      "cve_id": "CVE-2026-67330",
+      "description": "@better-auth/scim (a better-auth plugin) versions >= 1.4.0-beta.27 through <= 1.6.21 and >= 1.7.0-beta.0 through <= 1.7.0-beta.9 contain an authorization bypass. SCIM token issuance did not reject provider IDs already used by existing SSO, SAML, OIDC, generic OAuth, or social account providers, and the same logical provider ID was used for both SCIM provider configuration and account ownership. An authenticated user could mint a SCIM token whose provider ID collided with an existing provider namespace, causing SCIM user routes to resolve account rows the token never provisioned. This allowed listing, reading, updating (including rewriting global profile/email fields without uniqueness checks), and deleting global user accounts and sessions, resulting in account takeover and unauthorized deprovisioning. Fixed in 1.6.22 and 1.7.0-beta.10 (1.7.0-rc.0).",
+      "cvss_score": 9.9,
+      "published_date": "2026-08-01T13:17:03.677"
+    },
+    {
+      "cve_id": "CVE-2026-67331",
+      "description": "better-auth SCIM versions from 1.5.0 before 1.7.0-beta.4 fail to bind non-organization SCIM providers to their creator by default, allowing authenticated users to manage other users' providers. Attackers can regenerate SCIM bearer tokens, invalidate legitimate tokens, and authenticate to SCIM API routes with the attacker-controlled token.",
+      "cvss_score": 8.3,
+      "published_date": "2026-08-01T13:17:03.833"
+    },
+    {
+      "cve_id": "CVE-2026-67333",
+      "description": "better-auth before 1.6.13 (and pre-release builds 1.7.0-beta.0 through 1.7.0-beta.3) fail to validate the scheme of redirect_uris registered via the deprecated oidc-provider plugin and the mcp plugin (which wraps the same provider). An attacker can register an OAuth client with a javascript: redirect_uri, which the authorization server later returns unchanged in the consent response. If the deployment's consent page navigates the browser to the returned redirectURI (e.g. assigning it to window.location.href), the attacker's JavaScript executes in the authorization-server origin, exposing the victim's session and enabling account takeover.",
+      "cvss_score": 7.2,
+      "published_date": "2026-08-01T13:17:04.123"
+    },
+    {
+      "cve_id": "CVE-2026-67336",
+      "description": "better-auth versions before 1.6.11 contain insecure cryptographic defaults in the oidcProvider and mcp plugins that advertise the none algorithm and accept plain PKCE by default. Attackers can exploit algorithm negotiation to accept unsigned tokens or intercept authorization codes when PKCE plain is used instead of the required S256 method.",
+      "cvss_score": 8.7,
+      "published_date": "2026-08-01T13:17:04.557"
+    },
+    {
+      "cve_id": "CVE-2026-67340",
+      "description": "ArcadeDB before 26.7.2 (arcadedb-engine) allows trigger scripts to look up host classes in java.lang.* (via Java.type) because ScriptTriggerExecutor adds java.lang.* to the allowed packages. An authenticated user with UPDATE_SCHEMA permission can create a JavaScript trigger that invokes java.lang.Runtime.getRuntime().exec() (or ProcessBuilder), achieving OS command execution when the trigger fires.",
+      "cvss_score": 9.8,
+      "published_date": "2026-08-01T13:17:05.127"
+    },
+    {
+      "cve_id": "CVE-2026-67341",
+      "description": "ArcadeDB versions before 26.7.2 fail to enforce scripting authorization checks on the SQL DEFINE FUNCTION statement with LANGUAGE js. Attackers with database access can execute arbitrary JavaScript code by submitting DEFINE FUNCTION statements, bypassing security controls intended to restrict scripting to administrators.",
+      "cvss_score": 9.8,
+      "published_date": "2026-08-01T13:17:05.273"
+    },
+    {
+      "cve_id": "CVE-2026-67342",
+      "description": "ArcadeDB versions before 26.7.2 contain an authorization bypass vulnerability in HTTP handlers for time series, batch, Prometheus, and Grafana endpoints that fail to validate database access permissions. Attackers can access and modify databases they are not authorized to use by directly calling affected endpoints with arbitrary database parameters.",
+      "cvss_score": 9.8,
+      "published_date": "2026-08-01T13:17:05.417"
+    },
+    {
+      "cve_id": "CVE-2026-67343",
+      "description": "ArcadeDB versions before 26.7.2 fail to properly redact the cluster token in the GET /api/v1/server endpoint, allowing authenticated users to retrieve the arcadedb.ha.clusterToken value in cleartext. Attackers can use the leaked token with X-ArcadeDB-Cluster-Token and X-ArcadeDB-Forwarded-User headers to impersonate root and execute administrative actions including user creation, database operations, and server shutdown.",
+      "cvss_score": 8.8,
+      "published_date": "2026-08-01T13:17:05.563"
+    },
+    {
+      "cve_id": "CVE-2026-67352",
+      "description": "luci-app-https-dns-proxy contains a stored cross-site scripting vulnerability in the resolver_url parameter that allows authenticated users to inject active HTML. When an administrator views the HTTPS DNS Proxy status page, the resolver URL is rendered as raw HTML and executes JavaScript in the administrator's browser origin.",
+      "cvss_score": 7.6,
+      "published_date": "2026-08-01T13:17:05.860"
+    },
+    {
+      "cve_id": "CVE-2026-13339",
+      "description": "The CubeWP Framework plugin for WordPress is vulnerable to Directory Traversal in all versions up to, and including, 1.1.30 via the 'cubewp_get_svg_content' function. This makes it possible for unauthenticated attackers to read the contents of arbitrary files on the server, which can contain sensitive information. This is exploitable by unauthenticated attackers because the required nonce is publicly emitted into the markup of any page rendering the CubeWP posts shortcode or widget with AJAX loading enabled, making it harvestable by any guest visitor before submitting the AJAX request.",
+      "cvss_score": 7.5,
+      "published_date": "2026-08-02T00:16:22.760"
+    },
+    {
+      "cve_id": "CVE-2026-18352",
+      "description": "The User Access Manager plugin for WordPress is vulnerable to Directory Traversal in all versions up to, and including, 2.3.15 via the 'uamgetfile' parameter parameter. This makes it possible for unauthenticated attackers to read the contents of arbitrary files on the server, which can contain sensitive information. This is possible because when attachment_url_to_postid() returns 0 for a traversal path, the plugin falls back to the global post set by a valid ?attachment_id parameter supplied by the attacker, causing the access check to pass against a legitimate public attachment while the file streamed is the attacker-chosen path.",
+      "cvss_score": 7.5,
+      "published_date": "2026-08-02T00:16:22.900"
+    },
+    {
+      "cve_id": "CVE-2026-8457",
+      "description": "The WooCommerce - Social Login plugin for WordPress is vulnerable to Authentication Bypass in all versions up to and including 2.8.7. This is due to the plugin's Apple login handler accepting the Apple id_token and decoding only its base64 payload without verifying the JWT signature against Apple's public keys or validating the issuer, audience, or expiry claims, combined with the security nonce required to invoke the login flow being publicly exposed to unauthenticated users via a localized JavaScript object on the login page. This makes it possible for unauthenticated attackers to log in as any existing WordPress user \u2014 including administrators \u2014 by supplying a forged id_token whose payload contains the target user's email address, as that email is used without any role exclusion to resolve a WordPress account and immediately issue an authenticated session for it.",
+      "cvss_score": 9.8,
+      "published_date": "2026-08-02T00:16:23.047"
+    }
+  ],
+  "new_kev_entries": [
+    {
+      "cveID": "CVE-2026-20316",
+      "vendorProject": "Cisco",
+      "product": "Secure Firewall Management Center (FMC)",
+      "vulnerabilityName": "Cisco Secure Firewall Management Center Use of Hard-coded Password Vulnerability",
+      "dateAdded": "2026-07-29",
+      "shortDescription": "Cisco Secure Firewall Management Center (FMC) formerly known as Firepower Management Center contains a use of hard-coded password vulnerability that could allow an unauthenticated, remote attacker to log in to an affected device using a low-privileged account to access sensitive data within the impacted systems.",
+      "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA\u2019s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA\u2019s \u201cForensics Triage Requirements\u201d (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "dueDate": "2026-08-01",
+      "knownRansomwareCampaignUse": "Unknown",
+      "notes": "https://sec.cloudapps.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-fmc-static-cred-BET3Cjh ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-20316",
+      "cwes": [
+        "CWE-259"
+      ]
+    },
+    {
+      "cveID": "CVE-2025-68686",
+      "vendorProject": "Fortinet",
+      "product": "FortiOS",
+      "vulnerabilityName": "Fortinet FortiOS Exposure of Sensitive Information to an Unauthorized Actor Vulnerability",
+      "dateAdded": "2026-07-27",
+      "shortDescription": "Fortinet FortiOS contains an exposure of sensitive information to an unauthorized actor vulnerability. This may allow a remote unauthenticated attacker to bypass the patch developed for the symbolic link persistency mechanism observed in some post-exploit cases, via crafted HTTP requests. An attacker would need first to have compromised the product via another vulnerability, at filesystem level.",
+      "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA\u2019s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA\u2019s \u201cForensics Triage Requirements\u201d (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "dueDate": "2026-08-10",
+      "knownRansomwareCampaignUse": "Unknown",
+      "notes": "https://fortiguard.fortinet.com/psirt/FG-IR-25-934 ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2025-68686",
+      "cwes": [
+        "CWE-200"
+      ]
+    },
+    {
+      "cveID": "CVE-2026-16812",
+      "vendorProject": "Arista",
+      "product": "VeloCloud Orchestrator",
+      "vulnerabilityName": "Arista VeloCloud Orchestrator On-Prem OS Command Injection Vulnerability",
+      "dateAdded": "2026-07-27",
+      "shortDescription": "Arista VeloCloud Orchestrator On-Prem contains an OS command injection vulnerability that may allow a remote attacker to access privileged internal functionality and impact the VCO host. Successful exploitation may compromise the confidentiality, integrity, and availability of the orchestrator and data managed by the orchestrator.",
+      "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA\u2019s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA\u2019s \u201cForensics Triage Requirements\u201d (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "dueDate": "2026-07-30",
+      "knownRansomwareCampaignUse": "Unknown",
+      "notes": "https://www.arista.com/en/support/advisories-notices/security-advisory/24364-security-advisory-0144 ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-16812",
+      "cwes": [
+        "CWE-78"
+      ]
+    }
+  ],
+  "monitored_hits": [],
+  "total_kev_count": 1656,
+  "executive_summary": "",
+  "action_items": [],
+  "risk_narrative": "",
+  "pipeline_errors": [
+    "summarizer failed: Error code: 404 - {'type': 'error', 'error': {'type': 'not_found_error', 'message': 'model: claude-sonnet-4-20250514'}, 'request_id': 'req_011CddijFacEGGkWgRWSMQDa'}"
+  ]
+}
