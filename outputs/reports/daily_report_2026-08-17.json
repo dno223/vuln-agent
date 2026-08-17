@@ -1,0 +1,229 @@
+{
+  "run_date": "2026-08-17",
+  "run_timestamp": "2026-08-17T08:41:05Z",
+  "high_severity_cves": [
+    {
+      "cve_id": "CVE-2024-13784",
+      "description": "The Contact Form, Survey, Quiz & Popup Form Builder \u2013 ARForms plugin for WordPress is vulnerable to PHP Object Injection in all versions up to, and including, 1.8.5 via deserialization of untrusted input from form submissions. This makes it possible for unauthenticated attackers to inject a PHP Object. No known POP chain is present in the vulnerable software, which means this vulnerability has no impact unless another plugin or theme containing a POP chain is installed on the site. If a POP chain is present via an additional plugin or theme installed on the target system, it may allow the attacker to perform actions like delete arbitrary files, retrieve sensitive data, or execute code depending on the POP chain present.",
+      "cvss_score": 9.8,
+      "published_date": "2026-08-16T09:16:19.900"
+    },
+    {
+      "cve_id": "CVE-2026-74578",
+      "description": "In the Linux kernel, the following vulnerability has been resolved:\n\ncrypto: algif_skcipher - force synchronous processing on trees without ctx->state\n\nThe AIO/async path in skcipher_recvmsg() passes the socket-wide ctx->iv\ndirectly into the skcipher request. After io_submit() the socket lock is\ndropped and the request is processed asynchronously, so a concurrent\nsendmsg(ALG_SET_IV) can overwrite ctx->iv and make the in-flight request\nrun under an attacker-controlled IV. For CTR/stream modes this is\nIV/keystream reuse and lets an unprivileged user recover the plaintext of\na concurrent operation.\n\nSnapshotting ctx->iv into per-request storage for the async path is not\nsufficient. For ciphers with statesize == 0 - which includes cbc and ctr -\nthe MSG_MORE inter-chunk IV chaining is carried solely by the in-place\nreq->iv writeback, which a snapshot redirects into per-request memory that\naf_alg_free_resources() releases on completion, silently producing wrong\noutput. Writing the IV back from the completion callback instead is not\npossible either: that would require lock_sock() there, but the callback can\nrun in softirq/atomic context, so it must not sleep.\n\nMake the operation synchronous instead, which removes both the IV race and\nany writeback race. This is equivalent to the upstream resolution, commit\nfcc77d33a34c (\"net: Remove support for AIO on sockets\"), which removed the\nAIO socket path across net/ entirely and so produces the same end state for\nthis file. This patch deviates from that commit deliberately: rather than\nremoving AIO socket support tree-wide, which would be far too invasive for\nstable, it removes only the AIO branch in crypto/algif_skcipher.c.\nio_submit() now completes synchronously; AF_ALG async is rarely used in\npractice.\n\nThe -EIOCBQUEUED check in skcipher_recvmsg() is now dead but harmless,\nand is left alone to keep the fix minimal.\n\nTested on 6.6.y: attacker IV injection dropped from 2296/200000 to 0/200000\nafter the change; MSG_MORE chunked CTR output bit-identical to single-shot.",
+      "cvss_score": 7.1,
+      "published_date": "2026-08-16T09:16:21.653"
+    },
+    {
+      "cve_id": "CVE-2024-58375",
+      "description": "OpenTofu versions 1.8.0 through 1.8.2 do not properly restrict sensitive variables and locals when users have opted into static evaluation of module sources, versions, and backend configurations. As a result, values marked as sensitive may be exposed through these configuration elements instead of producing an error. This is fixed in OpenTofu 1.8.3, which adds explicit errors to prevent the use of sensitive values in these contexts.",
+      "cvss_score": 7.5,
+      "published_date": "2026-08-16T14:16:53.627"
+    },
+    {
+      "cve_id": "CVE-2026-73056",
+      "description": "SiYuan kernel versions before 3.7.4 contain an improper restriction of excessive authentication attempts vulnerability in the CheckAuth() middleware. The middleware accepts the API token (Conf.Api.Token) via an Authorization header (Token/Bearer) or a ?token= query parameter, and neither path is protected by the application's CAPTCHA/lockout mechanism (NeedCaptcha/WrongAuthCount). As a result, an unauthenticated remote attacker can perform unlimited automated guesses of the API token, particularly when a short or weak custom token has been configured, and upon success gains full RoleAdministrator access enabling arbitrary file operations and SQL queries.",
+      "cvss_score": 9.8,
+      "published_date": "2026-08-16T14:16:55.083"
+    },
+    {
+      "cve_id": "CVE-2026-73057",
+      "description": "stoatchat before 0.15.0 fails to validate SVG viewBox dimensions in the proxy endpoint, allowing attackers to cause denial of service by memory exhaustion. Attackers can host malicious SVGs with extremely large width and height values and trigger concurrent requests to exhaust available memory across proxy replicas.",
+      "cvss_score": 7.5,
+      "published_date": "2026-08-16T14:16:55.230"
+    },
+    {
+      "cve_id": "CVE-2026-73060",
+      "description": "Scriban versions from 3.0.0 through 7.2.5 contain a denial of service vulnerability in the ScriptRange.Multiply operator that bypasses LoopLimit when the left operand is a lazy sequence. Attackers can supply templates with array multiplication on lazy sequences to execute billions of uncharged iterations, pinning CPU cores and exhausting garbage collection resources even when LoopLimit is set to 1.",
+      "cvss_score": 7.5,
+      "published_date": "2026-08-16T14:16:55.640"
+    },
+    {
+      "cve_id": "CVE-2026-73061",
+      "description": "Scriban before 7.2.2 contains an access-modifier bypass vulnerability in TypedObjectAccessor that allows template code to write CLR object properties without setter-visibility checks. Attackers can modify properties with private, internal, or init-only setters, and perform mass assignment on public-setter properties, permanently altering live host objects after template rendering.",
+      "cvss_score": 9.8,
+      "published_date": "2026-08-16T14:16:55.770"
+    },
+    {
+      "cve_id": "CVE-2026-73062",
+      "description": "Scriban versions 3.0.0 through 7.2.0 contain a denial of service vulnerability in the array multiplication operator that allocates memory without enforcing LoopLimit or overflow-safe arithmetic checks. Attackers can supply a large integer multiplier in a template to force multi-gigabyte memory allocations, causing resource exhaustion and availability degradation.",
+      "cvss_score": 7.5,
+      "published_date": "2026-08-16T14:16:55.903"
+    },
+    {
+      "cve_id": "CVE-2026-74783",
+      "description": "Scriban versions 6.6.0 through 7.2.0 contain a non-enforcing ExpressionDepthLimit guard that fails to stop recursive descent parsing of deeply nested expressions. Attackers can supply templates with deeply nested parentheses, array initializers, object initializers, or unary operators to trigger an uncatchable StackOverflowException that immediately terminates the host process.",
+      "cvss_score": 7.5,
+      "published_date": "2026-08-16T14:16:56.133"
+    },
+    {
+      "cve_id": "CVE-2026-74787",
+      "description": "Scriban before 7.0.0 contains an uncontrolled recursion vulnerability in the object.to_json builtin function that lacks depth limits and circular reference detection. Attackers can craft templates with self-referencing objects to trigger unbounded recursion, causing a StackOverflowException that fatally terminates the hosting .NET process.",
+      "cvss_score": 7.5,
+      "published_date": "2026-08-16T14:16:56.653"
+    },
+    {
+      "cve_id": "CVE-2026-74788",
+      "description": "Scriban before 7.0.0 (affected versions <= 6.6.0) contains an uncontrolled memory allocation vulnerability in the string.pad_left and string.pad_right template functions, which perform no validation on the width parameter before delegating to .NET's String.PadLeft/PadRight. When an application exposes Scriban to untrusted template input, an attacker can supply an arbitrarily large width value (e.g., 500,000,000) to trigger ~1GB memory allocations in a single call, resulting in OutOfMemoryException and denial of service. The TemplateContext.LimitToString limit does not prevent this because it is only enforced after the string has been fully allocated.",
+      "cvss_score": 7.5,
+      "published_date": "2026-08-16T14:16:56.787"
+    },
+    {
+      "cve_id": "CVE-2026-74789",
+      "description": "Scriban before 7.0.0 (affected <= 6.6.0) applies its LoopLimit constraint only to script loop statements and not to expensive iteration performed inside built-in operators and functions. As a result, a single expression such as {{ 1..1000000 | array.size }} \u2014 or a memory-amplification expression such as {{ 'A' * 200000000 }} \u2014 can force large CPU or memory consumption even when LoopLimit is configured to a very small value, resulting in denial of service. Applications that render attacker-controlled templates and rely on LoopLimit for safe execution are affected.",
+      "cvss_score": 7.5,
+      "published_date": "2026-08-16T14:16:56.917"
+    },
+    {
+      "cve_id": "CVE-2026-74790",
+      "description": "Scriban before 7.0.0 caches TypedObjectAccessor by Type only without considering MemberFilter changes, allowing reused TemplateContext instances to expose members that should be hidden. Attackers can access filtered properties and fields by reusing a TemplateContext after tightening its MemberFilter, bypassing sandbox policies across requests or tenants.",
+      "cvss_score": 9.1,
+      "published_date": "2026-08-16T14:16:57.050"
+    },
+    {
+      "cve_id": "CVE-2026-74791",
+      "description": "Scriban before 7.0.0 fails to clear the CachedTemplates dictionary when TemplateContext.Reset() is called, allowing cached templates to persist across reused contexts. Attackers can exploit request-dependent ITemplateLoader implementations to access previously authorized template content from earlier renders without triggering TemplateLoader.Load() again.",
+      "cvss_score": 8.6,
+      "published_date": "2026-08-16T14:16:57.183"
+    },
+    {
+      "cve_id": "CVE-2026-74792",
+      "description": "Scriban before 7.0.0 (affected versions <= 6.6.0) contains a stack overflow vulnerability in nested array initializer parsing. Deeply nested array initializers recurse through a path (ParseArrayInitializer \u2192 ParseExpression \u2192 ParseArrayInitializer) that is not covered by the ExpressionDepthLimit counter added in the fix for GHSA-wgh7-7m3c-fx25. An attacker who can supply untrusted input to Template.Parse can trigger an uncatchable StackOverflowException that immediately terminates the process, even with the default ExpressionDepthLimit enabled.",
+      "cvss_score": 7.5,
+      "published_date": "2026-08-16T14:16:57.317"
+    },
+    {
+      "cve_id": "CVE-2026-74794",
+      "description": "Scriban before 6.6.0 contains an infinite recursion vulnerability in object rendering when the ObjectRecursionLimit property defaults to unlimited. Attackers can supply circular reference objects to the template context, exhausting stack space and triggering an uncatchable StackOverflowException that terminates the hosting process.",
+      "cvss_score": 7.5,
+      "published_date": "2026-08-16T14:16:57.450"
+    },
+    {
+      "cve_id": "CVE-2026-74795",
+      "description": "Scriban before 6.6.0 contains an uncontrolled recursion vulnerability in its recursive-descent parser. The parser does not enforce a default expression depth limit (the ExpressionDepthLimit property in ParserOptions defaults to null/disabled), so an attacker who controls template input can supply a deeply nested template (e.g., thousands of nested parentheses or blocks) that exhausts thread stack space and raises a StackOverflowException. Because a StackOverflowException cannot be caught in .NET, this causes immediate, unrecoverable termination of the hosting process, resulting in a denial of service. Applications that process untrusted or user-supplied templates can be exploited remotely without authentication.",
+      "cvss_score": 7.5,
+      "published_date": "2026-08-16T14:16:57.590"
+    },
+    {
+      "cve_id": "CVE-2026-19959",
+      "description": "A weakness has been identified in Edimax EW-7478APC 1.04. This affects the function formWanTcpipSetup of the file /goform/formWanTcpipSetup. This manipulation of the argument pppUserName causes stack-based buffer overflow. Remote exploitation of the attack is possible. The exploit has been made available to the public and could be used for attacks. The vendor was contacted early about this disclosure but did not respond in any way.",
+      "cvss_score": 9.9,
+      "published_date": "2026-08-16T23:16:24.710"
+    },
+    {
+      "cve_id": "CVE-2026-19960",
+      "description": "A security vulnerability has been detected in Edimax EW-7478APC 1.04. This impacts the function formWlbasic of the file /goform/formWlbasic. Such manipulation of the argument rootAPmac leads to command injection. The attack can be executed remotely. The exploit has been disclosed publicly and may be used. The vendor was contacted early about this disclosure but did not respond in any way.",
+      "cvss_score": 7.4,
+      "published_date": "2026-08-16T23:16:24.870"
+    },
+    {
+      "cve_id": "CVE-2026-19961",
+      "description": "A vulnerability was detected in Edimax EW-7478APC 1.04. Affected is the function formWlSiteSurvey of the file /goform/formWlSiteSurvey. Performing a manipulation of the argument selSSID results in buffer overflow. The attack is possible to be carried out remotely. The exploit is now public and may be used. The vendor was contacted early about this disclosure but did not respond in any way.",
+      "cvss_score": 9.9,
+      "published_date": "2026-08-16T23:16:25.050"
+    },
+    {
+      "cve_id": "CVE-2026-19962",
+      "description": "A flaw has been found in Edimax EW-7478APC 1.04. Affected by this vulnerability is the function setWAN of the file /goform/setWAN. Executing a manipulation of the argument pppUserName/pptpUserName/L2TPUserName can lead to command injection. The attack may be performed from remote. The exploit has been published and may be used. The vendor was contacted early about this disclosure but did not respond in any way.",
+      "cvss_score": 7.4,
+      "published_date": "2026-08-17T00:16:26.490"
+    },
+    {
+      "cve_id": "CVE-2026-19963",
+      "description": "A vulnerability has been found in Edimax EW-7478APC 1.04. Affected by this issue is the function stainfo of the file /goform/stainfo. The manipulation of the argument interface leads to command injection. It is possible to initiate the attack remotely. The exploit has been disclosed to the public and may be used. The vendor was contacted early about this disclosure but did not respond in any way.",
+      "cvss_score": 7.4,
+      "published_date": "2026-08-17T00:16:27.137"
+    },
+    {
+      "cve_id": "CVE-2026-19977",
+      "description": "A vulnerability was detected in EFM ipTIME A3004T 14.19.0. The affected element is the function httpcon_check_session_url of the component Session Validation. Performing a manipulation results in improper authentication. Remote exploitation of the attack is possible. The exploit is now public and may be used. The vendor was contacted early about this disclosure but did not respond in any way.",
+      "cvss_score": 10.0,
+      "published_date": "2026-08-17T03:16:50.517"
+    },
+    {
+      "cve_id": "CVE-2026-19979",
+      "description": "A vulnerability was identified in GL.iNet A1300, AX1800, AXT1800, BE1400, BE3600, BE6500, BE9300, BE10000, E5800, MT2500, MT3000, MT3600BE, MT5000, MT6000, X2000, X3000 and XE3000 up to 4.8.x. Affected by this vulnerability is the function COPY/MOVE of the component WebDAV Service. Such manipulation leads to authorization bypass. It is possible to launch the attack remotely. The vendor explains: \"After our investigation, we have confirmed that the vulnerability described (...) does indeed exist.\"",
+      "cvss_score": 8.3,
+      "published_date": "2026-08-17T04:16:55.693"
+    },
+    {
+      "cve_id": "CVE-2026-19980",
+      "description": "A security flaw has been discovered in GL.iNet A1300, AX1800, AXT1800, BE1400, BE3600, BE6500, BE9300, BE10000, E5800, MT2500, MT3000, MT3600BE, MT5000, MT6000, X2000, X3000 and XE3000 up to 4.8.x. Affected by this issue is the function ui.update_langs of the component Language Update. Performing a manipulation of the argument hour/min/week results in code injection. The attack can be initiated remotely. The vendor explains: \"After our investigation, we have confirmed that the vulnerability described (...) does indeed exist.\"",
+      "cvss_score": 7.4,
+      "published_date": "2026-08-17T04:16:56.250"
+    },
+    {
+      "cve_id": "CVE-2026-19981",
+      "description": "A weakness has been identified in GL.iNet A1300, AX1800, AXT1800, BE1400, BE3600, BE6500, BE9300, BE10000, E5800, MT2500, MT3000, MT3600BE, MT5000, MT6000, X2000, X3000 and XE3000 up to 4.8.x. This affects an unknown part of the component Wi-Fi Timer Power-Schedule Feature. Executing a manipulation of the argument switch_power/restore_power can lead to os command injection. The attack can be launched remotely. The vendor explains: \"After our investigation, we have confirmed that the vulnerability described (...) does indeed exist.\"",
+      "cvss_score": 7.4,
+      "published_date": "2026-08-17T04:16:56.600"
+    },
+    {
+      "cve_id": "CVE-2026-19982",
+      "description": "A security vulnerability has been detected in GL.iNet BE9300 and MT6000 4.8.x. This vulnerability affects unknown code of the component Firewall-management RPC. The manipulation of the argument dest_port/dest_ip leads to os command injection. The attack may be initiated remotely. Upgrading to version 4.9.0 is able to resolve this issue. The affected component should be upgraded. The vendor explains: \"After our investigation, we have confirmed that the vulnerability described (...) does indeed exist.\"",
+      "cvss_score": 7.4,
+      "published_date": "2026-08-17T05:17:09.767"
+    },
+    {
+      "cve_id": "CVE-2026-19983",
+      "description": "A vulnerability was detected in GL.iNet A1300, AX1800, AXT1800, MT2500, MT3000, MT6000, X3000 and XE3000 4.8.x. This issue affects some unknown processing of the file /usr/bin/gl_nas_sys of the component NAS Command Service. The manipulation results in os command injection. The attack may be launched remotely. Upgrading to version 4.9.0 is capable of addressing this issue. It is suggested to upgrade the affected component. The vendor explains: \"After our investigation, we have confirmed that the vulnerability described (...) does indeed exist.\"",
+      "cvss_score": 8.3,
+      "published_date": "2026-08-17T05:17:09.947"
+    }
+  ],
+  "new_kev_entries": [
+    {
+      "cveID": "CVE-2026-20349",
+      "vendorProject": "Cisco",
+      "product": "Secure Firewall Adaptive Security Appliance (ASA) and Secure Firewall Threat Defense (FTD) ",
+      "vulnerabilityName": "Cisco Secure Firewall Adaptive Security Appliance (ASA) and Secure Firewall Threat Defense (FTD) Heap Inspection Vulnerability",
+      "dateAdded": "2026-08-11",
+      "shortDescription": "Cisco Secure Firewall Adaptive Security Appliance (ASA) and Secure Firewall Threat Defense (FTD) contain a heap inspection vulnerability that could allow an unauthenticated, remote attacker to cause the device to reload unexpectedly, resulting in a denial of service (DoS) condition.",
+      "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA\u2019s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA\u2019s \u201cForensics Triage Requirements\u201d (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "dueDate": "2026-08-14",
+      "knownRansomwareCampaignUse": "Unknown",
+      "notes": "https://sec.cloudapps.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-asaftd-vpn-dos-dzv4mQFF ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-20349",
+      "cwes": [
+        "CWE-244"
+      ]
+    },
+    {
+      "cveID": "CVE-2026-68820",
+      "vendorProject": "Microsoft",
+      "product": "Windows Ancillary Function Driver for WinSock ",
+      "vulnerabilityName": "Microsoft Windows Ancillary Function Driver for WinSock Use-After-Free Vulnerability",
+      "dateAdded": "2026-08-11",
+      "shortDescription": "Microsoft Windows Ancillary Function Driver for WinSock contains a use-after-free vulnerability that allows an authorized attacker to elevate privileges locally.",
+      "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA\u2019s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA\u2019s \u201cForensics Triage Requirements\u201d (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "dueDate": "2026-08-25",
+      "knownRansomwareCampaignUse": "Unknown",
+      "notes": "https://portal.msrc.microsoft.com/en-US/security-guidance/advisory/CVE-2026-68820 ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-68820",
+      "cwes": [
+        "CWE-416"
+      ]
+    },
+    {
+      "cveID": "CVE-2026-72898",
+      "vendorProject": "Metabase",
+      "product": "Metabase",
+      "vulnerabilityName": "Metabase SQL Injection Vulnerability",
+      "dateAdded": "2026-08-11",
+      "shortDescription": "Metabase contains a SQL Injection vulnerability that allows an unauthenticated remote attacker to inject arbitrary SQL into the Metabase application database, which can give them administrator access to the instance. From there, the attacker could change the application configuration, steal stored credentials for the connected databases, read any data accessible through those connections, and export data.",
+      "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA\u2019s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA\u2019s \u201cForensics Triage Requirements\u201d (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "dueDate": "2026-08-14",
+      "knownRansomwareCampaignUse": "Unknown",
+      "notes": "https://www.metabase.com/blog/security-update ; https://github.com/metabase/metabase/security/advisories/GHSA-vwf4-m7j8-wcjf ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-72898",
+      "cwes": [
+        "CWE-89"
+      ]
+    }
+  ],
+  "monitored_hits": [],
+  "total_kev_count": 1665,
+  "executive_summary": "",
+  "action_items": [],
+  "risk_narrative": "",
+  "pipeline_errors": [
+    "summarizer failed: Error code: 404 - {'type': 'error', 'error': {'type': 'not_found_error', 'message': 'model: claude-sonnet-4-20250514'}, 'request_id': 'req_011Ce82DvFuJo8of537s1kLu'}"
+  ]
+}
