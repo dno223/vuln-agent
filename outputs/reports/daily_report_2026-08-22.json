@@ -1,0 +1,656 @@
+{
+  "run_date": "2026-08-22",
+  "run_timestamp": "2026-08-22T08:27:29Z",
+  "high_severity_cves": [
+    {
+      "cve_id": "CVE-2026-50112",
+      "description": "SSRF via Metalink Mirror URL Resolution:\n\nAn authenticated tenant can register a template pointing to an attacker-controlled metalink file containing internal targets. The Secondary Storage VM will retrieve the data and persist it as a template file, which can later be downloaded through normal APIs.\n\nRCE on KVM hypervisor via NFS, Metalink files with/without Direct Downloads:\n\nAn authenticated CloudStack tenant holding the default User role can execute arbitrary shell commands as root on the KVM hypervisor host that runs other tenants' VMs. This is cross-tenant root on the underlying compute, reachable via the public CloudStack API.\n\n\nWhen a User registers a VM template with directDownload=true and a URL pointing to a .metalink file, the management server fetches the metalink XML and dispatches download to the KVM agent. Inner URLs inside the metalink XML are never re-validated against the scheme allowlist.\n\n\nThese issues affect Apache CloudStack: from 4.14.0.0 through 4.20.3.0 and from 4.21.0.0 through 4.22.1.0.\n\nUsers are recommended to upgrade to version 4.20.3.1 or 4.22.1.1 or later, which fixes the issue.",
+      "cvss_score": 8.8,
+      "published_date": "2026-08-21T09:16:38.150"
+    },
+    {
+      "cve_id": "CVE-2026-61400",
+      "description": "Improper Neutralization of Special Elements used in a Command ('Command Injection') vulnerability in Apache CloudStack's run and get diagnostics functionality for the system VMs and virtual routers.\n\nAn authenticated user holding the permissions required to invoke either `getDiagnosticsData` or `runDiagnostics` can achieve arbitrary command execution on the system VM and/or Virtual Router instances, with commands running as root (or as the diagnostics-process user, at minimum). This represents a full compromise of the affected instance and, depending on network segmentation, may provide a foothold for lateral movement within the CloudStack-managed infrastructure, including access to guest network traffic handled by the compromised Virtual Router.\n\n\n\nThe getDiagnosticsData and runDiagnostics APIs are restricted to only Admin role accounts by default.\n\n\nThis issue affects Apache CloudStack: from 4.20.0.0 through 4.20.3.0 and from 4.21.0.0 through 4.22.1.0.\n\nUsers are recommended to upgrade to version 4.20.3.1 or 4.22.1.1 or later, which fixes the issue.",
+      "cvss_score": 8.8,
+      "published_date": "2026-08-21T09:16:39.717"
+    },
+    {
+      "cve_id": "CVE-2026-63046",
+      "description": "Improper Neutralization of Argument Delimiters in a Command ('Argument Injection') vulnerability in Apache InLong.\u00a0Agent Installer's ModuleManager executes arbitrary shell\ncommands via ExcuteLinux.exeCmd() with no filtering or whitelist\nvalidation. \n\nThis issue affects Apache InLong: from 2.0.0 before 2.4.0.\n\n\n\nUsers are advised to upgrade to Apache InLong's  2.4.0 or cherry-pick [1]/[2] to solve it.\n\n[1]\u00a0 https://github.com/apache/inlong/pull/12151 .\n\n[2]\u00a0 https://github.com/apache/inlong/pull/12155 .",
+      "cvss_score": 8.8,
+      "published_date": "2026-08-21T09:16:40.083"
+    },
+    {
+      "cve_id": "CVE-2026-47827",
+      "description": "Command Injection in BOSH CLI tool on windows in Cloud Foundry allows a remote attacker to execute arbitrary shell commands via command injection vulnerabilities",
+      "cvss_score": 7.5,
+      "published_date": "2026-08-21T10:16:38.647"
+    },
+    {
+      "cve_id": "CVE-2026-77086",
+      "description": "SiYuan before v3.7.4 fails to validate the packageName parameter in Bazaar install and uninstall endpoints, allowing authenticated administrators to perform path traversal via directory traversal sequences. Attackers with admin access can write arbitrary files to any location via install operations or recursively delete directories via uninstall operations by supplying crafted packageName values.",
+      "cvss_score": 9.1,
+      "published_date": "2026-08-21T11:17:06.063"
+    },
+    {
+      "cve_id": "CVE-2026-77683",
+      "description": "A security flaw has been discovered in Comfast CF-N1-S 2.6.0.1. Affected by this issue is the function system of the file /cgi-bin/mbox-config?method=SET&section=ntp_timezone. The manipulation of the argument timestr results in command injection. The attack can be launched remotely. The exploit has been released to the public and may be used for attacks.",
+      "cvss_score": 9.9,
+      "published_date": "2026-08-21T11:17:06.457"
+    },
+    {
+      "cve_id": "CVE-2026-77767",
+      "description": "Reconmap's API applies a fallback authorization policy in apps/api/app/Program.cs that requires an authenticated user holding the administrator role, so controllers without their own attribute reject anonymous callers. The report preview action in apps/api/app/Controllers/ReportsController.cs carries [AllowAnonymous] and therefore opts out of that policy. PreviewReport loads the Project row named by the id path segment, loads the linked Organisation through the project's ClientId, and renders both into default-report-template.html, which prints the project name and description together with the client organisation's name, address and URL. No authentication, project membership or role check is performed. Because the id is the auto-increment primary key of the project table, an unauthenticated remote caller can walk sequential ids to retrieve the engagement details and client organisation of every project on the instance, and the 404 returned for a missing id reveals which project ids exist. Reconmap stores penetration-testing engagements, so the disclosed descriptions and client records are sensitive by nature.",
+      "cvss_score": 7.5,
+      "published_date": "2026-08-21T11:17:07.107"
+    },
+    {
+      "cve_id": "CVE-2026-59279",
+      "description": "The MCP Streamable HTTP server transport (WebFlux and WebMvc variants) does not place any limit on the number of sessions it retains, and by default does not require clients to be authenticated. As a result, a remote attacker can cause the server to accumulate an unbounded number of sessions over time, gradually exhausting available memory and ultimately causing a Denial of Service that affects all legitimate clients.\nAffected versions:\nSpring AI: 2.0.0",
+      "cvss_score": 7.5,
+      "published_date": "2026-08-21T12:16:30.013"
+    },
+    {
+      "cve_id": "CVE-2026-77775",
+      "description": "Headroom's LLM proxy lets a client choose the upstream destination with the x-headroom-base-url request header. _resolve_openai_upstream_base in headroom/proxy/handlers/openai.py accepts the header value, requires only that it parse with an http or https scheme and a hostname, and returns it for use as the upstream base; _select_passthrough_base_url in headroom/providers/proxy_routes.py reads the same header for the passthrough routes. No check rejects loopback, link-local, or RFC 1918 destinations, and because the component is a proxy the upstream response is returned to the caller, so the request reaches internal services and cloud metadata addresses and their responses are disclosed. The Authorization header accompanying the request is forwarded unchanged to the caller-designated host. The pip console script binds 127.0.0.1 by default, but the reference docker-compose.yml ships --host 0.0.0.0 with published ports and no required HEADROOM_PROXY_TOKEN, which the server itself warns about at startup, so a deployment following the shipped compose exposes the affected data-plane routes to the network without authentication.",
+      "cvss_score": 8.6,
+      "published_date": "2026-08-21T12:16:36.813"
+    },
+    {
+      "cve_id": "CVE-2026-77776",
+      "description": "Headroom's LLM proxy derives the memory owner from the x-headroom-user-id request header. The header is read directly at several points in headroom/proxy/handlers/openai.py, including the chat completion and websocket paths, and nothing binds the value to the caller. A client can therefore name another user's identifier and read or write that user's stored LLM memory. The fix introduces a single resolve_memory_identity seam in headroom/proxy/identity.py that honors the header only for loopback or allowlisted callers and otherwise binds the identity to the proxy-token fingerprint or the operating system user. The pip console script binds 127.0.0.1 by default, but the reference docker-compose.yml ships --host 0.0.0.0 with published ports and no required HEADROOM_PROXY_TOKEN, which the server itself warns about at startup, so a deployment following the shipped compose exposes the affected data-plane routes to the network without authentication.",
+      "cvss_score": 9.1,
+      "published_date": "2026-08-21T12:16:36.967"
+    },
+    {
+      "cve_id": "CVE-2026-77806",
+      "description": "SPIP before 4.4.21 allows unauthenticated remote attackers to execute arbitrary code, as exploited in the wild in August 2026. This is related to code injection via an X-Spip-Filtre HTTP request header that is mishandled by analyse_resultat_skel.",
+      "cvss_score": 9.8,
+      "published_date": "2026-08-21T14:16:53.903"
+    },
+    {
+      "cve_id": "CVE-2026-48749",
+      "description": "Incus is a system container and virtual machine manager. Prior to version 7.2.0, a specially crafted image can be used to read or create/write arbitrary files on the host; possibly leading to arbitrary command execution. Version 7.2.0 fixes the issue.",
+      "cvss_score": 9.9,
+      "published_date": "2026-08-21T15:16:40.247"
+    },
+    {
+      "cve_id": "CVE-2026-48750",
+      "description": "Incus is a system container and virtual machine manager. Prior to version 7.2.0, the `record-output` parameter of the `/instances/$name/exec` endpoint stores the output of the command in the `exec-output` directory of the instance. If `exec-output` is a symlink, file named `exec_UUID.stdout` and `exec_UUID.stderr` can be written to an arbitrary location where the `.stdout` file will contain arbitrary content. This behavior can be abused for arbitrary command execution. Version 7.2.0 contains a patch.",
+      "cvss_score": 9.9,
+      "published_date": "2026-08-21T15:16:40.390"
+    },
+    {
+      "cve_id": "CVE-2026-48751",
+      "description": "Incus is a system container and virtual machine manager. Prior to version 7.2.0, instance snapshots ignore the `restricted.containers.lowlevel=block` setting; allowing for arbitrary command execution on the Incus server by abusing lowlevel hooks such as `raw.lxc` and `raw.qemu`. Version 7.2.0 patches the issue.",
+      "cvss_score": 9.9,
+      "published_date": "2026-08-21T15:16:40.527"
+    },
+    {
+      "cve_id": "CVE-2026-48752",
+      "description": "Incus is a system container and virtual machine manager. Prior to version 7.2.0, a specially crafted image or instance backup can be used to read or create/write arbitrary files on the host; possibly leading to arbitrary command execution. Version 7.2.0 patches the issue.",
+      "cvss_score": 9.9,
+      "published_date": "2026-08-21T15:16:40.667"
+    },
+    {
+      "cve_id": "CVE-2026-48753",
+      "description": "Incus is a system container and virtual machine manager. Prior to version 7.1.0, the S3 protocol upload endpoint is vulnerable to path traversal and allows creation of arbitrary files on the host. This behavior could lead to arbitrary command execution. Version 7.1.0 fixes the issue.",
+      "cvss_score": 9.9,
+      "published_date": "2026-08-21T15:16:40.800"
+    },
+    {
+      "cve_id": "CVE-2026-48755",
+      "description": "Incus is a system container and virtual machine manager. Prior to version 7.1.0, improper validation of user-provided backup compression algorithm leads to argument injection in the constructed command line. This leads to an arbitrary file write on the host, possibly leading to arbitrary command execution. Version 7.1.0 patches the issue.",
+      "cvss_score": 9.9,
+      "published_date": "2026-08-21T15:16:41.077"
+    },
+    {
+      "cve_id": "CVE-2026-48769",
+      "description": "Incus is a system container and virtual machine manager. Prior to version 7.2.0, an arbitrary file write exists in the Incus client when a malicious image server returns a crafted `Incus-Image-Hash` header. This can lead to arbitrary command execution as root on the server. Version 7.2.0 patches the issue.",
+      "cvss_score": 9.9,
+      "published_date": "2026-08-21T15:16:41.347"
+    },
+    {
+      "cve_id": "CVE-2026-55621",
+      "description": "Incus is a system container and virtual machine manager. Prior to version 7.2.0, missing authorization checks exist for custom volume copying where an attacker knowing the name of a project that they don't have access to and the name of a custom volume in that project can copy the custom volume to a new project. This issue could allow an attacker to access secrets in custom volumes they are not authorized to access. Version 7.2.0 patches the issue.",
+      "cvss_score": 7.7,
+      "published_date": "2026-08-21T15:16:41.863"
+    },
+    {
+      "cve_id": "CVE-2026-55622",
+      "description": "Incus is a system container and virtual machine manager. Prior to version 7.2.0, missing authorization checks exist for instance copying where an attacker knowing the name of a project that they don't have access to and the name of an instance in that project can copy the instance to a new project. This issue could allow an attacker to access secrets in instances they are not authorized to access. Version 7.2.0 patches the issue.",
+      "cvss_score": 7.7,
+      "published_date": "2026-08-21T15:16:42.003"
+    },
+    {
+      "cve_id": "CVE-2026-62867",
+      "description": "Incus is a system container and virtual machine manager. Prior to version 7.3.0, improper validation of user-provided `block.create_options` in storage volume configuration leads to argument injection in the constructed filesystem creation command line. This allows a project-scoped user to inject arbitrary arguments into the binary executed as root. Version 7.3.0 patches the issue.",
+      "cvss_score": 9.9,
+      "published_date": "2026-08-21T15:16:46.003"
+    },
+    {
+      "cve_id": "CVE-2026-62940",
+      "description": "Incus is a system container and virtual machine manager. Prior to version 7.3.0, when migrating an instance to another cluster member, user-supplied configuration overrides (including security-critical keys like `security.privileged` and `raw.lxc`) are applied without any project restriction enforcement, allowing a restricted project user to escalate to a privileged container and escape to the host. Version 7.3.0 patches the issue.",
+      "cvss_score": 9.9,
+      "published_date": "2026-08-21T15:16:46.147"
+    },
+    {
+      "cve_id": "CVE-2026-62941",
+      "description": "Incus is a system container and virtual machine manager. Prior to version 7.3.0, when copying an instance across projects, the project restriction check (`AllowInstanceCreation`) runs BEFORE the source instance's configuration is merged into the request. Dangerous configuration keys (including `security.privileged`, `raw.lxc`, `raw.apparmor`) from the source instance are merged AFTER the check passes, bypassing all project restrictions on the target project. Version 7.3.0 patches the issue.",
+      "cvss_score": 9.9,
+      "published_date": "2026-08-21T15:16:46.287"
+    },
+    {
+      "cve_id": "CVE-2026-63125",
+      "description": "Incus is a system container and virtual machine manager. Prior to version 7.3.0, an unprivileged, project-confined Incus user (a non-admin TLS/RBAC identity with `can_create_images` and `can_create_instances`) can execute arbitrary code as root on the host. A crafted image ships `backup.yaml` as a symlink to a host file. When the root daemon writes the instance's backup file, it follows the symlink. Version 7.3.0 patches the issue.",
+      "cvss_score": 9.9,
+      "published_date": "2026-08-21T15:16:46.427"
+    },
+    {
+      "cve_id": "CVE-2026-63343",
+      "description": "Incus is a system container and virtual machine manager. Prior to version 7.3.0, a malicious image containing a `metadata.yaml` symlink pointing to an arbitrary host path allows an authenticated Incus user to read or overwrite any file on the host as root via the instance metadata API. The `exec-output` and `templates/` paths were patched in a prior release using `Lstat` rejection and `os.OpenRoot` confinement; `metadata.yaml` was not included in either patch and remains exploitable. Version 7.3.0 patches the issue.",
+      "cvss_score": 9.9,
+      "published_date": "2026-08-21T15:16:46.577"
+    },
+    {
+      "cve_id": "CVE-2026-77087",
+      "description": "Paperclip before 0.3.1 in default local_trusted mode fails to validate Host headers, allowing attackers to execute arbitrary commands via DNS rebinding. An attacker can craft a malicious webpage that, when visited by a developer running Paperclip locally, uses DNS rebinding to make authenticated API requests and execute commands through the process adapter.",
+      "cvss_score": 9.6,
+      "published_date": "2026-08-21T15:16:47.290"
+    },
+    {
+      "cve_id": "CVE-2026-77814",
+      "description": "is_path_trusted in scripts/iib/api.py compares the requested path against each allowed parent directory with path.startswith(parent_path), without appending a path separator. A directory whose name merely begins with an allowed path therefore satisfies the comparison, so where /data/images is allowed a request for /data/images_private/secret.txt is treated as trusted and served by FileResponse, disclosing files the confinement was meant to exclude. Whether the check applies depends on get_enable_access_control in scripts/iib/tool.py: it returns true when IIB_ACCESS_CONTROL is set to enable, false when set to disable, and otherwise true when the host Stable Diffusion WebUI was started with share, ngrok, listen or server_name, falling back to false. Confinement is therefore active in the network-exposed WebUI deployments that rely on it, while a standalone run with no such option serves every readable file regardless of this flaw. The fix compares against parent_path joined with os.sep.",
+      "cvss_score": 7.5,
+      "published_date": "2026-08-21T15:16:47.733"
+    },
+    {
+      "cve_id": "CVE-2026-77815",
+      "description": "to_abs_path in scripts/iib/tool.py normalised the requested path with os.path.normpath, which collapses dot segments but does not resolve symbolic links. A symlink placed inside a scanned directory therefore satisfies the containment comparison performed by is_path_trusted in scripts/iib/api.py while pointing outside that directory, and FileResponse follows the link when serving the response, so a link created in an image directory and targeting a file such as /etc/passwd discloses that file. Whether the check applies depends on get_enable_access_control in scripts/iib/tool.py: it returns true when IIB_ACCESS_CONTROL is set to enable, false when set to disable, and otherwise true when the host Stable Diffusion WebUI was started with share, ngrok, listen or server_name, falling back to false. Confinement is therefore active in the network-exposed WebUI deployments that rely on it, while a standalone run with no such option serves every readable file regardless of this flaw. The fix resolves the path with os.path.realpath.",
+      "cvss_score": 7.5,
+      "published_date": "2026-08-21T15:16:47.883"
+    },
+    {
+      "cve_id": "CVE-2026-22681",
+      "description": "OpenViking before 0.3.4\u00a0contains a server-side request forgery vulnerability that allows authenticated low-privilege attackers to access internal network services by submitting arbitrary URLs to the resources API endpoint. Attackers can POST a crafted URL to /api/v1/resources, causing the server to issue outbound HEAD and GET requests with redirects enabled to loopback, RFC 1918, link-local, or cloud metadata addresses, then read back responses through normal content APIs to enumerate and interact with internal services.",
+      "cvss_score": 8.5,
+      "published_date": "2026-08-21T16:17:16.767"
+    },
+    {
+      "cve_id": "CVE-2026-49114",
+      "description": "In ONNX before 1.21.0, the 'save_external_data' function builds the external-data file path from the model's external_data location field and opens it for writing without 'O_NOFOLLOW/O_EXCL', after a non-atomic 'os.path.isfile()' check. A local attacker with write access to the directory where a victim serializes external data can deterministically pre-plant a symlink that is being followed, causing the victim's write to append to any file the victim can write, e.g. ~/.ssh/authorized_keys, cron files, or application configs. Fixed in 1.21.0.",
+      "cvss_score": 7.1,
+      "published_date": "2026-08-21T16:17:17.863"
+    },
+    {
+      "cve_id": "CVE-2026-54789",
+      "description": "mod_auth_openidc is an OpenID Certified authentication and authorization module for the Apache 2.x HTTP server that implements the OpenID Connect Relying Party functionality. Prior to 2.4.19.4, an out-of-bounds read and a one-byte out-of-bounds write exist in the state-cookie parser of `mod_auth_openidc`. The issue is fixed in version 2.4.19.4 by stopping the scan at the string terminator so a value-less token is rejected. No in-product workarounds are available. As a stop-gap, an upstream reverse proxy or WAF that rejects or normalizes malformed `Cookie` headers (tokens lacking `=`) can reduce exposure, but upgrading is the recommended remediation.",
+      "cvss_score": 7.5,
+      "published_date": "2026-08-21T16:17:19.000"
+    },
+    {
+      "cve_id": "CVE-2026-69502",
+      "description": "Server-side request forgery (ssrf) in Azure SQL Database allows an unauthorized attacker to elevate privileges over a network.",
+      "cvss_score": 10.0,
+      "published_date": "2026-08-21T16:18:07.090"
+    },
+    {
+      "cve_id": "CVE-2026-75932",
+      "description": "Jet Admin allows an attacker to create a malicious app and connect it to a target user's custom domain, edit the authentication configuration, and reroute traffic to the attacker-controlled app. Once connected to the target domain, the attacker's workspace is populated with the victim's OAuth Client ID and Client Secret if the victim is using an OAuth provider.",
+      "cvss_score": 8.6,
+      "published_date": "2026-08-21T16:18:17.717"
+    },
+    {
+      "cve_id": "CVE-2026-75933",
+      "description": "Jet Admin allows an authenticated attacker to inject JavaScript via the sign-in page's scripts and styles option. Injected script is executed in the context of any visiting user's domain.",
+      "cvss_score": 7.3,
+      "published_date": "2026-08-21T16:18:17.873"
+    },
+    {
+      "cve_id": "CVE-2026-39909",
+      "description": "llama.cpp before b8585 contains a use-after-free vulnerability in the RPC server's GRAPH_RECOMPUTE handler that allows unauthenticated remote attackers to achieve arbitrary read and write access by storing a computation graph, freeing referenced buffers, and reclaiming freed memory with attacker-controlled content. Attackers can send RPC requests to trigger re-execution of stored graphs with dangling pointers, enabling full remote code execution without requiring authentication or user interaction.",
+      "cvss_score": 8.1,
+      "published_date": "2026-08-21T17:16:30.810"
+    },
+    {
+      "cve_id": "CVE-2026-41449",
+      "description": "UAC (Unix-like Artifacts Collector) versions prior to 3.3.0 contain a command injection vulnerability in the _run_command function that allows attackers to execute arbitrary commands by injecting shell metacharacters into untrusted data such as usernames, process names, or filenames. Attackers can exploit this vulnerability through crafted evidence inputs, mounted images with hostile filenames, or tampered artifact definitions to achieve remote code execution on the analyst's host when processing evidence.",
+      "cvss_score": 7.8,
+      "published_date": "2026-08-21T18:16:48.103"
+    },
+    {
+      "cve_id": "CVE-2026-41450",
+      "description": "UAC (Unix-like Artifacts Collector) versions prior to 3.3.0 contain a command injection vulnerability in the _command_collector function where foreach command output lines are substituted directly into command strings via sed without proper escaping before being evaluated with eval. Attackers can exploit this by crafting malicious filenames or artifact definitions containing shell metacharacters such as command substitution syntax or semicolons to execute arbitrary commands on the analyst's host system.",
+      "cvss_score": 7.8,
+      "published_date": "2026-08-21T18:16:48.257"
+    },
+    {
+      "cve_id": "CVE-2026-41451",
+      "description": "UAC (Unix-like Artifacts Collector) versions prior to 3.3.0 contain a command injection vulnerability in the user substitution logic within parse_artifact.sh where usernames and home directories from /etc/passwd are substituted directly into command strings without escaping before execution via eval. Attackers can inject shell metacharacters such as command substitution syntax or semicolons through crafted usernames or home directory paths in /etc/passwd entries to execute arbitrary commands on the analyst's host system.",
+      "cvss_score": 7.8,
+      "published_date": "2026-08-21T18:16:48.400"
+    },
+    {
+      "cve_id": "CVE-2026-55241",
+      "description": "Checkmate is an open-source, self-hosted tool designed to track and monitor server hardware, uptime, response times, and incidents in real-time with beautiful visualizations. Prior to 3.9.1, the public POST /api/v1/auth/register route in server/src/api/routes/authRoutes.ts passes multipart profileImage uploads through in-memory Multer parsing before registration validation, without file-size, file-count, or MIME-type limits in server/src/api/middleware/upload.ts. An unauthenticated attacker can submit concurrent oversized files that are buffered before invalid registration or invite-token checks reject the request, exhausting memory and crashing or destabilizing the backend. This issue is fixed in version 3.9.1.",
+      "cvss_score": 7.5,
+      "published_date": "2026-08-21T18:16:48.790"
+    },
+    {
+      "cve_id": "CVE-2026-62674",
+      "description": "Omnigent is an open-source AI agent framework and meta-harness for orchestrating coding agents. Prior to 0.3.0, PUT /sessions/{session_id}/agent checks LEVEL_EDIT permission for a session but does not reject a bound shared or template agent whose agent.session_id is None. An authenticated user with edit access to a session can replace that shared agent bundle through omnigent/server/routes/sessions.py, add a stdio MCP server, and cause later sessions that use the shared agent to launch an attacker-controlled command through omnigent/tools/mcp.py. The command executes with the Omnigent runner process permissions and can expose files, credentials, workspace data, internal services, and runner availability. This issue is fixed in version 0.3.0.",
+      "cvss_score": 9.0,
+      "published_date": "2026-08-21T18:16:49.460"
+    },
+    {
+      "cve_id": "CVE-2026-62675",
+      "description": "Omnigent is an open-source AI agent framework and meta-harness for orchestrating coding agents. Prior to 0.3.0, multipart POST /v1/sessions accepts an authenticated user's agent bundle and omnigent/server/bundles.py validate_agent_bundle does not reject a tools..callable dotted Python path. omnigent/runner/tool_dispatch.py _resolve_spec_callable imports the specified module and _execute_spec_callable_tool invokes the resolved function, allowing a bundle to select subprocess.check_output and execute a local command with the runner process permissions. This can expose runner files, environment variables, credentials, workspace data, internal services, and availability without administrator access. This issue is fixed in version 0.3.0.",
+      "cvss_score": 8.8,
+      "published_date": "2026-08-21T18:16:49.603"
+    },
+    {
+      "cve_id": "CVE-2026-62676",
+      "description": "Omnigent is an open-source AI agent framework and meta-harness for orchestrating coding agents. Prior to 0.3.0, the shared shell-command parser in omnigent/policies/builtins/_shell.py fails to recognize combined interpreter flags, the timeout, nice, setsid, and stdbuf wrappers, command substitutions, and a single background control operator. A gated git push or gh write hidden with these forms produces no parsed operation, causing the github.py write_repos and write_branches allowlist and the working_dir.py workspace confinement policies to abstain and allow the command. An authenticated or prompt-injected agent can therefore push to an unauthorized repository or branch or escape the intended workspace. This issue is fixed in version 0.3.0.",
+      "cvss_score": 7.1,
+      "published_date": "2026-08-21T18:16:49.743"
+    },
+    {
+      "cve_id": "CVE-2026-62677",
+      "description": "Omnigent is an open-source AI agent framework and meta-harness for orchestrating coding agents. Prior to 0.3.0, an authenticated user can upload a session-scoped agent bundle with an absolute or traversal-containing os_env.cwd value because omnigent/spec/parser.py stores the value verbatim and omnigent/spec/validator.py does not constrain it. On a runner where OMNIGENT_RUNNER_WORKSPACE is unset, omnigent/runner/resource_registry.py preserves the attacker-controlled path and omnigent/inner/os_env.py uses the resolved path as the environment root and copytree source. The _assert_within_cwd check then treats that attacker-selected root as trusted, allowing sys_os_read, write, edit, and shell tools to access runner files and environment secrets outside the intended workspace. This issue is fixed in version 0.3.0.",
+      "cvss_score": 8.8,
+      "published_date": "2026-08-21T18:16:49.887"
+    },
+    {
+      "cve_id": "CVE-2026-71862",
+      "description": "Checkmate is an open-source, self-hosted tool designed to track and monitor server hardware, uptime, response times, and incidents in real-time with beautiful visualizations. From 3.3.0 until 3.9.2, enabling the global showURL setting causes the unauthenticated GET /api/v1/status-page/:url endpoint to return complete monitor objects from server/src/controllers/statusPageController.ts. The response includes the secret field used by HttpProvider.ts as an HTTP Authorization credential, even though BaseStatusPage.tsx does not display that value, allowing visitors to extract credentials from the JSON response and use them against monitored services. This issue is fixed in version 3.9.2.",
+      "cvss_score": 7.5,
+      "published_date": "2026-08-21T18:16:50.730"
+    },
+    {
+      "cve_id": "CVE-2026-77234",
+      "description": "Improper input validation in FreeRTOS-Kernel before 11.3.1 might allow an unprivileged task on MPU-enabled ports to execute code in privileged kernel context. To remediate this issue, users should upgrade to version\u00a011.3.1 or later.",
+      "cvss_score": 8.8,
+      "published_date": "2026-08-21T18:16:51.507"
+    },
+    {
+      "cve_id": "CVE-2026-77235",
+      "description": "Missing privilege verification in the secure context cleanup handler in FreeRTOS-Kernel before 11.3.1 might allow local users to cause a use-after-free condition in secure-world memory via the SVC handler for secure context deallocation.\u00a0To remediate this issue, users should upgrade to version\u00a011.3.1 or later.",
+      "cvss_score": 7.3,
+      "published_date": "2026-08-21T18:16:51.657"
+    },
+    {
+      "cve_id": "CVE-2026-77236",
+      "description": "Missing minimum size validation in secure context allocation in FreeRTOS-Kernel before 11.3.1 might allow local users to corrupt secure-world heap metadata via an out-of-bounds write with an undersized stack size parameter.\u00a0To remediate this issue, users should upgrade to version\u00a011.3.1 or later.",
+      "cvss_score": 7.3,
+      "published_date": "2026-08-21T18:16:51.800"
+    },
+    {
+      "cve_id": "CVE-2026-54071",
+      "description": "BabelDOC is a document translation tool. Prior to 0.6.3, BabelDOC's vendored PDF parser in babeldoc/pdfminer/cmapdb.py deserializes untrusted pickle data when CMapDB._load_data() loads CMap files. PDF-controlled Encoding or CMapName values and embedded PostScript usecmap operators can reach this sink after path separators are decoded, while _normalize_cmap_name() removes only a leading slash. Absolute paths or traversal sequences can escape the trusted CMap directories through os.path.join(), select an attacker-writable .pickle.gz file, and cause pickle.loads() to execute arbitrary Python code with the privileges of the BabelDOC process. This issue is fixed in version 0.6.3.",
+      "cvss_score": 7.8,
+      "published_date": "2026-08-21T19:17:02.720"
+    },
+    {
+      "cve_id": "CVE-2026-54682",
+      "description": "DiscordChatExporter saves Discord chat logs to a file. Prior to 2.47.2, HTML exports generated with markdown formatting disabled pass attacker-controlled content through FormatMarkdownAsync and FormatEmbedMarkdownAsync in DiscordChatExporter.Core/Exporting/MessageGroupTemplate.cshtml and render it without HTML entity encoding. The affected fields include message.Content, message.ForwardedMessage.Content, message.ReferencedMessage.Content, embed.Title, embed.Description, field.Name, and field.Value. A Discord webhook or bot can store a script payload in these fields, and the payload executes when a user exports the channel with markdown formatting disabled and opens the resulting HTML, allowing the script to read the export or alter its displayed content. This issue is fixed in version 2.47.2.",
+      "cvss_score": 8.2,
+      "published_date": "2026-08-21T19:17:03.610"
+    },
+    {
+      "cve_id": "CVE-2026-63462",
+      "description": "Unleash is an open-source feature management platform. Prior to 7.5.2, 7.6.5, and 8.0.2, the shared OpenAPI validation error path in src/lib/error/bad-data-error.ts passes a raw request value from lodash.get to JSON.stringify in genericErrorMessage and fromOpenApiValidationErrors without guarding stack exhaustion. An unauthenticated attacker can send a roughly 10 KB JSON value nested thousands of levels deep to POST /edge/validate, POST /edge/issue-token, or another OpenAPI-validated endpoint, causing RangeError: Maximum call stack size exceeded in openAPIValidationMiddleware and terminating the Node process because no uncaughtException handler recovers it. Replaying the request can sustain a complete service outage. This issue is fixed in versions 7.5.2, 7.6.5, and 8.0.2.",
+      "cvss_score": 7.5,
+      "published_date": "2026-08-21T19:17:31.927"
+    },
+    {
+      "cve_id": "CVE-2026-27462",
+      "description": "Combodo iTop is a web based IT service management tool. Prior to 3.2.3, iTop returns different responses for valid/invalid usernames depending on multiple factors in the reset password mechanism, leading to user enumeration. This issue has been fixed in version 3.2.3.",
+      "cvss_score": 7.5,
+      "published_date": "2026-08-21T20:16:33.870"
+    },
+    {
+      "cve_id": "CVE-2026-27490",
+      "description": "Combodo iTop is a web based IT service management tool. Prior to 3.2.3, inline images that are accessible without being authenticated are protected by a weak 24-bit pseudo-random secret. This issue has been fixed in version 3.2.3.",
+      "cvss_score": 7.5,
+      "published_date": "2026-08-21T20:16:34.157"
+    },
+    {
+      "cve_id": "CVE-2026-30819",
+      "description": "Combodo iTop is a web based IT service management tool. Prior to 3.2.3, iTop has a reflected Cross-Site Scripting (XSS) vulnerability in its dashboard revert functionality with the parameter dashboard_id in /pages/ajax.render.php. This issue has been fixed in version 3.2.3.",
+      "cvss_score": 7.3,
+      "published_date": "2026-08-21T20:16:34.313"
+    },
+    {
+      "cve_id": "CVE-2026-30866",
+      "description": "Combodo iTop is a web based IT service management tool. Prior to 3.2.3, unauthenticated users can access uploaded sensitive via sniffed url. This issue has been fixed in version 3.2.3.",
+      "cvss_score": 7.5,
+      "published_date": "2026-08-21T20:16:34.453"
+    },
+    {
+      "cve_id": "CVE-2026-62960",
+      "description": "Git for Windows is the Windows port of Git. Prior to 2.55.0.windows.4, a malicious remote Git server can advertise a bundle URI that reaches transport_get_remote_bundle_uri(), fetch_bundle_uri_internal(), and copy_uri_to_file() in bundle-uri.c during clone or fetch when transfer.bundleuri=true. Non-HTTP(S) values are treated as local filesystem paths, and file URI prefixes are removed, so a bare UNC path or file URI targeting an attacker-controlled share causes Windows to initiate an outbound SMB connection. This can expose NTLM authentication material to the attacker-selected host. This issue is fixed in version 2.55.0.windows.4.",
+      "cvss_score": 7.4,
+      "published_date": "2026-08-21T20:16:38.700"
+    },
+    {
+      "cve_id": "CVE-2026-77810",
+      "description": "In the Neptune connector, a user with access to Neptune through Athena Federated Query could gain access to properties in the Lambda supplying the compute for the connector. To remediate this issue, users should upgrade to aws-athena-query-federation v2026.30.1 or later.",
+      "cvss_score": 9.9,
+      "published_date": "2026-08-21T20:16:45.530"
+    },
+    {
+      "cve_id": "CVE-2026-30826",
+      "description": "Combodo iTop is a web based IT service management tool. Prior to 3.2.3, there is a Reflected Cross-Site Scripting (XSS) vulnerability in the testing OQL query functionality. This issue has been fixed in version 3.2.3.",
+      "cvss_score": 8.0,
+      "published_date": "2026-08-21T21:16:56.830"
+    },
+    {
+      "cve_id": "CVE-2026-30865",
+      "description": "Combodo iTop is a web based IT service management tool. Prior to 3.2.3, there is a Reflected Cross-Site Scripting (XSS) vulnerability in the dashboard save functionality. This issue has been fixed in version 3.2.3.",
+      "cvss_score": 7.1,
+      "published_date": "2026-08-21T21:16:56.970"
+    },
+    {
+      "cve_id": "CVE-2026-30890",
+      "description": "Combodo iTop is a web based IT service management tool. Prior to 3.2.3, there is a Reflected Cross-Site Scripting (XSS) vulnerability in the synchro import script. This issue has been fixed in version 3.2.3.",
+      "cvss_score": 8.0,
+      "published_date": "2026-08-21T21:16:57.103"
+    },
+    {
+      "cve_id": "CVE-2026-31803",
+      "description": "Combodo iTop is a web based IT service management tool. Prior to 3.2.3, 3.2.3, there is a Reflected Cross-Site Scripting (XSS) vulnerability in pages/tagadmin.php. This issue has been fixed in version 3.2.3.",
+      "cvss_score": 8.0,
+      "published_date": "2026-08-21T21:16:57.250"
+    },
+    {
+      "cve_id": "CVE-2026-31880",
+      "description": "Combodo iTop is a web based IT service management tool. Prior to 3.2.3, there is a Reflected Cross-Site Scripting (XSS) vulnerability in the universal search. This issue has been fixed in version 3.2.3.",
+      "cvss_score": 8.0,
+      "published_date": "2026-08-21T21:16:57.403"
+    },
+    {
+      "cve_id": "CVE-2026-50538",
+      "description": "LibVNCClient is a library for easy implementation of a VNC client. In versions 0.9.12 through 0.9.15, a malicious (or man-in-the-middle) VNC server can force a connecting `libvncclient` to write attacker-controlled data past the end of its framebuffer. This is an out-of-bounds heap write with attacker-controlled length, contents, and offset. It needs no authentication (the attacker\nis the server), works in a default build with default settings, and fires from a single `FramebufferUpdate` the moment the victim connects. It crashes any client unconditionally (denial of service); we also demonstrated it overwriting an application callback pointer and redirecting execution to attacker-chosen code (code execution) under the default configuration. Commit 540332be3e0acc566fa64da6f1b4680c72c724dd patches the issue.",
+      "cvss_score": 8.8,
+      "published_date": "2026-08-21T21:16:59.807"
+    },
+    {
+      "cve_id": "CVE-2026-54457",
+      "description": "TensorZero is an open-source LLMOps platform that unifies an LLM gateway, observability, evaluation, optimization, and experimentation. Prior to 2026.6.0, the TensorZero Gateway /internal/object_storage endpoint accepts a caller-supplied JSON storage_path parameter that dynamically overrides the [object_storage] configuration. Selecting the filesystem storage type allows arbitrary files on the gateway filesystem to be read, including credential files. Selecting the s3_compatible storage type causes outbound object-storage requests to attacker-chosen internal or cloud-metadata endpoints. Exploitation requires access to the gateway, which can be authenticated or unauthenticated depending on deployment configuration. This issue is fixed in version 2026.6.0.",
+      "cvss_score": 7.7,
+      "published_date": "2026-08-21T21:17:00.267"
+    },
+    {
+      "cve_id": "CVE-2026-61539",
+      "description": "Xinference is an inference API for running open-source, speech, and multimodal models. In 2.5.0 and earlier, Xinference passes attacker-influenced Llama3 tool-call output to eval() in xinference/model/llm/tool_parsers/llama3_tool_parser.py and xinference/model/llm/utils.py. Requests to /v1/chat/completions with a tools field flow through xinference/api/restful_api.py, xinference/model/llm/transformers/core.py, handle_chat_result_non_streaming(), and _post_process_completion() before extract_tool_calls() or _eval_llama3_chat_arguments() evaluates the model-generated Python expression. An unauthenticated remote attacker can influence that output through a crafted prompt and execute commands in the Xinference server process context. This issue is fixed in version 2.7.0.",
+      "cvss_score": 10.0,
+      "published_date": "2026-08-21T21:17:00.867"
+    },
+    {
+      "cve_id": "CVE-2026-61824",
+      "description": "Defuddle cleans up HTML pages. Prior to 0.19.1, site extractors interpolate page-derived image alt and src values, og:image values, and video descriptions into HTML strings without context-appropriate escaping, and buildExtractorResponse() returns this contentHtml without the main pipeline's DOM-based sanitization. The affected paths include src/extractors/x-article.ts, src/extractors/substack.ts, and src/extractors/youtube.ts. A malicious page or attacker-controlled content on a matching domain can inject event-handler attributes or javascript URLs that execute when a victim or downstream application renders the extracted HTML. This issue is fixed in version 0.19.1.",
+      "cvss_score": 8.2,
+      "published_date": "2026-08-21T21:17:01.017"
+    },
+    {
+      "cve_id": "CVE-2026-62283",
+      "description": "Nezha Monitoring is a self-hostable, lightweight, servers and websites monitoring and O&M tool. Nezha versions 1.14.13 through 1.14.14 and 2.0.0 through 2.0.9 do not bind stream identifiers created by CreateStream in service/rpc/io_stream.go to their creating user, and `GET /ws/terminal/:id` and `GET /ws/file/:id` only check whether the supplied UUID exists. An authenticated RoleMember who obtains a live stream UUID from logs, browser history, referer data, or telemetry can attach to another user's terminal or file-manager session, read and write target-server files, and execute shell commands. This issue is fixed in version 2.0.10.",
+      "cvss_score": 9.9,
+      "published_date": "2026-08-21T21:17:01.183"
+    },
+    {
+      "cve_id": "CVE-2026-62316",
+      "description": "Microsoft UFO open-source framework for intelligent automation across devices and platforms. Prior to 3.0.8, ufo/client/mcp/http_servers/linux_mcp_server.py binds a FastMCP streamable HTTP server to localhost:8010 but does not validate the Host, Origin, or Sec-Fetch-Site headers. An attacker-controlled web page can use DNS rebinding to reach the local /mcp endpoint, enumerate tool schemas through tools/list, and invoke execute_command with a valid UFO_MCP_API_KEY to read files or execute allowed operating system commands as the victim's user. This issue is fixed in version 3.0.8.",
+      "cvss_score": 8.8,
+      "published_date": "2026-08-21T21:17:01.350"
+    },
+    {
+      "cve_id": "CVE-2026-63135",
+      "description": "YOURLS is a self-hosted, customizable URL shortener written in PHP. From 1.5.1 until 1.10.4, YOURLS stores the HTTP Referer header through yourls_get_referrer(), yourls_sanitize_url_safe(), and yourls_log_redirect(), then aggregates the value in yourls-infos.php and passes the derived domain through yourls_get_domain(), yourls_stats_pie(), and yourls_google_array_to_data_table(). The chart builder concatenates labels into inline JavaScript without JavaScript-string escaping, so an unauthenticated attacker can poison the statistics of an existing short URL with a crafted referrer. When an administrator or public stats-page viewer opens the affected statistics page, attacker-controlled JavaScript executes in the YOURLS origin and can access admin-visible data, the API signature token, and privileged same-origin actions. This issue is fixed in version 1.10.4.",
+      "cvss_score": 8.2,
+      "published_date": "2026-08-21T21:17:01.493"
+    },
+    {
+      "cve_id": "CVE-2026-63421",
+      "description": "Keystone is a content management system for Node.js. Prior to 6.5.3, the findMany resolver in packages/core/src/lib/core/queries/resolvers.ts compares the signed take argument directly with graphql.maxTake, allowing a remote unauthenticated GraphQL client to provide a negative take value whose magnitude exceeds the configured bound. The bypass also applies to relationship queries and can return more records than the developer intended, potentially exhausting service resources. This issue is fixed in version 6.5.3.",
+      "cvss_score": 7.5,
+      "published_date": "2026-08-21T21:17:01.643"
+    },
+    {
+      "cve_id": "CVE-2026-64679",
+      "description": "Atlantis is a self-hosted golang application that listens for Terraform pull request events via webhooks. From 0.19.8 until 0.45.0, Atlantis does not consistently validate user-controlled workspace values supplied through accepted repository-level atlantis.yaml configuration or authenticated /api/plan input before joining them into local workspace paths. Traversal segments can escape the intended per-pull workspace directory and cause clone preparation or other working-directory code paths to call os.RemoveAll, os.MkdirAll, or related filesystem operations on out-of-bounds directories before Terraform rejects the invalid workspace name. This can create, delete, or reuse writable paths with the privileges of the Atlantis process, causing integrity loss or denial of service. This issue is fixed in version 0.45.0.",
+      "cvss_score": 8.1,
+      "published_date": "2026-08-21T21:17:01.920"
+    },
+    {
+      "cve_id": "CVE-2026-68508",
+      "description": "Hydra is a framework for elegantly configuring complex applications. Prior to 1.3.4, hydra.utils.instantiate() resolves and calls Python objects selected by configuration through _resolve_target() in hydra/_internal/instantiate/_instantiate2.py, allowing attacker-controlled target values and arguments to choose dangerous callables. A consuming application, library, CLI workflow, or model loader that passes untrusted configuration, CLI overrides, or model metadata into hydra.utils.instantiate() can therefore execute arbitrary code in its own process, including reading or modifying files and credentials or terminating the process. Version 1.3.4 adds target blocking with an explicit HYDRA_INSTANTIATE_ALLOWLIST_OVERRIDE escape hatch. This issue is fixed in version 1.3.4.",
+      "cvss_score": 7.8,
+      "published_date": "2026-08-21T21:17:02.963"
+    },
+    {
+      "cve_id": "CVE-2026-76904",
+      "description": "GeoTools is an open source Java library that provides tools for geospatial data. Starting in version 30.5 and prior to versions 33.6, 34.5, and 33.6, an SQL Injection Vulnerability is present when executing OGC Filters with PostGIS DataStore implementation: `jsonArrayContains` function; Requires PostGIS 12 or greater with a String or JSON field. For PostGIS 12 and greater `jsonArrayContains(<column>, <pointer>, <value>)` function writes `<value>` into generated SQL without escaping. Patches are available in versions 33.6, 34.5, and 33.6. No known workaround is available. To limit scope of SQL Injection the PostGIS connection pool should be configured with limited rights.",
+      "cvss_score": 9.8,
+      "published_date": "2026-08-21T21:17:06.143"
+    },
+    {
+      "cve_id": "CVE-2026-76905",
+      "description": "kin-openapi is a Go project for handling OpenAPI files. From 0.10.0 until 0.141.0, openapi3filter.convertParseError in openapi3filter/validation_error_encoder.go dereferences e.Parameter.In without checking whether e.Parameter is nil. A malformed non-string scalar field in a multipart/form-data request body produces a nested ParseError with a nil RequestError.Parameter, and applications that render the validation error through openapi3filter.ConvertErrors or ValidationErrorEncoder panic. An unauthenticated client can repeatedly send such requests to deny service when the application lacks a recovery boundary. JSON request bodies and applications that do not use these error-rendering helpers are not affected. This issue is fixed in version 0.141.0.",
+      "cvss_score": 7.5,
+      "published_date": "2026-08-21T21:17:06.320"
+    },
+    {
+      "cve_id": "CVE-2026-77219",
+      "description": "GNU Emacs before 31.0.91 contains an integer overflow in the PBM/PPM/PGM image loader that allows an attacker to leak heap memory contents by supplying a crafted image with large dimensions and an elevated max color index. The image loader multiplies image dimensions and channel count using signed integer arithmetic; for sufficiently large values, the result wraps to a negative number, bypassing the bounds check and causing the pixel reader to access heap memory past the end of the allocated buffer. The over-read contents are interpreted as pixel color values and rendered on screen.",
+      "cvss_score": 7.1,
+      "published_date": "2026-08-21T21:17:06.590"
+    },
+    {
+      "cve_id": "CVE-2026-77811",
+      "description": "Improper input validation in the dashboards-observability plugin in OpenSearch Dashboards allows a remote authenticated user with write permissions to OpenSearch Dashboards saved objects to execute arbitrary JavaScript in the context of other users' browser sessions by uploading a saved asset with arbitrary web content.",
+      "cvss_score": 8.7,
+      "published_date": "2026-08-21T21:17:08.903"
+    },
+    {
+      "cve_id": "CVE-2026-31936",
+      "description": "Combodo iTop is a web based IT service management tool. Prior to 3.2.3, users can access to unauthorized object information through the search operation. This issue has been fixed in version 3.2.3.",
+      "cvss_score": 8.8,
+      "published_date": "2026-08-21T22:16:36.553"
+    },
+    {
+      "cve_id": "CVE-2026-33240",
+      "description": "Combodo iTop is a web based IT service management tool. Prior to 3.2.3, there was a Reflected Cross-Site Scripting (XSS) vulnerability in the foreign key search criteria API. This issue has been fixed in version 3.2.3.",
+      "cvss_score": 8.8,
+      "published_date": "2026-08-21T22:16:36.863"
+    },
+    {
+      "cve_id": "CVE-2026-34741",
+      "description": "Combodo iTop is a web based IT service management tool. Prior to 3.2.3, authentication bypass allows unauthenticated remote attackers to execute arbitrary PHP files from the env-production directory on a new iTop instance in the production environment. This issue has been fixed in version 3.2.3.",
+      "cvss_score": 8.6,
+      "published_date": "2026-08-21T22:16:37.143"
+    },
+    {
+      "cve_id": "CVE-2026-49849",
+      "description": "xShop is an open-source shop developed in Laravel. An Unrestricted File Upload vulnerability in xShop version 3.0.3 allows an authenticated administrator to upload executable files (e.g., .php). By uploading a specially crafted php file, an attacker can achieve Remote Code Execution (RCE) on the server, leading to a full system compromise. Version 3.0.4 fixes the issue.",
+      "cvss_score": 9.1,
+      "published_date": "2026-08-21T22:16:38.300"
+    },
+    {
+      "cve_id": "CVE-2026-53527",
+      "description": "LeafWiki is a self-hosted wiki. Versions 0.1.0 through 0.10.0 have a privilege escalation vulnerability in the user update API. An authenticated user could update their own account role and escalate privileges from a regular user, such as `viewer`, to `admin`. Exploitation requires a valid authenticated LeafWiki user account. Instances without public registration and with only trusted users are at lower practical risk. Users should update to version 0.10.1 or greater. Until a patch is available, operators should restrict account creation and ensure that only trusted users have accounts on affected LeafWiki instances. If possible, access to the user update API should be restricted to trusted users or administrators only.",
+      "cvss_score": 8.8,
+      "published_date": "2026-08-21T22:16:39.147"
+    },
+    {
+      "cve_id": "CVE-2026-53528",
+      "description": "LeafWiki is a self-hosted wiki. Versions 0.3.0 through 0.10.0 have a path traversal vulnerability in LeafWiki\u2019s asset rename functionality. An authenticated user with editor permissions could move files that are accessible to the LeafWiki server process into a page\u2019s asset directory. This could allow sensitive local files, such as the application database, to become downloadable as page assets. Users should update to version 0.10.1 or greater. As an additional mitigation, operators should ensure that the LeafWiki process runs with the least privileges necessary and does not have filesystem access to sensitive files outside the application\u2019s required directories. Until a patch is applied, operators may reduce risk by restricting editor access to trusted users only and by limiting the filesystem permissions of the LeafWiki process.",
+      "cvss_score": 8.8,
+      "published_date": "2026-08-21T22:16:39.290"
+    },
+    {
+      "cve_id": "CVE-2026-34948",
+      "description": "Combodo iTop is a web based IT service management tool. Prior to 3.2.3, only classes present in the SELECT clause are protected by the silos access check in OQL. This issue has been fixed in version 3.2.3.",
+      "cvss_score": 7.7,
+      "published_date": "2026-08-21T23:16:24.153"
+    },
+    {
+      "cve_id": "CVE-2026-53525",
+      "description": "WeeChat (Wee Enhanced Environment for Chat) is a free chat client. In versions 0.3.1 through 4.9.0, the WeeChat relay authentication uses non-constant-time string comparison functions (weechat_strcasecmp and strcmp) to verify password hashes and plaintext passwords. An attacker can exploit timing differences to extract the server-computed hash character by character, then authenticate using the correct hash without knowing the password. Version 4.9.1 fixes the issue.",
+      "cvss_score": 7.4,
+      "published_date": "2026-08-21T23:16:26.363"
+    },
+    {
+      "cve_id": "CVE-2026-19883",
+      "description": "The WPeMatico RSS Feed Fetcher plugin for WordPress is vulnerable to unauthorized modification of data that can lead to privilege escalation due to a missing capability check on the wpematico_import_settings function in all versions up to, and including, 2.8.24. This makes it possible for authenticated attackers, with subscriber-level access and above, to update arbitrary options on the WordPress site. This can be leveraged to update the default role for registration to administrator and enable user registration for attackers to gain administrative user access.",
+      "cvss_score": 8.8,
+      "published_date": "2026-08-22T03:16:20.833"
+    }
+  ],
+  "new_kev_entries": [
+    {
+      "cveID": "CVE-2026-73570",
+      "vendorProject": "Synacor",
+      "product": "Zimbra Collaboration Suite (ZCS)",
+      "vulnerabilityName": "Zimbra Collaboration Suite (ZCS) OS Command Injection Vulnerability",
+      "dateAdded": "2026-08-21",
+      "shortDescription": "Zimbra Collaboration Suite (ZCS) contains an OS command injection vulnerability which could allow an unauthenticated attacker to send specially crafted SMTP requests that may result in execution of arbitrary operating system commands as the Zimbra user.",
+      "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA\u2019s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA\u2019s \u201cForensics Triage Requirements\u201d (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "dueDate": "2026-08-24",
+      "knownRansomwareCampaignUse": "Unknown",
+      "notes": "https://wiki.zimbra.com/wiki/Zimbra_Security_Advisories ; https://blog.zimbra.com/2026/07/patch-release-update-zimbra-10-1-20/ ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-73570",
+      "cwes": [
+        "CWE-78"
+      ]
+    },
+    {
+      "cveID": "CVE-2026-72530",
+      "vendorProject": "TrueConf",
+      "product": "Server",
+      "vulnerabilityName": "TrueConf Server Code Injection Vulnerability",
+      "dateAdded": "2026-08-20",
+      "shortDescription": "TrueConf Server contains a code injection vulnerability that could allow an unauthorized remote attacker with network access via port 4307/TCP to use a specially crafted script to break out of the isolated environment and execute arbitrary code on the host system.",
+      "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA\u2019s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA\u2019s \u201cForensics Triage Requirements\u201d (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "dueDate": "2026-09-03",
+      "knownRansomwareCampaignUse": "Unknown",
+      "notes": "https://trueconf.com/blog/news/security-fixes-updates-and-advisories ; https://ics-cert.kaspersky.com/advisories/2026/08/11/trueconf-server-breakout-from-isolated-environment/ ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-72530",
+      "cwes": [
+        "CWE-94"
+      ]
+    },
+    {
+      "cveID": "CVE-2026-72529",
+      "vendorProject": "TrueConf",
+      "product": "Server",
+      "vulnerabilityName": "TrueConf Server Missing Authentication for Critical Function Vulnerability",
+      "dateAdded": "2026-08-20",
+      "shortDescription": "TrueConf Server contains a missing authentication for critical function vulnerability which could allow a remote unauthorized attacker with network access via port 4307/TCP to execute an arbitrary script.",
+      "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA\u2019s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA\u2019s \u201cForensics Triage Requirements\u201d (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "dueDate": "2026-08-23",
+      "knownRansomwareCampaignUse": "Unknown",
+      "notes": "https://trueconf.com/blog/news/security-fixes-updates-and-advisories ; https://ics-cert.kaspersky.com/advisories/2026/08/11/trueconf-server-missing-authentication-for-critical-function/ ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-72529",
+      "cwes": [
+        "CWE-306"
+      ]
+    },
+    {
+      "cveID": "CVE-2026-64849",
+      "vendorProject": "MLflow",
+      "product": "MLflow",
+      "vulnerabilityName": "MLflow Server-Side Request Forgery Vulnerability",
+      "dateAdded": "2026-08-19",
+      "shortDescription": "MLflow contains a server-side request forgery vulnerability that can allow attackers to reach internal or cloud metadata services and receive response_status and response_body.",
+      "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA\u2019s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA\u2019s \u201cForensics Triage Requirements\u201d (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "dueDate": "2026-09-02",
+      "knownRansomwareCampaignUse": "Unknown",
+      "notes": "https://github.com/mlflow/mlflow/pull/24258 ; https://github.com/mlflow/mlflow/issues/24179 ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-64849",
+      "cwes": [
+        "CWE-918"
+      ]
+    },
+    {
+      "cveID": "CVE-2026-33824",
+      "vendorProject": "Microsoft",
+      "product": "Internet Key Exchange (IKE) Service Extensions",
+      "vulnerabilityName": "Microsoft Internet Key Exchange (IKE) Service Extensions Double Free Vulnerability",
+      "dateAdded": "2026-08-18",
+      "shortDescription": "Microsoft Internet Key Exchange (IKE) Service Extensions contains a double free vulnerability that could enable remote code execution.",
+      "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA\u2019s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA\u2019s \u201cForensics Triage Requirements\u201d (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "dueDate": "2026-08-21",
+      "knownRansomwareCampaignUse": "Unknown",
+      "notes": "https://msrc.microsoft.com/update-guide/en-US/vulnerability/CVE-2026-33824 ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-33824",
+      "cwes": [
+        "CWE-415"
+      ]
+    },
+    {
+      "cveID": "CVE-2026-59310",
+      "vendorProject": "Broadcom",
+      "product": "VMware vCenter",
+      "vulnerabilityName": "Broadcom VMware vCenter Path Traversal Vulnerability",
+      "dateAdded": "2026-08-18",
+      "shortDescription": "Broadcom VMware vCenter contains a path traversal vulnerability which could allow a threat actor with network access to vCenter to execute arbitrary code.",
+      "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA\u2019s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA\u2019s \u201cForensics Triage Requirements\u201d (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "dueDate": "2026-08-21",
+      "knownRansomwareCampaignUse": "Unknown",
+      "notes": "https://support.broadcom.com/web/ecx/support-content-notification/-/external/content/SecurityAdvisories/0/38017 ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-59310",
+      "cwes": [
+        "CWE-22"
+      ]
+    },
+    {
+      "cveID": "CVE-2026-55040",
+      "vendorProject": "Microsoft",
+      "product": "SharePoint",
+      "vulnerabilityName": "Microsoft SharePoint Weak Authentication Vulnerability",
+      "dateAdded": "2026-08-18",
+      "shortDescription": "Microsoft SharePoint contains a weak authentication vulnerability which allows an unauthorized attacker to bypass a security feature over a network.",
+      "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA\u2019s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA\u2019s \u201cForensics Triage Requirements\u201d (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "dueDate": "2026-08-21",
+      "knownRansomwareCampaignUse": "Unknown",
+      "notes": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-55040 ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-55040",
+      "cwes": [
+        "CWE-1390"
+      ]
+    },
+    {
+      "cveID": "CVE-2026-65400",
+      "vendorProject": "Apple",
+      "product": "macOS",
+      "vulnerabilityName": "Apple macOS Improper Authentication Vulnerability",
+      "dateAdded": "2026-08-18",
+      "shortDescription": "Apple macOS contains an improper authentication vulnerability that could allow an attacker on the network to authenticate to Screen Sharing without valid credentials.",
+      "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA\u2019s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA\u2019s \u201cForensics Triage Requirements\u201d (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "dueDate": "2026-08-21",
+      "knownRansomwareCampaignUse": "Unknown",
+      "notes": "https://support.apple.com/en-us/148170; https://support.apple.com/en-us/148171; https://support.apple.com/en-us/148172 ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-65400",
+      "cwes": [
+        "CWE-287"
+      ]
+    },
+    {
+      "cveID": "CVE-2025-62593",
+      "vendorProject": "Ray-Project",
+      "product": "Ray",
+      "vulnerabilityName": "Ray-Project Ray Code Injection Vulnerability",
+      "dateAdded": "2026-08-17",
+      "shortDescription": "Ray-Project Ray contains a code injection vulnerability that could allow remote code execution. Developers using Ray as a development tool may be exposed to this vulnerability exploitable through Firefox and Safari.",
+      "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA\u2019s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA\u2019s \u201cForensics Triage Requirements\u201d (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "dueDate": "2026-08-20",
+      "knownRansomwareCampaignUse": "Unknown",
+      "notes": "https://github.com/ray-project/ray/security/advisories/GHSA-q279-jhrf-cc6v ; https://github.com/ray-project/ray/commit/70e7c72780bdec075dba6cad1afe0832772bfe09 ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2025-62593",
+      "cwes": [
+        "CWE-94",
+        "CWE-352"
+      ]
+    }
+  ],
+  "monitored_hits": [],
+  "total_kev_count": 1674,
+  "executive_summary": "",
+  "action_items": [],
+  "risk_narrative": "",
+  "pipeline_errors": [
+    "summarizer failed: Error code: 404 - {'type': 'error', 'error': {'type': 'not_found_error', 'message': 'model: claude-sonnet-4-20250514'}, 'request_id': 'req_011CeHUE8773cBzoFU9EDf9W'}"
+  ]
+}
