@@ -1,0 +1,380 @@
+{
+  "run_date": "2026-08-24",
+  "run_timestamp": "2026-08-24T08:45:43Z",
+  "high_severity_cves": [
+    {
+      "cve_id": "CVE-2026-10053",
+      "description": "GitLab has remediated an issue in GitLab CE/EE affecting all versions from 18.8 before 19.0.6, 19.1 before 19.1.4, and 19.2 before 19.2.2 that under certain conditions could have allowed an authenticated user to achieve remote code execution due to a path traversal vulnerability in the package registry.",
+      "cvss_score": 8.5,
+      "published_date": "2026-08-23T10:16:27.140"
+    },
+    {
+      "cve_id": "CVE-2026-78155",
+      "description": "privilege escalation in StackGres operator allows a low-privilege tenant who owns a database to gain administrator privileges",
+      "cvss_score": 9.9,
+      "published_date": "2026-08-23T10:16:28.757"
+    },
+    {
+      "cve_id": "CVE-2026-4671",
+      "description": "justhtml before 1.18.0 contains multiple low-severity denial-of-service issues in CSS selector handling and linkification. Applications that evaluate attacker-controlled selector strings (via query(), matches(), or selector-based transforms), run selector matching over very large untrusted documents, construct DOM trees from untrusted structure, or enable linkification over attacker-controlled text may consume disproportionate CPU or memory. Triggers include oversized selectors, large selector lists, oversized compound selectors, long combinator chains, deeply nested functional pseudo-classes, repeated token/positional matching, cyclic DOM graphs causing non-terminating traversal, and punctuation-heavy or trailing-bracket linkification input. These are availability-only concerns and do not by themselves allow script execution, data disclosure, or sanitizer bypass. Default JustHTML(sanitize=True) usage is not expected to be exposed, since selectors are normally supplied by application code.",
+      "cvss_score": 7.5,
+      "published_date": "2026-08-23T14:16:53.293"
+    },
+    {
+      "cve_id": "CVE-2026-5388",
+      "description": "justhtml before 1.15.0 contains multiple security issues in URL sanitization helpers (clean_url_value/clean_url_in_js_string), HTML serialization, Markdown passthrough (html_passthrough=True), and several custom sanitization-policy edge cases. Depending on configuration, an attacker can bypass sanitization to inject active HTML and JavaScript \u2014 for example via encoded javascript: URLs, backslash-based relative URLs resolved as remote hosts, markup-breaking programmatic element/attribute names or HTML comments, raw </textarea> reintroduction through Markdown passthrough, or preserved <style>/<meta http-equiv=refresh>/<base href> tags in custom policies. Most custom-policy issues do not affect the default sanitize=True configuration; they primarily affect helper APIs, programmatic DOM construction, html_passthrough=True, and custom policies/transform pipelines.",
+      "cvss_score": 9.8,
+      "published_date": "2026-08-23T14:16:53.470"
+    },
+    {
+      "cve_id": "CVE-2026-7808",
+      "description": "justhtml before 1.16.0 contains multiple HTML sanitization bypass issues that can allow active/dangerous content (e.g., script or style) to survive sanitization, potentially leading to cross-site scripting. The issues primarily affect advanced usage rather than the default JustHTML(..., sanitize=True) path for ordinary parsed HTML: mutating or reusing sanitization policy objects (including exported defaults) could weaken later sanitization; programmatic DOM input to sanitize()/sanitize_dom() could miss mixed-case tag names (e.g., ScRiPt, StYlE); crafted programmatic doctype names could serialize into active markup; and custom policies preserving SVG or MathML could allow animation elements, presentation attributes with external url(...) references, or DOM trees mislabeled as namespace=\"html\" to bypass foreign-content checks. Fixed in 1.16.0.",
+      "cvss_score": 9.8,
+      "published_date": "2026-08-23T14:16:54.810"
+    },
+    {
+      "cve_id": "CVE-2026-8445",
+      "description": "justhtml versions <= 1.11.0 (fixed in 1.12.0) do not sufficiently escape HTML-significant characters (angle brackets) in text nodes when converting a parsed document to Markdown via to_markdown(). While a small set of Markdown metacharacters are escaped, characters such as < and > are preserved, so untrusted input that is safe in to_html() \u2014 including entity-decoded text (e.g. &lt;script&gt;) or text from RCDATA/RAWTEXT-parsed elements like <title>, <textarea>, <noscript>, and <plaintext> \u2014 can be emitted as raw HTML in the Markdown output, enabling a sanitizer bypass and potential cross-site scripting when that output is rendered.",
+      "cvss_score": 9.8,
+      "published_date": "2026-08-23T14:16:54.957"
+    },
+    {
+      "cve_id": "CVE-2026-9769",
+      "description": "justhtml through 1.9.1 (fixed in 1.10.0) is vulnerable to uncontrolled recursion leading to denial of service. During JustHTML() construction, TreeBuilder.finish() unconditionally calls _populate_selectedcontent(), which recursively traverses the DOM tree via _find_elements()/_find_element() without a depth bound. An attacker who can supply HTML for parsing can provide deeply nested elements (e.g., ~1000 nested <div> tags, roughly 11 KB) to exceed CPython's default recursion limit and trigger an unhandled RecursionError, which may abort parsing, fail requests, or terminate a worker/process depending on the host application's exception handling.",
+      "cvss_score": 7.5,
+      "published_date": "2026-08-23T14:16:55.277"
+    },
+    {
+      "cve_id": "CVE-2026-78141",
+      "description": "A vulnerability has been found in Tenda CH22 1.0.0.1. This affects the function formexeCommand of the file /goform/exeCommand. The manipulation of the argument cmdinput leads to command injection. The attack may be initiated remotely. The exploit has been disclosed to the public and may be used.",
+      "cvss_score": 7.4,
+      "published_date": "2026-08-23T22:16:32.667"
+    },
+    {
+      "cve_id": "CVE-2026-78143",
+      "description": "A vulnerability was determined in code-projects Barangay Resident Profiling Management System 1.0. Affected is an unknown function of the file residents.php of the component Resident Search Functionality. This manipulation of the argument Search causes sql injection. Remote exploitation of the attack is possible. The exploit has been publicly disclosed and may be utilized.",
+      "cvss_score": 7.3,
+      "published_date": "2026-08-23T23:16:44.810"
+    },
+    {
+      "cve_id": "CVE-2026-78147",
+      "description": "A vulnerability was found in ggml-org llama.cpp bec4772f6. The impacted element is the function deserialize_tensor of the file ggml/src/ggml-rpc/ggml-rpc.cpp of the component ggml-RPC Server. Performing a manipulation of the argument op/op_params results in deserialization. The attack may be initiated remotely. This vulnerability is distinct from CVE-2026-34159 (GHSA-j8rj-fmpv-wcxw, PR #20908), which only added a buffer==nullptr rejection in create_node() and does not validate op or op_params. The reported GitHub issue was closed automatically due to inactivity.",
+      "cvss_score": 7.3,
+      "published_date": "2026-08-23T23:16:46.243"
+    },
+    {
+      "cve_id": "CVE-2026-78154",
+      "description": "A vulnerability was identified in the-momentum open-wearables up to 0.6.2. This impacts the function redeem_invitation_code of the file backend/app/api/routes/v1/user_invitation_code.py of the component Public Invitation-Code Redemption Endpoint. The manipulation of the argument code leads to missing authentication. Remote exploitation of the attack is possible. The project was informed of the problem early through an issue report but has not responded yet.",
+      "cvss_score": 7.3,
+      "published_date": "2026-08-24T00:16:47.200"
+    },
+    {
+      "cve_id": "CVE-2026-78156",
+      "description": "A security vulnerability has been detected in Open5GS 2.8.0. Affected by this issue is the function hss_ogs_diam_s6a_air_cb of the file src/hss/hss-s6a-path.c of the component S6a Authentication-Information-Request Handler. Such manipulation of the argument Visited-PLMN-Id leads to heap-based buffer overflow. The attack may be performed from remote. The name of the patch is a9c82ee0b590d76a581b0580cb46b598984e2392. A patch should be applied to remediate this issue.",
+      "cvss_score": 7.4,
+      "published_date": "2026-08-24T00:16:47.367"
+    },
+    {
+      "cve_id": "CVE-2026-78157",
+      "description": "A vulnerability was detected in Open5GS 2.8.0. This affects the function pcrf_rx_aar_cb of the file src/pcrf/pcrf-rx-path.c of the component Rx AA-Request Handler. Performing a manipulation results in out-of-bounds read. It is possible to initiate the attack remotely. The patch is named c18dc6938bf63cc7374315d3dca303d92066e746. To fix this issue, it is recommended to deploy a patch.",
+      "cvss_score": 7.4,
+      "published_date": "2026-08-24T01:16:56.817"
+    },
+    {
+      "cve_id": "CVE-2026-78161",
+      "description": "A vulnerability was found in warmcat libwebsockets 4.5.0. Impacted is the function report_raw_cbor of the file lib/misc/lecp.c of the component LECP CBOR Recording. The manipulation results in out-of-bounds write. The attack can be launched remotely. The exploit has been made public and could be used. The patch is identified as 1d44554a1bb262db63ff4e240152a9deecd99054. It is best practice to apply a patch to resolve this issue.",
+      "cvss_score": 7.3,
+      "published_date": "2026-08-24T01:16:57.360"
+    },
+    {
+      "cve_id": "CVE-2026-78203",
+      "description": "Ghostwriter before 7.1.2 fails to validate template ownership in the report template swap endpoint, allowing attackers to attach client-scoped templates from other clients to their own reports. Attackers can exploit sequential template primary keys to enumerate and attach foreign templates, then generate reports to disclose template contents including letterhead, boilerplate, and methodology text.",
+      "cvss_score": 7.1,
+      "published_date": "2026-08-24T01:16:57.530"
+    },
+    {
+      "cve_id": "CVE-2026-78206",
+      "description": "exceljs-hardened before 5.0.0 decompresses all entries from supplied xlsx archives into memory without limits on entry size, total size, or compression ratio. Attackers can upload highly compressed workbooks that expand to gigabytes in memory, exhausting available resources and causing denial of service.",
+      "cvss_score": 7.5,
+      "published_date": "2026-08-24T01:16:57.973"
+    },
+    {
+      "cve_id": "CVE-2026-78207",
+      "description": "exceljs-hardened before 5.0.0 contains a prototype pollution vulnerability in the deepMerge helper that fails to reject __proto__, constructor, or prototype keys when merging note objects. Attackers can assign parsed JSON with a malicious __proto__ property to cell notes, modifying Object.prototype and affecting all plain objects created in the process.",
+      "cvss_score": 9.4,
+      "published_date": "2026-08-24T01:16:58.137"
+    },
+    {
+      "cve_id": "CVE-2026-78208",
+      "description": "exceljs-hardened before 5.0.0 contains a path traversal vulnerability in the Workbook.addImage() function that fails to validate file paths. Attackers can supply arbitrary file paths to read any file accessible to the Node.js process and embed it in the generated workbook.",
+      "cvss_score": 7.5,
+      "published_date": "2026-08-24T01:16:58.280"
+    },
+    {
+      "cve_id": "CVE-2026-78209",
+      "description": "exceljs-hardened versions before 5.0.0 fail to neutralize leading equals, plus, minus, or at signs in cell values written to CSV output. Attackers who can influence exported cell values can inject formulas that execute when the CSV file is opened in a spreadsheet application, potentially exfiltrating data or performing other malicious actions.",
+      "cvss_score": 8.2,
+      "published_date": "2026-08-24T01:16:58.423"
+    },
+    {
+      "cve_id": "CVE-2026-78167",
+      "description": "A weakness has been identified in EFM ipTIME T16000M 14.20.2. The impacted element is the function httpcon_check_session_url of the component Session Validation Handler. This manipulation causes improper authentication. Remote exploitation of the attack is possible. The exploit has been made available to the public and could be used for attacks. The vendor was contacted early about this disclosure but did not respond in any way.",
+      "cvss_score": 10.0,
+      "published_date": "2026-08-24T02:17:04.300"
+    },
+    {
+      "cve_id": "CVE-2026-78168",
+      "description": "A security vulnerability has been detected in EFM ipTIME T24000M up to 14.20.0. This affects the function httpcon_check_session_url of the component Session Validation Handler. Such manipulation leads to improper authentication. The attack can be executed remotely. The exploit has been disclosed publicly and may be used. The vendor was contacted early about this disclosure but did not respond in any way.",
+      "cvss_score": 9.8,
+      "published_date": "2026-08-24T02:17:04.480"
+    },
+    {
+      "cve_id": "CVE-2026-78169",
+      "description": "A vulnerability was detected in UTT HiPER 1250GW up to 3.2.7-210907-180535. This impacts the function strcpy of the file /goform/aspRemoteApConfTempSend of the component HTTP Request Handler. Performing a manipulation of the argument Profile results in stack-based buffer overflow. The attack is possible to be carried out remotely. The exploit is now public and may be used.",
+      "cvss_score": 9.9,
+      "published_date": "2026-08-24T02:17:04.650"
+    },
+    {
+      "cve_id": "CVE-2026-78170",
+      "description": "A flaw has been found in UTT HiPER 1200GW up to 2.5.3-170306. Affected is the function strcpy of the file /goform/formConfigFastDirectionW. Executing a manipulation of the argument ssid can lead to buffer overflow. The attack may be performed from remote. The exploit has been published and may be used.",
+      "cvss_score": 8.8,
+      "published_date": "2026-08-24T02:17:04.817"
+    },
+    {
+      "cve_id": "CVE-2026-78171",
+      "description": "A vulnerability has been found in itsourcecode Sales and Inventory System 1.0. Affected by this vulnerability is an unknown functionality of the file /pages/processlogin.php. The manipulation of the argument User leads to sql injection. It is possible to initiate the attack remotely. The exploit has been disclosed to the public and may be used.",
+      "cvss_score": 7.3,
+      "published_date": "2026-08-24T03:16:39.423"
+    },
+    {
+      "cve_id": "CVE-2026-78178",
+      "description": "A vulnerability was determined in jQWidgets up to 24.0.1. This affects the function JQXLite.extend/jqxBaseFramework.extend of the file jqwidgets/jqx-all.js. This manipulation causes improperly controlled modification of object prototype attributes. The attack can be initiated remotely. The reported GitHub issue was closed with the label \"not planned\".",
+      "cvss_score": 7.3,
+      "published_date": "2026-08-24T03:16:40.650"
+    },
+    {
+      "cve_id": "CVE-2026-19200",
+      "description": "The Velociraptor verify() VQL function allows a user to verify an artifact for syntatic and other issues. Due to an implementation fault in this VQL function, the global artifact repository is used which allows callers to overwrite existing artifacts without the required permissions.\u00a0 The attacker need only have the NOTEBOOK_EDIT permission (e.g. an analyst role) to be able to call this function.",
+      "cvss_score": 8.9,
+      "published_date": "2026-08-24T04:16:46.557"
+    },
+    {
+      "cve_id": "CVE-2026-78180",
+      "description": "A security flaw has been discovered in alibaba-fusion next up to 1.27.34. This issue affects the function ConfigProvider.getContextProps of the file components/dialog/index.tsx of the component deepMerge. Performing a manipulation of the argument locale results in improperly controlled modification of object prototype attributes. The attack may be initiated remotely. The reported GitHub issue was closed automatically due to inactivity.",
+      "cvss_score": 7.3,
+      "published_date": "2026-08-24T04:16:58.647"
+    },
+    {
+      "cve_id": "CVE-2026-78181",
+      "description": "A weakness has been identified in ractivejs ractive up to 1.4.4. Impacted is the function Ractive#set of the component Keypath Handler. Executing a manipulation can lead to improperly controlled modification of object prototype attributes. The attack may be launched remotely. The exploit has been made available to the public and could be used for attacks. The project was informed of the problem early through an issue report but has not responded yet.",
+      "cvss_score": 7.3,
+      "published_date": "2026-08-24T04:16:58.847"
+    },
+    {
+      "cve_id": "CVE-2026-78182",
+      "description": "A security vulnerability has been detected in Shenzhen Gongji Technology XBROTHER Dynamic Environment Monitoring System up to 300R004C00B300. The affected element is the function PlanController.getImmediatePlans of the file /xbreport/api/v1/plamange/plansImmediate. The manipulation of the argument order/sort leads to sql injection. Remote exploitation of the attack is possible. The exploit has been disclosed publicly and may be used.",
+      "cvss_score": 7.3,
+      "published_date": "2026-08-24T04:16:59.040"
+    },
+    {
+      "cve_id": "CVE-2026-78211",
+      "description": "4MOSAn GCB Doctor developed by 4MOSAn Security Technology has a OS Command Injection vulnerability. Unauthenticated remote attackers can inject malicious commands through an unremoved ADOdb test page parameter, thereby executing arbitrary system commands on the server.",
+      "cvss_score": 9.8,
+      "published_date": "2026-08-24T04:16:59.493"
+    },
+    {
+      "cve_id": "CVE-2026-78212",
+      "description": "4MOSAn developed by 4MOSAn Security Technology Co., Ltd. has an Arbitrary File Read vulnerability. Unauthenticated remote attackers can exploit a Relative Path Traversal flaw to download arbitrary system files.",
+      "cvss_score": 7.5,
+      "published_date": "2026-08-24T04:16:59.660"
+    },
+    {
+      "cve_id": "CVE-2026-78213",
+      "description": "Heptabase developed by Hepta Platforms, Inc. has a Stored Cross-Site Scripting vulnerability. Authenticated remote attackers can inject persistent malicious content into specific pages, causing arbitrary JavaScript code to execute when other users click the crafted content.",
+      "cvss_score": 8.7,
+      "published_date": "2026-08-24T04:16:59.817"
+    },
+    {
+      "cve_id": "CVE-2026-59561",
+      "description": "Sakura Editor provided by Sakura Editor Development Community contains an OS command injection vulnerability. If a victim user is directed to edit a file in a crafted directory, arbitrary OS command may be executed on the user's PC when the user invokes \"Open Terminal\".",
+      "cvss_score": 7.8,
+      "published_date": "2026-08-24T05:16:55.090"
+    },
+    {
+      "cve_id": "CVE-2026-78197",
+      "description": "A weakness has been identified in SourceCodester Simple Online Food Ordering System 1.0. This vulnerability affects unknown code of the file /fos/admin/ajax.php?action=save_user. This manipulation of the argument Username causes sql injection. The attack may be initiated remotely. The exploit has been made available to the public and could be used for attacks.",
+      "cvss_score": 7.3,
+      "published_date": "2026-08-24T05:16:55.917"
+    },
+    {
+      "cve_id": "CVE-2026-78198",
+      "description": "A security vulnerability has been detected in SourceCodester Simple Online Food Ordering System 1.0. This issue affects some unknown processing of the file /fos/admin/ajax.php?action=add_to_cart. Such manipulation of the argument pid leads to sql injection. The attack may be launched remotely. The exploit has been disclosed publicly and may be used.",
+      "cvss_score": 7.3,
+      "published_date": "2026-08-24T06:19:46.750"
+    },
+    {
+      "cve_id": "CVE-2026-78199",
+      "description": "A vulnerability was detected in SourceCodester Simple Online Food Ordering System 1.0. Impacted is an unknown function of the file /fos/view_prod.php. Performing a manipulation of the argument ID results in sql injection. Remote exploitation of the attack is possible. The exploit is now public and may be used.",
+      "cvss_score": 7.3,
+      "published_date": "2026-08-24T06:20:46.740"
+    },
+    {
+      "cve_id": "CVE-2026-78201",
+      "description": "A vulnerability has been found in itsourcecode Payroll System 1.0. The impacted element is the function Login of the file admin_class.php. The manipulation of the argument Username leads to sql injection. The attack is possible to be carried out remotely. The exploit has been disclosed to the public and may be used.",
+      "cvss_score": 7.3,
+      "published_date": "2026-08-24T06:21:09.847"
+    },
+    {
+      "cve_id": "CVE-2026-78202",
+      "description": "A vulnerability was found in itsourcecode Payroll System 1.0. This affects the function save_settings of the file admin_class.php. The manipulation of the argument img results in unrestricted upload. The attack may be performed from remote. The exploit has been made public and could be used.",
+      "cvss_score": 7.3,
+      "published_date": "2026-08-24T07:16:54.400"
+    }
+  ],
+  "new_kev_entries": [
+    {
+      "cveID": "CVE-2026-73570",
+      "vendorProject": "Synacor",
+      "product": "Zimbra Collaboration Suite (ZCS)",
+      "vulnerabilityName": "Zimbra Collaboration Suite (ZCS) OS Command Injection Vulnerability",
+      "dateAdded": "2026-08-21",
+      "shortDescription": "Zimbra Collaboration Suite (ZCS) contains an OS command injection vulnerability which could allow an unauthenticated attacker to send specially crafted SMTP requests that may result in execution of arbitrary operating system commands as the Zimbra user.",
+      "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA\u2019s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA\u2019s \u201cForensics Triage Requirements\u201d (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "dueDate": "2026-08-24",
+      "knownRansomwareCampaignUse": "Unknown",
+      "notes": "https://wiki.zimbra.com/wiki/Zimbra_Security_Advisories ; https://blog.zimbra.com/2026/07/patch-release-update-zimbra-10-1-20/ ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-73570",
+      "cwes": [
+        "CWE-78"
+      ]
+    },
+    {
+      "cveID": "CVE-2026-72530",
+      "vendorProject": "TrueConf",
+      "product": "Server",
+      "vulnerabilityName": "TrueConf Server Code Injection Vulnerability",
+      "dateAdded": "2026-08-20",
+      "shortDescription": "TrueConf Server contains a code injection vulnerability that could allow an unauthorized remote attacker with network access via port 4307/TCP to use a specially crafted script to break out of the isolated environment and execute arbitrary code on the host system.",
+      "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA\u2019s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA\u2019s \u201cForensics Triage Requirements\u201d (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "dueDate": "2026-09-03",
+      "knownRansomwareCampaignUse": "Unknown",
+      "notes": "https://trueconf.com/blog/news/security-fixes-updates-and-advisories ; https://ics-cert.kaspersky.com/advisories/2026/08/11/trueconf-server-breakout-from-isolated-environment/ ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-72530",
+      "cwes": [
+        "CWE-94"
+      ]
+    },
+    {
+      "cveID": "CVE-2026-72529",
+      "vendorProject": "TrueConf",
+      "product": "Server",
+      "vulnerabilityName": "TrueConf Server Missing Authentication for Critical Function Vulnerability",
+      "dateAdded": "2026-08-20",
+      "shortDescription": "TrueConf Server contains a missing authentication for critical function vulnerability which could allow a remote unauthorized attacker with network access via port 4307/TCP to execute an arbitrary script.",
+      "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA\u2019s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA\u2019s \u201cForensics Triage Requirements\u201d (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "dueDate": "2026-08-23",
+      "knownRansomwareCampaignUse": "Unknown",
+      "notes": "https://trueconf.com/blog/news/security-fixes-updates-and-advisories ; https://ics-cert.kaspersky.com/advisories/2026/08/11/trueconf-server-missing-authentication-for-critical-function/ ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-72529",
+      "cwes": [
+        "CWE-306"
+      ]
+    },
+    {
+      "cveID": "CVE-2026-64849",
+      "vendorProject": "MLflow",
+      "product": "MLflow",
+      "vulnerabilityName": "MLflow Server-Side Request Forgery Vulnerability",
+      "dateAdded": "2026-08-19",
+      "shortDescription": "MLflow contains a server-side request forgery vulnerability that can allow attackers to reach internal or cloud metadata services and receive response_status and response_body.",
+      "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA\u2019s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA\u2019s \u201cForensics Triage Requirements\u201d (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "dueDate": "2026-09-02",
+      "knownRansomwareCampaignUse": "Unknown",
+      "notes": "https://github.com/mlflow/mlflow/pull/24258 ; https://github.com/mlflow/mlflow/issues/24179 ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-64849",
+      "cwes": [
+        "CWE-918"
+      ]
+    },
+    {
+      "cveID": "CVE-2026-33824",
+      "vendorProject": "Microsoft",
+      "product": "Internet Key Exchange (IKE) Service Extensions",
+      "vulnerabilityName": "Microsoft Internet Key Exchange (IKE) Service Extensions Double Free Vulnerability",
+      "dateAdded": "2026-08-18",
+      "shortDescription": "Microsoft Internet Key Exchange (IKE) Service Extensions contains a double free vulnerability that could enable remote code execution.",
+      "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA\u2019s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA\u2019s \u201cForensics Triage Requirements\u201d (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "dueDate": "2026-08-21",
+      "knownRansomwareCampaignUse": "Unknown",
+      "notes": "https://msrc.microsoft.com/update-guide/en-US/vulnerability/CVE-2026-33824 ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-33824",
+      "cwes": [
+        "CWE-415"
+      ]
+    },
+    {
+      "cveID": "CVE-2026-59310",
+      "vendorProject": "Broadcom",
+      "product": "VMware vCenter",
+      "vulnerabilityName": "Broadcom VMware vCenter Path Traversal Vulnerability",
+      "dateAdded": "2026-08-18",
+      "shortDescription": "Broadcom VMware vCenter contains a path traversal vulnerability which could allow a threat actor with network access to vCenter to execute arbitrary code.",
+      "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA\u2019s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA\u2019s \u201cForensics Triage Requirements\u201d (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "dueDate": "2026-08-21",
+      "knownRansomwareCampaignUse": "Unknown",
+      "notes": "https://support.broadcom.com/web/ecx/support-content-notification/-/external/content/SecurityAdvisories/0/38017 ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-59310",
+      "cwes": [
+        "CWE-22"
+      ]
+    },
+    {
+      "cveID": "CVE-2026-55040",
+      "vendorProject": "Microsoft",
+      "product": "SharePoint",
+      "vulnerabilityName": "Microsoft SharePoint Weak Authentication Vulnerability",
+      "dateAdded": "2026-08-18",
+      "shortDescription": "Microsoft SharePoint contains a weak authentication vulnerability which allows an unauthorized attacker to bypass a security feature over a network.",
+      "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA\u2019s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA\u2019s \u201cForensics Triage Requirements\u201d (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "dueDate": "2026-08-21",
+      "knownRansomwareCampaignUse": "Unknown",
+      "notes": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-55040 ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-55040",
+      "cwes": [
+        "CWE-1390"
+      ]
+    },
+    {
+      "cveID": "CVE-2026-65400",
+      "vendorProject": "Apple",
+      "product": "macOS",
+      "vulnerabilityName": "Apple macOS Improper Authentication Vulnerability",
+      "dateAdded": "2026-08-18",
+      "shortDescription": "Apple macOS contains an improper authentication vulnerability that could allow an attacker on the network to authenticate to Screen Sharing without valid credentials.",
+      "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA\u2019s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA\u2019s \u201cForensics Triage Requirements\u201d (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "dueDate": "2026-08-21",
+      "knownRansomwareCampaignUse": "Unknown",
+      "notes": "https://support.apple.com/en-us/148170; https://support.apple.com/en-us/148171; https://support.apple.com/en-us/148172 ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-65400",
+      "cwes": [
+        "CWE-287"
+      ]
+    },
+    {
+      "cveID": "CVE-2025-62593",
+      "vendorProject": "Ray-Project",
+      "product": "Ray",
+      "vulnerabilityName": "Ray-Project Ray Code Injection Vulnerability",
+      "dateAdded": "2026-08-17",
+      "shortDescription": "Ray-Project Ray contains a code injection vulnerability that could allow remote code execution. Developers using Ray as a development tool may be exposed to this vulnerability exploitable through Firefox and Safari.",
+      "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA\u2019s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA\u2019s \u201cForensics Triage Requirements\u201d (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "dueDate": "2026-08-20",
+      "knownRansomwareCampaignUse": "Unknown",
+      "notes": "https://github.com/ray-project/ray/security/advisories/GHSA-q279-jhrf-cc6v ; https://github.com/ray-project/ray/commit/70e7c72780bdec075dba6cad1afe0832772bfe09 ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2025-62593",
+      "cwes": [
+        "CWE-94",
+        "CWE-352"
+      ]
+    }
+  ],
+  "monitored_hits": [],
+  "total_kev_count": 1674,
+  "executive_summary": "",
+  "action_items": [],
+  "risk_narrative": "",
+  "pipeline_errors": [
+    "summarizer failed: Error code: 404 - {'type': 'error', 'error': {'type': 'not_found_error', 'message': 'model: claude-sonnet-4-20250514'}, 'request_id': 'req_011CeMHEcinZc9LZQjymb411'}"
+  ]
+}
