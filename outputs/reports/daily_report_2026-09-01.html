@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vulnerability Intelligence Report — 2026-09-01</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #22263a;
+    --border: #2d3148;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --accent: #6366f1;
+    --critical: #dc2626;
+    --high: #ea580c;
+    --medium: #ca8a04;
+    --success: #16a34a;
+  }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace; line-height: 1.6; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* Header */
+  .header { background: linear-gradient(135deg, #1a1d27 0%, #0f1117 100%); border-bottom: 1px solid var(--border); padding: 24px 32px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+  .header-left h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: 0.01em; color: #f1f5f9; }
+  .header-left h1 span { color: var(--accent); }
+  .header-meta { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
+  .risk-badge { display: inline-flex; align-items: center; gap: 6px; padding: 8px 20px; border-radius: 9999px; font-weight: 700; font-size: 0.95rem; letter-spacing: 0.05em; text-transform: uppercase; background: #dc262622; color: #dc2626; border: 2px solid #dc2626; }
+  .risk-dot { width: 8px; height: 8px; border-radius: 50%; background: #dc2626; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  /* Layout */
+  .container { max-width: 1400px; margin: 0 auto; padding: 32px; }
+
+  /* KPI cards */
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 32px; }
+  .kpi-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; }
+  .kpi-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 8px; }
+  .kpi-value { font-size: 2.5rem; font-weight: 700; line-height: 1; color: #f1f5f9; }
+  .kpi-value.danger { color: var(--critical); }
+  .kpi-value.warn { color: var(--high); }
+  .kpi-sub { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+
+  /* Sections */
+  .section { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 24px; }
+  .section-title { font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+  .section p { color: var(--text-muted); line-height: 1.8; }
+
+  /* Action list */
+  .action-list { padding-left: 20px; }
+  .action-list li { color: var(--text-muted); margin-bottom: 10px; padding-left: 4px; line-height: 1.7; }
+  .action-list li::marker { color: var(--accent); font-weight: 700; }
+  .empty-msg { color: var(--text-muted); font-style: italic; }
+
+  /* Tables */
+  .table-wrapper { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+  th { background: var(--surface2); padding: 10px 14px; text-align: left; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); border-bottom: 1px solid var(--border); cursor: pointer; user-select: none; white-space: nowrap; }
+  th:hover { color: var(--text); }
+  th .sort-icon { margin-left: 4px; opacity: 0.4; }
+  th.sorted .sort-icon { opacity: 1; color: var(--accent); }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface2); }
+  .empty-row { text-align: center; color: var(--text-muted); font-style: italic; padding: 24px; }
+  .desc-cell { max-width: 500px; color: var(--text-muted); font-size: 0.8rem; }
+
+  /* Score badges */
+  .score-badge { display: inline-block; padding: 2px 8px; border-radius: 6px; font-weight: 700; font-size: 0.8rem; }
+  .score-badge.critical { background: #dc262622; color: #dc2626; border: 1px solid #dc262644; }
+  .score-badge.high { background: #ea580c22; color: #ea580c; border: 1px solid #ea580c44; }
+  .score-badge.medium { background: #ca8a0422; color: #ca8a04; border: 1px solid #ca8a0444; }
+
+  /* Misc badges */
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
+  .ransomware-known { background: #dc262622; color: #dc2626; border: 1px solid #dc262644; }
+  .ransomware-unknown { background: #37415122; color: #94a3b8; border: 1px solid #37415144; }
+  .cve-link { color: var(--accent); font-family: monospace; }
+
+  /* Warning */
+  .warning-box { background: #78350f22; border: 1px solid #92400e; border-radius: 8px; padding: 16px; margin-bottom: 24px; color: #fbbf24; font-size: 0.875rem; }
+  .warning-box ul { padding-left: 16px; margin-top: 8px; }
+
+  /* Footer */
+  footer { margin-top: 48px; padding: 24px 0; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); font-size: 0.8rem; }
+  footer a { color: var(--text-muted); }
+  footer a:hover { color: var(--text); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <h1>Vulnerability <span>Intelligence</span> Report</h1>
+    <div class="header-meta">Date: 2026-09-01 &nbsp;|&nbsp; Generated: 2026-09-01T13:06:44Z</div>
+  </div>
+  <div class="risk-badge">
+    <span class="risk-dot"></span>
+    Critical Risk
+  </div>
+</div>
+
+<div class="container">
+  
+        <div class="warning-box">
+            <strong>Pipeline Warnings:</strong>
+            <ul><li>summarizer failed: Error code: 404 - {'type': 'error', 'error': {'type': 'not_found_error', 'message': 'model: claude-sonnet-4-20250514'}, 'request_id': 'req_011CecmcNKXoqxsq11Uw4AVz'}</li></ul>
+        </div>
+
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">Total CVEs Found</div>
+      <div class="kpi-value danger">103</div>
+      <div class="kpi-sub">CVSS &ge; 7.0 in last 24h</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">CVSS Avg Score</div>
+      <div class="kpi-value warn">8.3</div>
+      <div class="kpi-sub">across all found CVEs</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">KEV New Entries</div>
+      <div class="kpi-value danger">12</div>
+      <div class="kpi-sub">added in last 7 days</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">KEV Due This Week</div>
+      <div class="kpi-value ">0</div>
+      <div class="kpi-sub">remediation deadlines</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Executive Summary</div>
+    <p>No summary available.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Risk Narrative</div>
+    <p>No risk narrative available.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Prioritized Action Items</div>
+    <p class='empty-msg'>No action items available.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">High Severity CVEs — 103 found (CVSS &ge; 7.0)</div>
+    <div class="table-wrapper">
+      <table id="cve-table">
+        <thead>
+          <tr>
+            <th onclick="sortTable('cve-table',0)" data-col="0">CVE ID <span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable('cve-table',1)" data-col="1">CVSS <span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable('cve-table',2)" data-col="2">Published <span class="sort-icon">&#8597;</span></th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-12894" target="_blank" rel="noopener noreferrer">CVE-2026-12894</a></td><td><span class="score-badge high">8.8</span></td><td>2026-08-31</td><td class="desc-cell">A flaw was found in the Qute template engine, which is used by Quarkus to generate dynamic content like HTML pages or emails. The issue exists in the component responsible for looking up data values (…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-5956" target="_blank" rel="noopener noreferrer">CVE-2026-5956</a></td><td><span class="score-badge high">8.8</span></td><td>2026-08-31</td><td class="desc-cell">Improper neutralization of special elements used in an SQL command ('SQL injection') vulnerability in Ankara Hosting Site Management Panel allows SQL Injection.
+
+This issue affects Site Management Pan…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-82692" target="_blank" rel="noopener noreferrer">CVE-2026-82692</a></td><td><span class="score-badge critical">9.9</span></td><td>2026-08-31</td><td class="desc-cell">A vulnerability was found in D-Link DNS-340L and DNS-345 up to 20260717. This affects an unknown part of the file /cgi-bin/iscsi_mgr.cgi. Performing a manipulation of the argument alias/username/passw…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-82693" target="_blank" rel="noopener noreferrer">CVE-2026-82693</a></td><td><span class="score-badge critical">10.0</span></td><td>2026-08-31</td><td class="desc-cell">A vulnerability was determined in Tenda AC1206 15.03.06.23. This vulnerability affects the function TendaTelnet of the file /goform/telnet of the component Web UI. Executing a manipulation can lead to…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-82694" target="_blank" rel="noopener noreferrer">CVE-2026-82694</a></td><td><span class="score-badge critical">10.0</span></td><td>2026-08-31</td><td class="desc-cell">A vulnerability was identified in Tenda AC1206 15.03.06.23. This issue affects the function R7WebsSecurityHandler of the file /goform/ate of the component Web UI. The manipulation leads to missing aut…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-82695" target="_blank" rel="noopener noreferrer">CVE-2026-82695</a></td><td><span class="score-badge critical">10.0</span></td><td>2026-08-31</td><td class="desc-cell">A security flaw has been discovered in Tenda AC18 15.03.05.19. Impacted is an unknown function of the file /goform/telnet of the component Telnet Handler. The manipulation results in missing authentic…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-19616" target="_blank" rel="noopener noreferrer">CVE-2026-19616</a></td><td><span class="score-badge high">7.5</span></td><td>2026-08-31</td><td class="desc-cell">Missing Authorization vulnerability in TBC Technology Inc. KitLogistic allows Accessing Functionality Not Properly Constrained by ACLs.
+
+This issue affects KitLogistic: before v2.2.2.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-19702" target="_blank" rel="noopener noreferrer">CVE-2026-19702</a></td><td><span class="score-badge high">7.8</span></td><td>2026-08-31</td><td class="desc-cell">Improper neutralization of special elements used in an OS command ('OS command injection') vulnerability in TÜBİTAK BİLGEM Software Technologies Research Institute Pardus Boot Repair allows OS Command…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-51679" target="_blank" rel="noopener noreferrer">CVE-2026-51679</a></td><td><span class="score-badge critical">9.1</span></td><td>2026-08-31</td><td class="desc-cell">Incorrect access control in the setPasswordCfg function of TOTOLINK T6 4.1.5cu.748_B20211015 allows unauthenticated attackers to change the administrator account via sending a crafted POST request to …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-51680" target="_blank" rel="noopener noreferrer">CVE-2026-51680</a></td><td><span class="score-badge critical">9.1</span></td><td>2026-08-31</td><td class="desc-cell">Incorrect access control in the setLedCfg function of TOTOLINK T6 4.1.5cu.748_B20211015 allows unauthenticated attackers to modify LED behavior via sending a crafted POST request to /cgi-bin/cstecgi.c…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-51681" target="_blank" rel="noopener noreferrer">CVE-2026-51681</a></td><td><span class="score-badge critical">9.1</span></td><td>2026-08-31</td><td class="desc-cell">Incorrect access control in the setRemoteCfg function of TOTOLINK T6 4.1.5cu.748_B20211015 allows unauthenticated attackers to expose WAN-side administration via sending a crafted POST request to /cgi…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-76763" target="_blank" rel="noopener noreferrer">CVE-2026-76763</a></td><td><span class="score-badge high">7.5</span></td><td>2026-08-31</td><td class="desc-cell">A flaw was found in SmallRye GraphQL. The number scalar coercion for BigInteger does not properly validate the magnitude of float or string inputs. An unauthenticated remote attacker can exploit this …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-82217" target="_blank" rel="noopener noreferrer">CVE-2026-82217</a></td><td><span class="score-badge high">8.8</span></td><td>2026-08-31</td><td class="desc-cell">In Eclipse Theia versions 1.73.0 up to but not including 1.75.0, the AI "Agent Mode" file-change tools (writeFileContent, suggestFileContent, and the replacement and state helpers) resolved a model-su…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-59111" target="_blank" rel="noopener noreferrer">CVE-2026-59111</a></td><td><span class="score-badge critical">9.3</span></td><td>2026-08-31</td><td class="desc-cell">Improper neutralization of special elements used in an OS command ('OS command injection') vulnerability in Digitální a informační agentura (DIA) eObčanka-Identifikace on MacOS enables an attacker to …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-66047" target="_blank" rel="noopener noreferrer">CVE-2026-66047</a></td><td><span class="score-badge high">8.1</span></td><td>2026-08-31</td><td class="desc-cell">ProfilePress (wp-user-avatar) WordPress plugin before 4.17.2 contains an unauthenticated remote code execution vulnerability that allows unauthenticated attackers to install and activate arbitrary plu…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-82701" target="_blank" rel="noopener noreferrer">CVE-2026-82701</a></td><td><span class="score-badge high">7.3</span></td><td>2026-08-31</td><td class="desc-cell">A vulnerability was determined in code-projects Online Shopping System 1.0. Affected by this issue is some unknown functionality of the file /action.php of the component Search Functionality. This man…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-82801" target="_blank" rel="noopener noreferrer">CVE-2026-82801</a></td><td><span class="score-badge high">7.3</span></td><td>2026-08-31</td><td class="desc-cell">A vulnerability was detected in NASA earthdata-search 1.0.0. Affected by this vulnerability is the function scaleImage of the file serverless/src/scaleImage/handler.js of the component scale Endpoint.…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-82970" target="_blank" rel="noopener noreferrer">CVE-2026-82970</a></td><td><span class="score-badge critical">10.0</span></td><td>2026-08-31</td><td class="desc-cell">Unrestricted Upload of File with Dangerous Type vulnerability in WP Legal Pages WP Cookie Notice for GDPR, CCPA & ePrivacy Consent allows Using Malicious Files.
+
+This issue affects WP Cookie Notice fo…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-73819" target="_blank" rel="noopener noreferrer">CVE-2026-73819</a></td><td><span class="score-badge critical">9.8</span></td><td>2026-08-31</td><td class="desc-cell">The affected Ebyte 
+
+product's vendor configuration utility permits access to administrative 
+functions without verifying the operator's identity under certain 
+credential conditions. An unauthenticat…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-75133" target="_blank" rel="noopener noreferrer">CVE-2026-75133</a></td><td><span class="score-badge high">7.5</span></td><td>2026-08-31</td><td class="desc-cell">Keep Backup Daily plugin for WordPress before 2.1.4 contains a sensitive information exposure vulnerability that allows unauthenticated attackers to trigger a full MySQL database dump by accessing the…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-76133" target="_blank" rel="noopener noreferrer">CVE-2026-76133</a></td><td><span class="score-badge critical">9.8</span></td><td>2026-08-31</td><td class="desc-cell">The affected Ebyte 
+
+product
+ uses a deprecated hashing algorithm in an authentication-related 
+operation. Under conditions where an attacker can manipulate or predict 
+the authentication exchange, th…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-77966" target="_blank" rel="noopener noreferrer">CVE-2026-77966</a></td><td><span class="score-badge high">8.8</span></td><td>2026-08-31</td><td class="desc-cell">The affected Ebyte 
+
+product does not provide separation between limited and administrative 
+management functions. A low privileged authenticated attacker could 
+access security sensitive configuratio…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-82807" target="_blank" rel="noopener noreferrer">CVE-2026-82807</a></td><td><span class="score-badge high">8.8</span></td><td>2026-08-31</td><td class="desc-cell">A vulnerability was determined in ieungSoft Ultra RAMDisk Pro 1.82. This issue affects some unknown processing in the library URDSCSI.sys of the component Kernel Driver. This manipulation causes impro…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-17615" target="_blank" rel="noopener noreferrer">CVE-2026-17615</a></td><td><span class="score-badge high">7.5</span></td><td>2026-08-31</td><td class="desc-cell">A flaw was found in RESTEasy's SourceProvider. This vulnerability allows an unauthenticated attacker to perform an unauthenticated remote file read. By sending a specially crafted XML body with a DOCT…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-51720" target="_blank" rel="noopener noreferrer">CVE-2026-51720</a></td><td><span class="score-badge critical">9.1</span></td><td>2026-08-31</td><td class="desc-cell">Incorrect access control in the delIpPortFilterRules function of TOTOLINK T6 4.1.5cu.748_B20211015 allows unauthenticated attackers to remove firewall filter rules via sending a crafted POST request t…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-82808" target="_blank" rel="noopener noreferrer">CVE-2026-82808</a></td><td><span class="score-badge high">7.3</span></td><td>2026-08-31</td><td class="desc-cell">A vulnerability was identified in Inbox Foundry ActiveInbox Extension up to 7.10.24 on Chrome. Impacted is an unknown function of the file dist/service-worker.production-esm.js of the component Google…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-51725" target="_blank" rel="noopener noreferrer">CVE-2026-51725</a></td><td><span class="score-badge critical">9.1</span></td><td>2026-08-31</td><td class="desc-cell">Incorrect access control in the NTPSyncWithHost function of TOTOLINK T6 4.1.5cu.748_B20211015 allows unauthenticated attackers to change the device clock via sending a crafted POST request to /cgi-bin…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-51730" target="_blank" rel="noopener noreferrer">CVE-2026-51730</a></td><td><span class="score-badge critical">9.1</span></td><td>2026-08-31</td><td class="desc-cell">Incorrect access control in the delWiFiAclRules function of TOTOLINK T6 4.1.5cu.748_B20211015 allows unauthenticated attackers to remove Wi-Fi ACL rules via sending a crafted POST request to /cgi-bin/…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-79744" target="_blank" rel="noopener noreferrer">CVE-2026-79744</a></td><td><span class="score-badge high">8.8</span></td><td>2026-08-31</td><td class="desc-cell">MCPHub is a unified hub for centrally managing and dynamically orchestrating multiple MCP servers/APIs into separate endpoints with flexible routing strategies. Prior to version 1.0.29, MCPHub's PUT /…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-79745" target="_blank" rel="noopener noreferrer">CVE-2026-79745</a></td><td><span class="score-badge high">7.1</span></td><td>2026-08-31</td><td class="desc-cell">MCPHub is a unified hub for centrally managing and dynamically orchestrating multiple MCP servers/APIs into separate endpoints with flexible routing strategies. Prior to version 1.0.32, the built-in p…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-79746" target="_blank" rel="noopener noreferrer">CVE-2026-79746</a></td><td><span class="score-badge high">8.1</span></td><td>2026-08-31</td><td class="desc-cell">MCPHub is a unified hub for centrally managing and dynamically orchestrating multiple MCP servers/APIs into separate endpoints with flexible routing strategies. Prior to version 1.0.31, when a bearer …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-79747" target="_blank" rel="noopener noreferrer">CVE-2026-79747</a></td><td><span class="score-badge high">7.1</span></td><td>2026-08-31</td><td class="desc-cell">MCPHub is a unified hub for centrally managing and dynamically orchestrating multiple MCP servers/APIs into separate endpoints with flexible routing strategies. Prior to version 1.0.32, an authenticat…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-79748" target="_blank" rel="noopener noreferrer">CVE-2026-79748</a></td><td><span class="score-badge critical">9.9</span></td><td>2026-08-31</td><td class="desc-cell">MCPHub is a unified hub for centrally managing and dynamically orchestrating multiple MCP servers/APIs into separate endpoints with flexible routing strategies. Prior to version 0.12.15, the POST /api…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-79750" target="_blank" rel="noopener noreferrer">CVE-2026-79750</a></td><td><span class="score-badge high">7.7</span></td><td>2026-08-31</td><td class="desc-cell">MCPHub is a unified hub for centrally managing and dynamically orchestrating multiple MCP servers/APIs into separate endpoints with flexible routing strategies. Prior to version 1.0.30, MCPHub scopes …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-82815" target="_blank" rel="noopener noreferrer">CVE-2026-82815</a></td><td><span class="score-badge high">7.3</span></td><td>2026-08-31</td><td class="desc-cell">A flaw has been found in MegaEase EaseProbe up to 2.3.0. Affected is the function realIP of the file web/server.go of the component Middleware. This manipulation of the argument X-Forwarded-For/X-Real…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-53552" target="_blank" rel="noopener noreferrer">CVE-2026-53552</a></td><td><span class="score-badge critical">9.6</span></td><td>2026-08-31</td><td class="desc-cell">Goploy is an open-source automation deployment system. In versions 1.17.5 and prior, Project.AddFile, Project.EditFile, Project.RemoveFile, and Project.Edit in cmd/server/api/project/handler.go accept…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-53553" target="_blank" rel="noopener noreferrer">CVE-2026-53553</a></td><td><span class="score-badge high">7.7</span></td><td>2026-08-31</td><td class="desc-cell">Goploy is an open-source automation deployment system. Prior to version 1.18.0, a severe path traversal vulnerability exists in its backend API endpoints, specifically /deploy/fileDiff (File Compare),…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-72001" target="_blank" rel="noopener noreferrer">CVE-2026-72001</a></td><td><span class="score-badge high">8.1</span></td><td>2026-08-31</td><td class="desc-cell">Pangolin before 1.22.0 contains an authentication bypass vulnerability that allows unauthenticated attackers to access any protected resource by supplying an attacker-controlled URL parameter to the s…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-83497" target="_blank" rel="noopener noreferrer">CVE-2026-83497</a></td><td><span class="score-badge high">8.8</span></td><td>2026-08-31</td><td class="desc-cell">Unrestricted deserialization of untrusted data in the cursor pagination component in the OpenSearch SQL plugin allows a remote authenticated user with basic read/search permissions to execute arbitrar…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-13732" target="_blank" rel="noopener noreferrer">CVE-2026-13732</a></td><td><span class="score-badge high">7.8</span></td><td>2026-08-31</td><td class="desc-cell">A flaw was found in GDB's STABS debug format parser. The
+read_member_functions() function in gdb/stabsread.c contains a linked
+list removal bug in the code that separates destructor and non-destructor…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-54598" target="_blank" rel="noopener noreferrer">CVE-2026-54598</a></td><td><span class="score-badge high">7.5</span></td><td>2026-08-31</td><td class="desc-cell">Wallos is an open-source, self-hostable personal subscription tracker. Prior to version 4.9.4, endpoints/db/migrate.php executes database schema migrations when called over HTTP with zero authenticati…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-61641" target="_blank" rel="noopener noreferrer">CVE-2026-61641</a></td><td><span class="score-badge high">8.1</span></td><td>2026-08-31</td><td class="desc-cell">Wallos is an open-source, self-hostable personal subscription tracker. From version 4.0.0 to before version 4.9.6, Wallos's OIDC login links an incoming OIDC identity to an existing local account by m…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-81287" target="_blank" rel="noopener noreferrer">CVE-2026-81287</a></td><td><span class="score-badge high">8.5</span></td><td>2026-08-31</td><td class="desc-cell">Subscriber SQL Injection in Charitable <= 1.8.12.1 versions.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-81290" target="_blank" rel="noopener noreferrer">CVE-2026-81290</a></td><td><span class="score-badge high">7.1</span></td><td>2026-08-31</td><td class="desc-cell">Unauthenticated Cross Site Scripting (XSS) in Email Subscribers & Newsletters <= 5.9.33 versions.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-81291" target="_blank" rel="noopener noreferrer">CVE-2026-81291</a></td><td><span class="score-badge high">7.1</span></td><td>2026-08-31</td><td class="desc-cell">Unauthenticated Cross Site Scripting (XSS) in Uncode <= 2.12.7 versions.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-81293" target="_blank" rel="noopener noreferrer">CVE-2026-81293</a></td><td><span class="score-badge critical">9.3</span></td><td>2026-08-31</td><td class="desc-cell">Unauthenticated SQL Injection in WP Data Access <= 5.5.81 versions.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-81296" target="_blank" rel="noopener noreferrer">CVE-2026-81296</a></td><td><span class="score-badge high">7.5</span></td><td>2026-08-31</td><td class="desc-cell">Unauthenticated Broken Access Control in Fluent Forms Pro Add On Pack <= 6.2.12 versions.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-81297" target="_blank" rel="noopener noreferrer">CVE-2026-81297</a></td><td><span class="score-badge high">7.5</span></td><td>2026-08-31</td><td class="desc-cell">Subscriber Privilege Escalation in Fluent Forms Pro Add On Pack <= 6.2.12 versions.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-81298" target="_blank" rel="noopener noreferrer">CVE-2026-81298</a></td><td><span class="score-badge high">7.1</span></td><td>2026-08-31</td><td class="desc-cell">Unauthenticated Cross Site Scripting (XSS) in LeadConnector <= 4.0.5 versions.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-81756" target="_blank" rel="noopener noreferrer">CVE-2026-81756</a></td><td><span class="score-badge critical">9.3</span></td><td>2026-08-31</td><td class="desc-cell">Unauthenticated SQL Injection in Smart Marketing SMS and Newsletters Forms <= 5.1.24 versions.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-81763" target="_blank" rel="noopener noreferrer">CVE-2026-81763</a></td><td><span class="score-badge critical">9.3</span></td><td>2026-08-31</td><td class="desc-cell">Unauthenticated SQL Injection in Throws SPAM Away <= 3.8.2 versions.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-81764" target="_blank" rel="noopener noreferrer">CVE-2026-81764</a></td><td><span class="score-badge high">7.1</span></td><td>2026-08-31</td><td class="desc-cell">Unauthenticated Cross Site Scripting (XSS) in Email Essentials <= 6.0.6 versions.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-81765" target="_blank" rel="noopener noreferrer">CVE-2026-81765</a></td><td><span class="score-badge high">7.1</span></td><td>2026-08-31</td><td class="desc-cell">Unauthenticated Cross Site Scripting (XSS) in Tailored Tools <= 3.0.2 versions.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-81768" target="_blank" rel="noopener noreferrer">CVE-2026-81768</a></td><td><span class="score-badge high">7.1</span></td><td>2026-08-31</td><td class="desc-cell">Unauthenticated Cross Site Scripting (XSS) in Super Store Finder <= 7.10 versions.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-81779" target="_blank" rel="noopener noreferrer">CVE-2026-81779</a></td><td><span class="score-badge critical">10.0</span></td><td>2026-08-31</td><td class="desc-cell">Improper Validation of Specified Quantity in Input vulnerability in Silk Themes Newspapers X allows Malicious Software Implanted.
+
+This issue affects Newspapers X: from 1.0.46 through 1.0.48.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-81780" target="_blank" rel="noopener noreferrer">CVE-2026-81780</a></td><td><span class="score-badge critical">10.0</span></td><td>2026-08-31</td><td class="desc-cell">Unauthenticated Arbitrary File Upload in Hash Form <= 1.4.2 versions.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-81889" target="_blank" rel="noopener noreferrer">CVE-2026-81889</a></td><td><span class="score-badge high">8.6</span></td><td>2026-08-31</td><td class="desc-cell">elFinder is an open-source file manager for web, written in JavaScript using jQuery UI. Prior to 2.1.70, elFinder URL uploads in php/elFinder.class.php can bypass server-side request forgery protectio…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-81891" target="_blank" rel="noopener noreferrer">CVE-2026-81891</a></td><td><span class="score-badge high">8.1</span></td><td>2026-08-31</td><td class="desc-cell">elFinder is an open-source file manager for web, written in JavaScript using jQuery UI. Prior to 2.1.70, checkExtractItems() in php/elFinderVolumeDriver.class.php calls mimetypeInternalDetect() withou…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-81892" target="_blank" rel="noopener noreferrer">CVE-2026-81892</a></td><td><span class="score-badge high">8.1</span></td><td>2026-08-31</td><td class="desc-cell">EasyAdmin is a fast and modern admin generator for Symfony applications. From 4.0.0 until 4.29.16 and 5.5.1, EasyAdmin serves all backend requests through a single dashboard route and, for custom acti…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-82221" target="_blank" rel="noopener noreferrer">CVE-2026-82221</a></td><td><span class="score-badge high">7.1</span></td><td>2026-08-31</td><td class="desc-cell">Unauthenticated Cross Site Scripting (XSS) in RegistrationMagic <= 6.0.9.8 versions.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-82224" target="_blank" rel="noopener noreferrer">CVE-2026-82224</a></td><td><span class="score-badge high">7.1</span></td><td>2026-08-31</td><td class="desc-cell">Unauthenticated Cross Site Scripting (XSS) in SliceWP <= 1.2.10 versions.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-82225" target="_blank" rel="noopener noreferrer">CVE-2026-82225</a></td><td><span class="score-badge high">7.4</span></td><td>2026-08-31</td><td class="desc-cell">Unauthenticated Broken Authentication in RegistrationMagic <= 6.0.9.8 versions.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-82226" target="_blank" rel="noopener noreferrer">CVE-2026-82226</a></td><td><span class="score-badge critical">9.8</span></td><td>2026-08-31</td><td class="desc-cell">Unauthenticated PHP Object Injection in Tickera <= 3.6.0.2 versions.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-82228" target="_blank" rel="noopener noreferrer">CVE-2026-82228</a></td><td><span class="score-badge high">8.1</span></td><td>2026-08-31</td><td class="desc-cell">Unauthenticated Bypass Vulnerability in SiteGround Security <= 1.6.6 versions.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-82229" target="_blank" rel="noopener noreferrer">CVE-2026-82229</a></td><td><span class="score-badge high">7.1</span></td><td>2026-08-31</td><td class="desc-cell">Unauthenticated Cross Site Scripting (XSS) in WordPress Social Login and Register <= 7.8.2 versions.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-82392" target="_blank" rel="noopener noreferrer">CVE-2026-82392</a></td><td><span class="score-badge high">7.1</span></td><td>2026-08-31</td><td class="desc-cell">pnpm is a package manager. Prior to 10.34.5 and from 11.0.0 until 11.11.0, pnpm parses the package name from attacker-controlled pnpm-lock.yaml packages keys with dp.parse(depPath).name and uses it wi…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-82908" target="_blank" rel="noopener noreferrer">CVE-2026-82908</a></td><td><span class="score-badge high">8.8</span></td><td>2026-08-31</td><td class="desc-cell">A vulnerability was found in MSI Dragon Center up to 2.0.155.0. Affected by this vulnerability is the function MmioWritePath in the library NTIOLib_X64.sys of the component MMIO Write Path Handler. Pe…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-82914" target="_blank" rel="noopener noreferrer">CVE-2026-82914</a></td><td><span class="score-badge high">7.3</span></td><td>2026-08-31</td><td class="desc-cell">A security flaw has been discovered in kishan0725 Hospital-Management-System 1.0. This vulnerability affects unknown code of the file /search.php. The manipulation of the argument Contact results in s…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-82919" target="_blank" rel="noopener noreferrer">CVE-2026-82919</a></td><td><span class="score-badge high">7.3</span></td><td>2026-08-31</td><td class="desc-cell">A vulnerability was identified in cu silicon up to 0.1.5. Affected by this vulnerability is the function create_app of the file views.py of the component edit Endpoint. Such manipulation leads to miss…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-83596" target="_blank" rel="noopener noreferrer">CVE-2026-83596</a></td><td><span class="score-badge high">8.8</span></td><td>2026-08-31</td><td class="desc-cell">A flaw was found in WebKitGTK. Processing malicious web content can cause memory corruption due to improper memory handling.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-77348" target="_blank" rel="noopener noreferrer">CVE-2026-77348</a></td><td><span class="score-badge high">8.2</span></td><td>2026-08-31</td><td class="desc-cell">Wallos is an open-source, self-hostable personal subscription tracker. Prior to version 5.0.0, the fix for CVE-2026-33407 (GHSA-hhjq-82f8-m6rc, "SSRF via HTTP Proxy Environment Variable") hardened end…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-82393" target="_blank" rel="noopener noreferrer">CVE-2026-82393</a></td><td><span class="score-badge high">7.5</span></td><td>2026-08-31</td><td class="desc-cell">pnpm is a package manager. Prior to 10.34.5 and 11.11.0, pnpm accepts a scoped path traversal in a tarball dependency's package.json manifest name because pnpm11/resolving/npm-resolver/src/pickPackage…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-82397" target="_blank" rel="noopener noreferrer">CVE-2026-82397</a></td><td><span class="score-badge high">7.5</span></td><td>2026-08-31</td><td class="desc-cell">Tornado is a Python web framework and asynchronous networking library. Prior to 6.5.8, Tornado parses application/x-www-form-urlencoded request bodies with urllib.parse.parse_qs in tornado/escape.py w…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-82882" target="_blank" rel="noopener noreferrer">CVE-2026-82882</a></td><td><span class="score-badge high">8.8</span></td><td>2026-08-31</td><td class="desc-cell">Devtron through 2.2.0 fails to enforce authorization checks on the GET /orchestrator/api-token/webhook endpoint, allowing authenticated users to retrieve admin API tokens. Attackers with any authentic…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-82921" target="_blank" rel="noopener noreferrer">CVE-2026-82921</a></td><td><span class="score-badge high">7.3</span></td><td>2026-08-31</td><td class="desc-cell">A weakness has been identified in ShopEx ECShop up to 2.5.1. This affects the function check_img_type of the file admin/pack.php. Executing a manipulation of the argument pack_img can lead to unrestri…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-82922" target="_blank" rel="noopener noreferrer">CVE-2026-82922</a></td><td><span class="score-badge high">7.3</span></td><td>2026-08-31</td><td class="desc-cell">A security vulnerability has been detected in ShopEx ECShop up to 2.5.1. This vulnerability affects the function flow_update_cart of the file /flow.php?step=update_cart. The manipulation of the argume…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-82954" target="_blank" rel="noopener noreferrer">CVE-2026-82954</a></td><td><span class="score-badge critical">9.9</span></td><td>2026-08-31</td><td class="desc-cell">A vulnerability was detected in Dokploy up to 0.29.7. This issue affects the function writeTraefikConfigInPath of the file packages/server/src/utils/traefik/application.ts of the component Settings. T…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-82957" target="_blank" rel="noopener noreferrer">CVE-2026-82957</a></td><td><span class="score-badge high">7.3</span></td><td>2026-08-31</td><td class="desc-cell">A vulnerability was found in hyperledger-firefly firefly up to 1.4.0. The impacted element is the function ValidateOptions of the file internal/events/webhooks/webhooks.go of the component Webhook Sub…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-82971" target="_blank" rel="noopener noreferrer">CVE-2026-82971</a></td><td><span class="score-badge critical">10.0</span></td><td>2026-08-31</td><td class="desc-cell">A vulnerability was determined in QVidium Opera11 3.3.2a26-Ax4x-opera11. This affects an unknown part of the file /cgi-bin/net_tr.cgi of the component CGI Script. This manipulation of the argument ipa…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-83524" target="_blank" rel="noopener noreferrer">CVE-2026-83524</a></td><td><span class="score-badge critical">9.9</span></td><td>2026-08-31</td><td class="desc-cell">A security vulnerability has been detected in RedPort Optimizer wXa-203, Optimizer wXa-213 and Optimizer wXa-223 up to 20260704. This impacts the function exec of the file /xgatev1/system/datetime.php…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-75865" target="_blank" rel="noopener noreferrer">CVE-2026-75865</a></td><td><span class="score-badge critical">9.8</span></td><td>2026-09-01</td><td class="desc-cell">The WPLP Cookie Consent – Cookie Banner & Consent Management for GDPR, CCPA & Google Consent Mode plugin for WordPress is vulnerable to arbitrary file upload due to missing file type validation in the…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-19573" target="_blank" rel="noopener noreferrer">CVE-2026-19573</a></td><td><span class="score-badge high">7.2</span></td><td>2026-09-01</td><td class="desc-cell">The Affiliate Super Assistent plugin for WordPress is vulnerable to Stored Cross-Site Scripting via the ‘doCommentShortcode’ function in all versions up to, and including, 1.10.2 due to insufficient i…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-19796" target="_blank" rel="noopener noreferrer">CVE-2026-19796</a></td><td><span class="score-badge high">7.2</span></td><td>2026-09-01</td><td class="desc-cell">The Listdom: AI-powered Business Directory with Classifieds Ads Listings plugin for WordPress is vulnerable to Stored Cross-Site Scripting via 'lsd[displ][style]' Parameter in all versions up to, and …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-19806" target="_blank" rel="noopener noreferrer">CVE-2026-19806</a></td><td><span class="score-badge high">8.8</span></td><td>2026-09-01</td><td class="desc-cell">The Support Genix – Helpdesk, AI Chatbot, Knowledge Base & Customer Support Ticketing System plugin for WordPress is vulnerable to Authentication Bypass leading to Administrator Account Takeover in al…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-19952" target="_blank" rel="noopener noreferrer">CVE-2026-19952</a></td><td><span class="score-badge high">7.5</span></td><td>2026-09-01</td><td class="desc-cell">The Frontend Admin by DynamiApps plugin for WordPress is vulnerable to arbitrary file deletion due to insufficient file path validation in the move_folders function in all versions up to, and includin…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-75921" target="_blank" rel="noopener noreferrer">CVE-2026-75921</a></td><td><span class="score-badge high">7.2</span></td><td>2026-09-01</td><td class="desc-cell">The Master Addons for Elementor – Elementor Addons, Widgets, Mega Menu Builder, Popup Builder, Widget Builder & Template Kits plugin for WordPress is vulnerable to Arbitrary File Upload in all version…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-83772" target="_blank" rel="noopener noreferrer">CVE-2026-83772</a></td><td><span class="score-badge critical">9.9</span></td><td>2026-09-01</td><td class="desc-cell">A vulnerability was detected in Cobham SATCOM VSAT7090 Maritime Satellite Router up to 20260704. This issue affects the function c_set_reports_decode of the file mail-report.sh of the component JSON P…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-19914" target="_blank" rel="noopener noreferrer">CVE-2026-19914</a></td><td><span class="score-badge high">7.2</span></td><td>2026-09-01</td><td class="desc-cell">The Welcart e-Commerce plugin for WordPress is vulnerable to Stored Cross-Site Scripting via the 'custom_order' parameter in all versions up to, and including, 2.12.1 due to insufficient input sanitiz…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-25706" target="_blank" rel="noopener noreferrer">CVE-2026-25706</a></td><td><span class="score-badge high">7.5</span></td><td>2026-09-01</td><td class="desc-cell">Improper neutralization of special elements used in an OS command in yast2-samba-client allows an attacker who controls the content of an Active Directory directory tree - a rogue domain controller, o…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-59680" target="_blank" rel="noopener noreferrer">CVE-2026-59680</a></td><td><span class="score-badge high">8.0</span></td><td>2026-09-01</td><td class="desc-cell">An OS command injection vulnerability was found in yast2-users. When displaying the "Password Settings" tab of a user, get_password_term() in src/include/users/dialogs.rb read the shadowLastChange and…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-59681" target="_blank" rel="noopener noreferrer">CVE-2026-59681</a></td><td><span class="score-badge high">8.8</span></td><td>2026-09-01</td><td class="desc-cell">A OS command injection vulnerability in yast2-auth-client allows an attacker who controls Active Directory configuration values to execute arbitrary commands as root on the configured host.
+ Auth::Aut…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-84059" target="_blank" rel="noopener noreferrer">CVE-2026-84059</a></td><td><span class="score-badge high">7.4</span></td><td>2026-09-01</td><td class="desc-cell">A flaw has been found in ICP DAS UA-2200 and UA-5200 up to 20260704. The affected element is the function ArmAngstromInstructionSet of the file /CGI?RestApi=SetHostname. Executing a manipulation of th…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-18550" target="_blank" rel="noopener noreferrer">CVE-2026-18550</a></td><td><span class="score-badge critical">9.8</span></td><td>2026-09-01</td><td class="desc-cell">The Nokri - Job Board WordPress Theme for WordPress is vulnerable to Privilege Escalation via Account Takeover in all versions up to, and including, 1.6.6. This is due to insufficient reset token vali…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-76111" target="_blank" rel="noopener noreferrer">CVE-2026-76111</a></td><td><span class="score-badge high">8.8</span></td><td>2026-09-01</td><td class="desc-cell">Dell PowerStore contains an Incorrect Authorization vulnerability. An authenticated attacker with low privileges could potentially exploit this vulnerability to invoke administrator-only operations, l…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-83595" target="_blank" rel="noopener noreferrer">CVE-2026-83595</a></td><td><span class="score-badge high">8.1</span></td><td>2026-09-01</td><td class="desc-cell">AVideo contains a cross-site request forgery vulnerability in plugin/API/set.json.php that allows attackers to perform state-changing actions by crafting GET requests that bypass CSRF protection. Atta…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-84187" target="_blank" rel="noopener noreferrer">CVE-2026-84187</a></td><td><span class="score-badge high">8.2</span></td><td>2026-09-01</td><td class="desc-cell">AVideo contains a missing authentication vulnerability in plugin/Live/on_publish.php that allows unauthenticated attackers to mark arbitrary scheduled broadcasts as failed by sending crafted POST requ…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-84189" target="_blank" rel="noopener noreferrer">CVE-2026-84189</a></td><td><span class="score-badge high">8.1</span></td><td>2026-09-01</td><td class="desc-cell">LibreNMS through 26.4.0 renders JSON fields (name, ip, model, author, commit message) returned by the admin-configurable Oxidized integration URL (oxidized.url) into the device showconfig page without…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-84190" target="_blank" rel="noopener noreferrer">CVE-2026-84190</a></td><td><span class="score-badge high">7.2</span></td><td>2026-09-01</td><td class="desc-cell">LibreNMS versions before 26.5.0 contain a remote code execution vulnerability in the AboutController where the snmpget configuration parameter is passed to shell_exec() without proper validation. An a…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-84192" target="_blank" rel="noopener noreferrer">CVE-2026-84192</a></td><td><span class="score-badge high">7.1</span></td><td>2026-09-01</td><td class="desc-cell">LibreNMS before 26.3.1 contains a stored cross-site scripting vulnerability in legacy PHP templates that output SNMP-sourced and syslog-sourced data without escaping. An attacker who controls a monito…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-84195" target="_blank" rel="noopener noreferrer">CVE-2026-84195</a></td><td><span class="score-badge high">7.7</span></td><td>2026-09-01</td><td class="desc-cell">Kyverno before 1.16.4 automatically attaches the admission controller's ServiceAccount token to outbound HTTP requests in apiCall service mode without explicit authorization headers. Attackers can exf…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-84196" target="_blank" rel="noopener noreferrer">CVE-2026-84196</a></td><td><span class="score-badge high">7.7</span></td><td>2026-09-01</td><td class="desc-cell">Kyverno before 1.18.0 contains a server-side request forgery vulnerability in apiCall.service.url that allows authenticated users to send arbitrary HTTP requests by injecting user-controlled input thr…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-84199" target="_blank" rel="noopener noreferrer">CVE-2026-84199</a></td><td><span class="score-badge high">7.7</span></td><td>2026-09-01</td><td class="desc-cell">Kyverno before 1.16.2 contains a server-side request forgery (SSRF) vulnerability in the APICall feature. The URL field in a Policy's ServiceCall configuration is not validated, so a user with namespa…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-84200" target="_blank" rel="noopener noreferrer">CVE-2026-84200</a></td><td><span class="score-badge critical">9.0</span></td><td>2026-09-01</td><td class="desc-cell">Kyverno versions v1.9.0 through v1.12.7 contain a policy exception handling flaw. When a policy in enforce mode is combined with two PolicyExceptions, the less restrictive exception takes precedence, …</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">CISA KEV — 12 new entries (last 7 days)</div>
+    <div class="table-wrapper">
+      <table id="kev-table">
+        <thead>
+          <tr>
+            <th onclick="sortTable('kev-table',0)" data-col="0">CVE ID <span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable('kev-table',1)" data-col="1">Vendor / Product <span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable('kev-table',2)" data-col="2">Date Added <span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable('kev-table',3)" data-col="3">Due Date <span class="sort-icon">&#8597;</span></th>
+            <th>Ransomware</th>
+          </tr>
+        </thead>
+        <tbody>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-82078" target="_blank" rel="noopener noreferrer">CVE-2026-82078</a></td><td>PaperCut / NG/MF</td><td>2026-08-31</td><td>2026-09-14</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-81578" target="_blank" rel="noopener noreferrer">CVE-2026-81578</a></td><td>PaperCut / NG/MF</td><td>2026-08-31</td><td>2026-09-14</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2023-49105" target="_blank" rel="noopener noreferrer">CVE-2023-49105</a></td><td>ownCloud / ownCloud</td><td>2026-08-27</td><td>2026-08-30</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-53362" target="_blank" rel="noopener noreferrer">CVE-2026-53362</a></td><td>Linux / Kernel</td><td>2026-08-27</td><td>2026-08-30</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-66384" target="_blank" rel="noopener noreferrer">CVE-2026-66384</a></td><td>JFrog / Artifactory</td><td>2026-08-27</td><td>2026-09-10</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2021-23758" target="_blank" rel="noopener noreferrer">CVE-2021-23758</a></td><td>Ajax.NET Professional / Ajax.NET Professional</td><td>2026-08-26</td><td>2026-09-09</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2015-3246" target="_blank" rel="noopener noreferrer">CVE-2015-3246</a></td><td>Red Hat / Libuser</td><td>2026-08-26</td><td>2026-09-09</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2015-5287" target="_blank" rel="noopener noreferrer">CVE-2015-5287</a></td><td>Red Hat / Automatic Bug Reporting Tool</td><td>2026-08-26</td><td>2026-09-09</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2022-0995" target="_blank" rel="noopener noreferrer">CVE-2022-0995</a></td><td>Linux / Kernel</td><td>2026-08-26</td><td>2026-09-09</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-8452" target="_blank" rel="noopener noreferrer">CVE-2026-8452</a></td><td>Citrix / NetScaler ADC and NetScaler Gateway</td><td>2026-08-26</td><td>2026-08-29</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2019-1068" target="_blank" rel="noopener noreferrer">CVE-2019-1068</a></td><td>Microsoft / SQL Server</td><td>2026-08-26</td><td>2026-08-29</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-60004" target="_blank" rel="noopener noreferrer">CVE-2026-60004</a></td><td>Gitea / Gitea</td><td>2026-08-25</td><td>2026-08-28</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>
+    Data sources: &nbsp;
+    <a href="https://nvd.nist.gov/" target="_blank" rel="noopener noreferrer">NVD (National Vulnerability Database)</a>
+    &nbsp;&bull;&nbsp;
+    <a href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank" rel="noopener noreferrer">CISA Known Exploited Vulnerabilities Catalog</a>
+    <br><br>
+    Generated by Vulnerability Intelligence Pipeline &bull; 2026-09-01T13:06:44Z
+  </footer>
+</div>
+
+<script>
+const sortState = {};
+function sortTable(tableId, col) {
+  const table = document.getElementById(tableId);
+  const tbody = table.querySelector('tbody');
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+  const key = tableId + ':' + col;
+  const asc = sortState[key] !== true;
+  sortState[key] = asc;
+
+  // Update sort icons
+  table.querySelectorAll('th').forEach((th, i) => {
+    th.classList.toggle('sorted', i === col);
+    const icon = th.querySelector('.sort-icon');
+    if (icon) icon.textContent = i === col ? (asc ? '↑' : '↓') : '⇅';
+  });
+
+  rows.sort((a, b) => {
+    const aText = (a.cells[col] ? a.cells[col].textContent : '').trim();
+    const bText = (b.cells[col] ? b.cells[col].textContent : '').trim();
+    const aNum = parseFloat(aText);
+    const bNum = parseFloat(bText);
+    if (!isNaN(aNum) && !isNaN(bNum)) return asc ? aNum - bNum : bNum - aNum;
+    return asc ? aText.localeCompare(bText) : bText.localeCompare(aText);
+  });
+
+  rows.forEach(r => tbody.appendChild(r));
+}
+</script>
+
+</body>
+</html>
