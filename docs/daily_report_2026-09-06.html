@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vulnerability Intelligence Report — 2026-09-06</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #22263a;
+    --border: #2d3148;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --accent: #6366f1;
+    --critical: #dc2626;
+    --high: #ea580c;
+    --medium: #ca8a04;
+    --success: #16a34a;
+  }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace; line-height: 1.6; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* Header */
+  .header { background: linear-gradient(135deg, #1a1d27 0%, #0f1117 100%); border-bottom: 1px solid var(--border); padding: 24px 32px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+  .header-left h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: 0.01em; color: #f1f5f9; }
+  .header-left h1 span { color: var(--accent); }
+  .header-meta { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
+  .risk-badge { display: inline-flex; align-items: center; gap: 6px; padding: 8px 20px; border-radius: 9999px; font-weight: 700; font-size: 0.95rem; letter-spacing: 0.05em; text-transform: uppercase; background: #dc262622; color: #dc2626; border: 2px solid #dc2626; }
+  .risk-dot { width: 8px; height: 8px; border-radius: 50%; background: #dc2626; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  /* Layout */
+  .container { max-width: 1400px; margin: 0 auto; padding: 32px; }
+
+  /* KPI cards */
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 32px; }
+  .kpi-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; }
+  .kpi-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 8px; }
+  .kpi-value { font-size: 2.5rem; font-weight: 700; line-height: 1; color: #f1f5f9; }
+  .kpi-value.danger { color: var(--critical); }
+  .kpi-value.warn { color: var(--high); }
+  .kpi-sub { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+
+  /* Sections */
+  .section { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 24px; }
+  .section-title { font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+  .section p { color: var(--text-muted); line-height: 1.8; }
+
+  /* Action list */
+  .action-list { padding-left: 20px; }
+  .action-list li { color: var(--text-muted); margin-bottom: 10px; padding-left: 4px; line-height: 1.7; }
+  .action-list li::marker { color: var(--accent); font-weight: 700; }
+  .empty-msg { color: var(--text-muted); font-style: italic; }
+
+  /* Tables */
+  .table-wrapper { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+  th { background: var(--surface2); padding: 10px 14px; text-align: left; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); border-bottom: 1px solid var(--border); cursor: pointer; user-select: none; white-space: nowrap; }
+  th:hover { color: var(--text); }
+  th .sort-icon { margin-left: 4px; opacity: 0.4; }
+  th.sorted .sort-icon { opacity: 1; color: var(--accent); }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface2); }
+  .empty-row { text-align: center; color: var(--text-muted); font-style: italic; padding: 24px; }
+  .desc-cell { max-width: 500px; color: var(--text-muted); font-size: 0.8rem; }
+
+  /* Score badges */
+  .score-badge { display: inline-block; padding: 2px 8px; border-radius: 6px; font-weight: 700; font-size: 0.8rem; }
+  .score-badge.critical { background: #dc262622; color: #dc2626; border: 1px solid #dc262644; }
+  .score-badge.high { background: #ea580c22; color: #ea580c; border: 1px solid #ea580c44; }
+  .score-badge.medium { background: #ca8a0422; color: #ca8a04; border: 1px solid #ca8a0444; }
+
+  /* Misc badges */
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
+  .ransomware-known { background: #dc262622; color: #dc2626; border: 1px solid #dc262644; }
+  .ransomware-unknown { background: #37415122; color: #94a3b8; border: 1px solid #37415144; }
+  .cve-link { color: var(--accent); font-family: monospace; }
+
+  /* Warning */
+  .warning-box { background: #78350f22; border: 1px solid #92400e; border-radius: 8px; padding: 16px; margin-bottom: 24px; color: #fbbf24; font-size: 0.875rem; }
+  .warning-box ul { padding-left: 16px; margin-top: 8px; }
+
+  /* Footer */
+  footer { margin-top: 48px; padding: 24px 0; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); font-size: 0.8rem; }
+  footer a { color: var(--text-muted); }
+  footer a:hover { color: var(--text); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <h1>Vulnerability <span>Intelligence</span> Report</h1>
+    <div class="header-meta">Date: 2026-09-06 &nbsp;|&nbsp; Generated: 2026-09-06T11:58:11Z</div>
+  </div>
+  <div class="risk-badge">
+    <span class="risk-dot"></span>
+    Critical Risk
+  </div>
+</div>
+
+<div class="container">
+  
+        <div class="warning-box">
+            <strong>Pipeline Warnings:</strong>
+            <ul><li>summarizer failed: Error code: 404 - {'type': 'error', 'error': {'type': 'not_found_error', 'message': 'model: claude-sonnet-4-20250514'}, 'request_id': 'req_011Cen9RkRbvrQ5p8Vr75zkr'}</li></ul>
+        </div>
+
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">Total CVEs Found</div>
+      <div class="kpi-value danger">31</div>
+      <div class="kpi-sub">CVSS &ge; 7.0 in last 24h</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">CVSS Avg Score</div>
+      <div class="kpi-value warn">8.5</div>
+      <div class="kpi-sub">across all found CVEs</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">KEV New Entries</div>
+      <div class="kpi-value danger">10</div>
+      <div class="kpi-sub">added in last 7 days</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">KEV Due This Week</div>
+      <div class="kpi-value ">0</div>
+      <div class="kpi-sub">remediation deadlines</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Executive Summary</div>
+    <p>No summary available.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Risk Narrative</div>
+    <p>No risk narrative available.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Prioritized Action Items</div>
+    <p class='empty-msg'>No action items available.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">High Severity CVEs — 31 found (CVSS &ge; 7.0)</div>
+    <div class="table-wrapper">
+      <table id="cve-table">
+        <thead>
+          <tr>
+            <th onclick="sortTable('cve-table',0)" data-col="0">CVE ID <span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable('cve-table',1)" data-col="1">CVSS <span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable('cve-table',2)" data-col="2">Published <span class="sort-icon">&#8597;</span></th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2025-9049" target="_blank" rel="noopener noreferrer">CVE-2025-9049</a></td><td><span class="score-badge high">8.8</span></td><td>2026-09-05</td><td class="desc-cell">The Nokri – Job Board WordPress Theme theme for WordPress is vulnerable to unauthorized modification of data due to a missing capability check on the 'nokri_account_member_permissions' function in all…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-10196" target="_blank" rel="noopener noreferrer">CVE-2026-10196</a></td><td><span class="score-badge critical">9.8</span></td><td>2026-09-05</td><td class="desc-cell">The Mail Mint – Email Marketing, Newsletter, Email Automation & WooCommerce Emails plugin for WordPress is vulnerable to PHP Object Injection in all versions up to, and including, 1.31.0 via deseriali…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-86184" target="_blank" rel="noopener noreferrer">CVE-2026-86184</a></td><td><span class="score-badge critical">9.8</span></td><td>2026-09-05</td><td class="desc-cell">Lara Dashboard before 1.3.0 contains an authentication bypass vulnerability in the screenshot-login route that allows unauthenticated attackers to authenticate as any user by email when APP_ENV is not…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-86185" target="_blank" rel="noopener noreferrer">CVE-2026-86185</a></td><td><span class="score-badge high">8.0</span></td><td>2026-09-05</td><td class="desc-cell">Bilibili Desktop through 1.18.0 disables TLS certificate verification process-wide and executes unsigned remote JavaScript configuration without integrity checks. An attacker in an on-path network pos…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-86188" target="_blank" rel="noopener noreferrer">CVE-2026-86188</a></td><td><span class="score-badge high">7.2</span></td><td>2026-09-05</td><td class="desc-cell">AVideo with YPTSocket plugin enabled contains a cross-site scripting vulnerability allowing unauthenticated attackers to execute arbitrary JavaScript in other users' browsers via the websocket callbac…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-86189" target="_blank" rel="noopener noreferrer">CVE-2026-86189</a></td><td><span class="score-badge critical">9.8</span></td><td>2026-09-05</td><td class="desc-cell">WWBN AVideo contains a path traversal vulnerability in notify.ffmpeg.json.php that allows unauthenticated attackers to write files to arbitrary locations by supplying a caller-chosen path in the avide…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-86190" target="_blank" rel="noopener noreferrer">CVE-2026-86190</a></td><td><span class="score-badge critical">9.1</span></td><td>2026-09-05</td><td class="desc-cell">WWBN AVideo contains a broken access control vulnerability in videoViewsInfo endpoints that returns complete user records including password hashes, recovery tokens, and live session identifiers to un…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-0799" target="_blank" rel="noopener noreferrer">CVE-2026-0799</a></td><td><span class="score-badge high">8.7</span></td><td>2026-09-05</td><td class="desc-cell">In BPF instructions that load/store a value from/to a scratch memory register the register index is an unsigned 32-bit integer and must not exceed 15, but libpcap BPF interpreter does not validate the…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-86148" target="_blank" rel="noopener noreferrer">CVE-2026-86148</a></td><td><span class="score-badge critical">9.1</span></td><td>2026-09-05</td><td class="desc-cell">A security flaw has been discovered in Tenda CP3 27.5.57.101. This vulnerability affects the function SystemAsh of the file Apis/system.c of the component Kylin. The manipulation of the argument Alarm…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-86149" target="_blank" rel="noopener noreferrer">CVE-2026-86149</a></td><td><span class="score-badge critical">9.1</span></td><td>2026-09-05</td><td class="desc-cell">A weakness has been identified in Tenda CP3 27.5.57.101. This issue affects some unknown processing of the file Net/NetCheckPing.cpp. This manipulation of the argument interface_name/host causes os co…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-86151" target="_blank" rel="noopener noreferrer">CVE-2026-86151</a></td><td><span class="score-badge critical">9.1</span></td><td>2026-09-06</td><td class="desc-cell">A vulnerability was detected in Tenda CP3 27.5.57.101. The affected element is the function sub_2F77E8 of the file Apis/system.c of the component Network Configuration Management. Performing a manipul…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-86152" target="_blank" rel="noopener noreferrer">CVE-2026-86152</a></td><td><span class="score-badge critical">10.0</span></td><td>2026-09-06</td><td class="desc-cell">A flaw has been found in Tenda CP3 27.5.57.101. The impacted element is the function CAutoAddWifi::ThreadProc of the file Functions/AutoAddWifi.cpp of the component Kylin. Executing a manipulation can…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-86153" target="_blank" rel="noopener noreferrer">CVE-2026-86153</a></td><td><span class="score-badge critical">9.1</span></td><td>2026-09-06</td><td class="desc-cell">A vulnerability has been found in Tenda CP3 27.5.57.101. This affects the function CRedirServer::SetRedirectEnable of the file Functions/Redirect.cpp. The manipulation leads to improper privilege mana…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-16310" target="_blank" rel="noopener noreferrer">CVE-2026-16310</a></td><td><span class="score-badge critical">9.8</span></td><td>2026-09-06</td><td class="desc-cell">The MemberDash plugin for WordPress is vulnerable to Insecure Direct Object Reference in all versions up to, and including, 1.8.5 via the 'id' parameter due to missing validation on a user controlled …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-18056" target="_blank" rel="noopener noreferrer">CVE-2026-18056</a></td><td><span class="score-badge high">7.5</span></td><td>2026-09-06</td><td class="desc-cell">The HivePress Authentication plugin for WordPress is vulnerable to Authentication Bypass via the access_token parameter in all versions up to, and including, 1.1.4. This is due to the authenticate_use…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-75816" target="_blank" rel="noopener noreferrer">CVE-2026-75816</a></td><td><span class="score-badge critical">9.8</span></td><td>2026-09-06</td><td class="desc-cell">The Frontend Admin by DynamiApps plugin for WordPress is vulnerable to Authentication Bypass to Account Takeover in all versions up to, and including, 3.29.12. This is due to the pre_update_value func…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-86159" target="_blank" rel="noopener noreferrer">CVE-2026-86159</a></td><td><span class="score-badge high">7.3</span></td><td>2026-09-06</td><td class="desc-cell">A flaw has been found in SourceCodester Online Voting System 1.0. Impacted is an unknown function of the file /ajax.php?action=save_user. This manipulation of the argument ID causes sql injection. The…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-86160" target="_blank" rel="noopener noreferrer">CVE-2026-86160</a></td><td><span class="score-badge high">7.3</span></td><td>2026-09-06</td><td class="desc-cell">A vulnerability has been found in SourceCodester Online Voting System 1.0. The affected element is an unknown function of the file /ajax.php?action=delete_voting. Such manipulation of the argument ID …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-86161" target="_blank" rel="noopener noreferrer">CVE-2026-86161</a></td><td><span class="score-badge high">7.3</span></td><td>2026-09-06</td><td class="desc-cell">A vulnerability was found in SourceCodester Online Voting System 1.0. The impacted element is an unknown function of the file /ajax.php?action=delete_category. Performing a manipulation of the argumen…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-86162" target="_blank" rel="noopener noreferrer">CVE-2026-86162</a></td><td><span class="score-badge high">7.3</span></td><td>2026-09-06</td><td class="desc-cell">A vulnerability was determined in SourceCodester Online Voting System 1.0. This affects an unknown function of the file /ajax.php?action=login. Executing a manipulation of the argument Username can le…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-86165" target="_blank" rel="noopener noreferrer">CVE-2026-86165</a></td><td><span class="score-badge critical">9.8</span></td><td>2026-09-06</td><td class="desc-cell">A vulnerability was found in Tenda HG10 300001138. This vulnerability affects the function formURL of the file /boaform/admin/formURL. Performing a manipulation of the argument Keywd/urlFQDN results i…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-86166" target="_blank" rel="noopener noreferrer">CVE-2026-86166</a></td><td><span class="score-badge high">8.8</span></td><td>2026-09-06</td><td class="desc-cell">A vulnerability was determined in Tenda HG10 300001138. This issue affects the function formWanRedirect of the file /boaform/formWanRedirect of the component Boa Web Server. Executing a manipulation o…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-86167" target="_blank" rel="noopener noreferrer">CVE-2026-86167</a></td><td><span class="score-badge critical">9.9</span></td><td>2026-09-06</td><td class="desc-cell">A vulnerability was identified in Tenda HG10 300001138. Impacted is the function formgponConf of the file /boaform/admin/formgponConf of the component Boa. The manipulation of the argument fmgpon_loid…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-86168" target="_blank" rel="noopener noreferrer">CVE-2026-86168</a></td><td><span class="score-badge high">7.3</span></td><td>2026-09-06</td><td class="desc-cell">A security flaw has been discovered in code-projects Content Management System 1.0. The affected element is an unknown function of the file /login.php. The manipulation of the argument user_name resul…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-18480" target="_blank" rel="noopener noreferrer">CVE-2026-18480</a></td><td><span class="score-badge high">8.8</span></td><td>2026-09-06</td><td class="desc-cell">The SureCart  WordPress plugin before 4.6.3 does not ensure that the account affected by a customer update is the same account its permission check authorised, allowing users with a subscriber-level a…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-84219" target="_blank" rel="noopener noreferrer">CVE-2026-84219</a></td><td><span class="score-badge high">7.5</span></td><td>2026-09-06</td><td class="desc-cell">The Kirki  WordPress plugin before 6.3.0 does not hold back every spelling of the HTML entities it decodes when rendering, allowing unauthenticated users to store JavaScript in a comment which then ru…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-86180" target="_blank" rel="noopener noreferrer">CVE-2026-86180</a></td><td><span class="score-badge high">7.3</span></td><td>2026-09-06</td><td class="desc-cell">A vulnerability has been found in code-projects Task Management System In PHP 1.0. Affected by this vulnerability is an unknown functionality of the file /index.php of the component Login. The manipul…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-86208" target="_blank" rel="noopener noreferrer">CVE-2026-86208</a></td><td><span class="score-badge high">7.3</span></td><td>2026-09-06</td><td class="desc-cell">A security flaw has been discovered in SourceCodester Class and Exam Timetabling System 1.0. This impacts an unknown function of the file /delete_teacher.php. The manipulation of the argument ID resul…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-86209" target="_blank" rel="noopener noreferrer">CVE-2026-86209</a></td><td><span class="score-badge high">7.3</span></td><td>2026-09-06</td><td class="desc-cell">A weakness has been identified in SourceCodester Class and Exam Timetabling System 1.0. Affected is an unknown function of the file /delete_user.php. This manipulation of the argument ID causes sql in…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-86210" target="_blank" rel="noopener noreferrer">CVE-2026-86210</a></td><td><span class="score-badge high">7.3</span></td><td>2026-09-06</td><td class="desc-cell">A security vulnerability has been detected in SourceCodester Class and Exam Timetabling System 1.0. Affected by this vulnerability is an unknown functionality of the file /delete_user_account.php. Suc…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-86211" target="_blank" rel="noopener noreferrer">CVE-2026-86211</a></td><td><span class="score-badge high">7.3</span></td><td>2026-09-06</td><td class="desc-cell">A flaw has been found in rabindralamsal inventory-management-system 1.0.0. This affects an unknown part of the file index.php of the component Login. Executing a manipulation of the argument username/…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">CISA KEV — 10 new entries (last 7 days)</div>
+    <div class="table-wrapper">
+      <table id="kev-table">
+        <thead>
+          <tr>
+            <th onclick="sortTable('kev-table',0)" data-col="0">CVE ID <span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable('kev-table',1)" data-col="1">Vendor / Product <span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable('kev-table',2)" data-col="2">Date Added <span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable('kev-table',3)" data-col="3">Due Date <span class="sort-icon">&#8597;</span></th>
+            <th>Ransomware</th>
+          </tr>
+        </thead>
+        <tbody>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-85046" target="_blank" rel="noopener noreferrer">CVE-2026-85046</a></td><td>Google / Chromium V8</td><td>2026-09-04</td><td>2026-09-18</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-59822" target="_blank" rel="noopener noreferrer">CVE-2026-59822</a></td><td>BerriAI / LiteLLM</td><td>2026-09-02</td><td>2026-09-16</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-48710" target="_blank" rel="noopener noreferrer">CVE-2026-48710</a></td><td>Kludex / Starlette</td><td>2026-09-02</td><td>2026-09-16</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-49869" target="_blank" rel="noopener noreferrer">CVE-2026-49869</a></td><td>Kestra / Kestra OSS</td><td>2026-09-02</td><td>2026-09-05</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-82329" target="_blank" rel="noopener noreferrer">CVE-2026-82329</a></td><td>JFrog / Artifactory</td><td>2026-09-02</td><td>2026-09-05</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-9586" target="_blank" rel="noopener noreferrer">CVE-2026-9586</a></td><td>Sangoma / Switchvox</td><td>2026-09-02</td><td>2026-09-05</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-83548" target="_blank" rel="noopener noreferrer">CVE-2026-83548</a></td><td>SonicWall / SMA1000 Appliances</td><td>2026-09-02</td><td>2026-09-05</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-83549" target="_blank" rel="noopener noreferrer">CVE-2026-83549</a></td><td>SonicWall / SMA1000 Appliances</td><td>2026-09-02</td><td>2026-09-05</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-82078" target="_blank" rel="noopener noreferrer">CVE-2026-82078</a></td><td>PaperCut / NG/MF</td><td>2026-08-31</td><td>2026-09-14</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-81578" target="_blank" rel="noopener noreferrer">CVE-2026-81578</a></td><td>PaperCut / NG/MF</td><td>2026-08-31</td><td>2026-09-14</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>
+    Data sources: &nbsp;
+    <a href="https://nvd.nist.gov/" target="_blank" rel="noopener noreferrer">NVD (National Vulnerability Database)</a>
+    &nbsp;&bull;&nbsp;
+    <a href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank" rel="noopener noreferrer">CISA Known Exploited Vulnerabilities Catalog</a>
+    <br><br>
+    Generated by Vulnerability Intelligence Pipeline &bull; 2026-09-06T11:58:11Z
+  </footer>
+</div>
+
+<script>
+const sortState = {};
+function sortTable(tableId, col) {
+  const table = document.getElementById(tableId);
+  const tbody = table.querySelector('tbody');
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+  const key = tableId + ':' + col;
+  const asc = sortState[key] !== true;
+  sortState[key] = asc;
+
+  // Update sort icons
+  table.querySelectorAll('th').forEach((th, i) => {
+    th.classList.toggle('sorted', i === col);
+    const icon = th.querySelector('.sort-icon');
+    if (icon) icon.textContent = i === col ? (asc ? '↑' : '↓') : '⇅';
+  });
+
+  rows.sort((a, b) => {
+    const aText = (a.cells[col] ? a.cells[col].textContent : '').trim();
+    const bText = (b.cells[col] ? b.cells[col].textContent : '').trim();
+    const aNum = parseFloat(aText);
+    const bNum = parseFloat(bText);
+    if (!isNaN(aNum) && !isNaN(bNum)) return asc ? aNum - bNum : bNum - aNum;
+    return asc ? aText.localeCompare(bText) : bText.localeCompare(aText);
+  });
+
+  rows.forEach(r => tbody.appendChild(r));
+}
+</script>
+
+</body>
+</html>
