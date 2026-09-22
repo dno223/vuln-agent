@@ -6,7 +6,7 @@ NO company data. NO proprietary systems.
 
 ## Stack
 - Language: Python 3.11+
-- LLM: Claude API (claude-sonnet-4-20250514)
+- LLM: Claude API (claude-sonnet-4-6 by default, override with CLAUDE_MODEL env var; claude-sonnet-4-20250514 was retired 2026-06-15, do not use)
 - Data Sources: NVD API, CISA KEV, MITRE ATT&CK
 - Output: Markdown reports, CSV, HTML
 - CI/CD: GitHub Actions (daily scheduled runs)

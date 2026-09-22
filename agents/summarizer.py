@@ -22,7 +22,8 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-MODEL = "claude-sonnet-4-20250514"
+# Override via CLAUDE_MODEL env var; see https://platform.claude.com/docs/en/about-claude/model-deprecations
+MODEL = os.getenv("CLAUDE_MODEL", "claude-sonnet-4-6")
 
 SYSTEM_PROMPT = (
     "You are a cybersecurity analyst writing reports for executive audiences. "
