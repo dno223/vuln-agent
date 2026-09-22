@@ -1,0 +1,746 @@
+{
+  "run_date": "2026-09-22",
+  "run_timestamp": "2026-09-22T13:07:05Z",
+  "high_severity_cves": [
+    {
+      "cve_id": "CVE-2026-84285",
+      "description": "An OS Command Injection vulnerability affecting Tuleap Enterprise Edition from 17.3 through 17.5 could allow an attacker to execute arbitrary commands on the server.",
+      "cvss_score": 8.8,
+      "published_date": "2026-09-21T13:17:10.830"
+    },
+    {
+      "cve_id": "CVE-2025-71421",
+      "description": "UVdesk core-framework before 1.1.7 contains an improper privilege management vulnerability in the editAgent endpoint that allows agents with agent-management privilege to escalate their own role to administrator. Attackers can submit their own account identifier with a role parameter set to ROLE_ADMIN to gain full administrative control over agents, tickets, and mail configuration.",
+      "cvss_score": 7.2,
+      "published_date": "2026-09-21T14:17:14.897"
+    },
+    {
+      "cve_id": "CVE-2026-88806",
+      "description": "A malicious X server could exploit a buffer overflow in libX11 before 1.8.14 during handling of XkbGetMap overflowing the key_sym_map.",
+      "cvss_score": 7.5,
+      "published_date": "2026-09-21T14:17:22.273"
+    },
+    {
+      "cve_id": "CVE-2026-55071",
+      "description": "MCP-for-Stata is a MCP server for integrating Stata into agent loops with a safety-first design. Prior to version 1.19.0, the ado_package_install MCP tool in stata-mcp concatenates user-controlled input directly into a Stata command string without any validation or sanitization. An attacker who can invoke the MCP tool or the equivalent Python API can embed newline characters in the package argument to inject arbitrary Stata commands. Because Stata supports a shell escape command, this leads to full OS-level arbitrary command execution (RCE) under the account running the Stata-MCP server. The tool is registered in the default all profile, so no non-default configuration is required. This issue has been patched in version 1.19.0.",
+      "cvss_score": 8.4,
+      "published_date": "2026-09-21T15:17:29.450"
+    },
+    {
+      "cve_id": "CVE-2026-55567",
+      "description": "BleachBit cleans files to free disk space and to maintain privacy. Prior to 6.0.1, privileged Windows cleaning does not lock and validate a target's parent directory before deletion. A local unprivileged user can replace that directory with a Windows junction and use a native symlink to redirect the elevated deletion to an attacker-selected file. The arbitrary privileged file deletion can be combined with Windows Installer behavior to obtain local SYSTEM privileges. This issue is fixed in version 6.0.1.",
+      "cvss_score": 7.8,
+      "published_date": "2026-09-21T15:17:29.793"
+    },
+    {
+      "cve_id": "CVE-2026-61628",
+      "description": "nginx ignition is a user interface for the nginx web server. Prior to version 2.41.1, `POST /api/users/onboarding/finish` is registered as anonymous (unauthenticated) and creates a user with full ReadWrite admin permissions. Because the handler uses a check-then-act (TOCTOU) pattern between the \"onboarding already completed?\" check and the user-creation write, with no atomic guard, a remote unauthenticated attacker who can reach an instance in its pre-onboarding state can create an administrator account for themselves \u2014 and concurrent requests can create multiple admin accounts in a single race. Version 2.41.1 patches the issue.",
+      "cvss_score": 8.1,
+      "published_date": "2026-09-21T15:17:30.290"
+    },
+    {
+      "cve_id": "CVE-2026-61629",
+      "description": "nginx ignition is a user interface for the nginx web server. In versions 2.29.0 through 2.40.0, the gin i18n middleware in nginx-ignition's API server runs in front of every HTTP request and calls `golang.org/x/text/language.ParseAcceptLanguage` on the raw `Accept-Language` header without imposing any size or shape filter. The underlying parser has quadratic-time behaviour on long lists of malformed language tags. The CVE-2022-32149 guard that golang.org/x/text added in v0.3.8 caps the number of `-` characters in the input at 1000, but it does not cap `_` characters even though the parser's internal scanner aliases `_` to `-` before parsing. A single unauthenticated GET request with an `Accept-Language` header built out of `_` separators burns about 2.4 seconds of server CPU on the host running nginx-ignition; ten concurrent attackers saturate a ten-core box for the duration of the attack while consuming ~10 MiB/s of upstream bandwidth. Version 2.40.1 fixes this issue.",
+      "cvss_score": 7.5,
+      "published_date": "2026-09-21T15:17:30.477"
+    },
+    {
+      "cve_id": "CVE-2026-75939",
+      "description": "A flaw was found in openshift/oc-mirror. The tool incorrectly verifies PGP (Pretty Good Privacy) release image signatures by checking for signature errors before the entire signed body is processed, leading to a bypass of the signature verification. A remote attacker, by intercepting or manipulating network traffic to the signature endpoint, could exploit this to craft a PGP message with a valid Red Hat release key ID but a forged signature. This enables the `oc-mirror` tool to accept and mirror a malicious release payload into a disconnected registry, potentially compromising the integrity of software deployments.",
+      "cvss_score": 7.4,
+      "published_date": "2026-09-21T15:17:31.520"
+    },
+    {
+      "cve_id": "CVE-2026-80110",
+      "description": "A flaw was found in pki-core. The v2 REST ACL filter selects a tie-breaking permission for colliding literal and wildcard ACL keys using lexicographic string comparison rather than specificity, causing a wildcard-mapped permission to override a more specific literal-mapped permission when both match. In the CA's profile-management REST API this allows a request to POST /v2/profiles/raw -- intended to require Administrator-level profiles.create permission -- to instead be authorized under the lower-privileged profiles.approve permission held by the default Certificate Manager Agents group. The highest threat from this vulnerability is to confidentiality and integrity of the certificate authority's issuance policy.",
+      "cvss_score": 8.1,
+      "published_date": "2026-09-21T15:17:32.060"
+    },
+    {
+      "cve_id": "CVE-2026-86473",
+      "description": "Apache Airflow: the Core API logout endpoint revokes only a session token presented as the _token cookie. When a client logs out presenting its credential as an Authorization bearer header instead, the endpoint returns its normal logout response but revokes nothing, so the token remains valid until it expires. An attacker who already holds a copy of that token keeps the victim's access after the victim has logged out and believes the session ended; the default token lifetime is 24 hours and is configurable.\n\nAffects API clients that authenticate with a bearer token rather than the browser session cookie. The attacker must already possess a copy of a valid token; obtaining one is outside the scope of this issue, and no privileges beyond the victim's own are gained.\n\nUsers of apache-airflow are recommended to upgrade to apache-airflow version 3.3.2 or later, which fixes the issue.",
+      "cvss_score": 9.1,
+      "published_date": "2026-09-21T15:17:32.997"
+    },
+    {
+      "cve_id": "CVE-2026-94184",
+      "description": "A stack-based buffer overflow flaw was found in fetchmail when built with NTLM support. A malicious or compromised mail server advertising NTLM authentication can send a crafted Type 2 challenge that causes fetchmail to write past a fixed stack buffer while building the NTLM authenticate response. This may lead to remote code execution depending on stack-frame layout, or to authentication failure or process termination under memory hardening.\n\nAffects v5.0.8 through v6.6.6.",
+      "cvss_score": 8.1,
+      "published_date": "2026-09-21T15:17:38.547"
+    },
+    {
+      "cve_id": "CVE-2026-94301",
+      "description": "The fix for CVE-2026-47065/ZDRES-232 (\"resolveProxyClass Not Overridden - acceptMatchers Filter Bypass via java.lang.reflect.Proxy\"), released on 2026-06-02 and announced as \"Fully addressed\" in MINA 2.2.8, 2.1.13 and 2.0.29, was committed to the\n\u00a02.2.X branch only. The 2.0.X and 2.1.X maintenance branches never received the resolveProxyClass() override, so the 2.0.29 and 2.1.13 artifacts listed as fixed -- and every later release on those lines, up to and including the current 2.0.30 and 2.1.14 -- remain vulnerable to the exact allow-list bypass that CVE-2026-47065 was meant to close.",
+      "cvss_score": 9.8,
+      "published_date": "2026-09-21T15:17:38.903"
+    },
+    {
+      "cve_id": "CVE-2026-36467",
+      "description": "Unrestricted Upload of File with Dangerous Type in core/modules/media.php in CuteNews v.2.1.2 allows remote authenticated users with access to the Media Manager panel to execute arbitrary code in the context of the web application, leading to remote server access by triggering a reverse shell.",
+      "cvss_score": 7.2,
+      "published_date": "2026-09-21T16:17:07.470"
+    },
+    {
+      "cve_id": "CVE-2026-53940",
+      "description": "Conda is a system-level binary package and environment manager that runs on major operating systems and platforms. Prior to 26.5.2, parse_entry_point_def in conda/common/path/python.py accepted an unvalidated entry-point command from a noarch:python package's info/link.json metadata. CreatePythonEntryPointAction in conda/core/path_actions.py interpolated that command into target_short_path, and PrefixPathAction.target_full_path joined it to the installation prefix without verifying that the result remained under the intended bin or Scripts directory. create_python_entry_point in conda/gateways/disk/create.py then wrote an executable wrapper to the resulting path. A malicious package could use path separators, traversal segments, or an absolute command path to write outside the prefix or overwrite another in-prefix entry point during default install and environment transactions. Out-of-prefix writes require the target parent directory to exist, while an overwritten entry point can execute attacker-controlled Python when later invoked with the installing user's privileges. This issue is fixed in version 26.5.2.",
+      "cvss_score": 8.8,
+      "published_date": "2026-09-21T16:17:09.010"
+    },
+    {
+      "cve_id": "CVE-2026-61687",
+      "description": "Hatchet is a platform for orchestrating background tasks, AI agents, and durable workflows at scale. Prior to 0.91.1, ValidateOAuthState clears the oauth_state_ session value to an empty string after a successful OAuth callback and later accepts an empty state parameter as equal, allowing an unauthenticated attacker to bind a victim's Hatchet session to an attacker-controlled OAuth identity. Exploitation requires the victim to have completed an OAuth flow in the current session and the deployment to enable auth.google.enabled, auth.github.enabled, or the Slack integration. This issue is fixed in version 0.91.1.",
+      "cvss_score": 7.1,
+      "published_date": "2026-09-21T16:17:09.997"
+    },
+    {
+      "cve_id": "CVE-2026-82412",
+      "description": "ntopng is a web-based network traffic monitoring application. Prior to 6.7.260717, the vulnerability-scan endpoints scripts/lua/rest/v2/add/host/to_scan.lua and scripts/lua/rest/v2/exec/host/schedule_vulnerability_scan.lua accept the scan_ports parameter without an administrator gate and pass it through validateSingleWord, which permits shell metacharacters. scripts/lua/modules/vulnerability_scan/vs_utils.lua then concatenates scan_ports into an nmap command in nmap_scan_host and executes the command through ntop.execCmd or ntop.execCmdAsync and popen. Any authenticated non-admin user can execute operating-system commands as the ntopng process account when nmap is available. Because the endpoints accept GET requests while ntopng's CSRF validation applies to POST request bodies, an attacker can also trigger the command through a logged-in user's browser without possessing ntopng credentials. This issue is fixed in version 6.7.260717.",
+      "cvss_score": 8.8,
+      "published_date": "2026-09-21T16:17:24.503"
+    },
+    {
+      "cve_id": "CVE-2026-85751",
+      "description": "Mailu is a mail server distributed as a set of Docker images. From Mailu 2.0 until 2024.06.55 and prior to Mailu helm-charts 2.7.3, deployments with PROXY_AUTH_WHITELIST configured but REAL_IP_HEADER unset trusted a client-controlled X-Forwarded-By header for header-based proxy authentication. The proxy_hide_header directive in the nginx template at core/nginx/conf/proxy.conf hid the header from upstream responses but did not overwrite the incoming request value in this configuration. An unauthenticated remote attacker could therefore spoof the trusted proxy identity and bypass authentication. This issue is fixed in Mailu 2024.06.55 and Mailu helm-charts 2.7.3.",
+      "cvss_score": 9.8,
+      "published_date": "2026-09-21T16:17:25.070"
+    },
+    {
+      "cve_id": "CVE-2026-62371",
+      "description": "KubeEdge is an open source system for extending native containerized application orchestration capabilities to hosts at Edge. From 1.12.0 until 1.21.2, 1.22.2, and 1.23.1, the v1alpha2 NodeUpgradeJob handler in edge/pkg/taskmanager/actions/nodeupgradejob.go concatenates authenticated user-controlled spec.version and spec.image values into the keadm upgrade edge shell command. A user with permission to create or update NodeUpgradeJob resources can supply shell metacharacters in either field, causing arbitrary commands to execute on targeted edge nodes with the privileges of the upgrade process and compromising node confidentiality, integrity, and availability. This issue is fixed in versions 1.21.2, 1.22.2, and 1.23.1.",
+      "cvss_score": 8.8,
+      "published_date": "2026-09-21T17:17:37.150"
+    },
+    {
+      "cve_id": "CVE-2026-63116",
+      "description": "deepstream is a server that allows clients and backend services to sync data, send messages and make rpcs at scale. From 10.1.0 until 10.1.1, src/services/permission/valve/rules-map.ts omits RECORD_ACTION.PATCH_MULTI from RULES_MAP. When an authenticated user sends a PATCH_MULTI record operation while permission.type is config, getRulesForMessage returns a null rule specification and ConfigPermission.canPerformAction treats the missing specification as an unconditional allow instead of applying RULE_TYPES.WRITE. Any authenticated user can therefore modify arbitrary protected records, corrupt application state, or cause service disruption; deployments using the default permission type none already allow all operations and are not additionally affected. This issue is fixed in version 10.1.1.",
+      "cvss_score": 8.8,
+      "published_date": "2026-09-21T17:17:38.510"
+    },
+    {
+      "cve_id": "CVE-2026-77560",
+      "description": "Tinyauth is an authentication and authorization server. Prior to 5.1.2, Tinyauth compares forwarded hostnames case-sensitively while reverse proxies route equivalent hostnames case-insensitively, allowing an authenticated low-privilege user to bypass per-app access controls with a differently cased hostname. The lookup in internal/service/access_controls_service.go through lookupStaticACLs and GetAccessControls, and the Docker-label fallback in internal/service/docker_service.go through GetLabels, can miss the configured app and return an empty access-control object. internal/controller/proxy_controller.go proxyHandler then treats the empty user, group, OAuth, LDAP, and IP restrictions as permissive and returns an authenticated result for an app that should exclude the user. Unauthenticated users remain subject to login, and global login-time allowlists are not bypassed. This issue is fixed in version 5.1.2.",
+      "cvss_score": 8.1,
+      "published_date": "2026-09-21T17:18:52.770"
+    },
+    {
+      "cve_id": "CVE-2026-79920",
+      "description": "Ajenti is a Linux & BSD modular server admin panel. Prior to version 2.2.16, any authenticated user can call /api/core/tasks/start to enqueue InstallPlugin, UnInstallPlugin, or UpgradeAll from plugins/plugins/tasks.py without plugin-management authorization. InstallPlugin and UnInstallPlugin construct a pip package specification from unvalidated name and version fields, and the task worker invokes pip while running as root. A low-privileged user can therefore select or manipulate a package installed with root privileges and can install, remove, or upgrade plugins without administrative permission, resulting in root code execution and full host compromise. This issue is fixed in version 2.2.16.",
+      "cvss_score": 9.9,
+      "published_date": "2026-09-21T17:18:59.567"
+    },
+    {
+      "cve_id": "CVE-2026-83621",
+      "description": "ntopng is a web-based network traffic monitoring application. Prior to 6.7.260717, POST /lua/rest/v2/edit/system/edit_blacklist.lua in scripts/lua/rest/v2/edit/system/edit_blacklist.lua lacks an administrator check and calls lists_utils.editList for any authenticated user. The list_name, list_enabled, url, and list_update parameters allow a non-admin user to redirect threat-intelligence downloads to attacker-controlled content, disable blocklists, or prevent scheduled updates. The changes are persisted through Redis and reloaded without a lower-level authorization guard, undermining the integrity and availability of ntopng's threat-intelligence monitoring. This issue is fixed in version 6.7.260717.",
+      "cvss_score": 8.1,
+      "published_date": "2026-09-21T17:19:08.590"
+    },
+    {
+      "cve_id": "CVE-2026-84990",
+      "description": "ntopng is a web-based network traffic monitoring application. Prior to 6.7.260718, scripts/lua/rest/v2/get/system/configurations/list_available_backups.lua and scripts/lua/rest/v2/get/system/configurations/download_backup.lua allow any authenticated non-admin user to list and download system-configuration backups without an administrator check. The download path reaches backup_config.export_backup, and prefs_dump_utils.build_prefs_dump_table includes the ntopng.user.* Redis key space in the backup. A downloaded backup can therefore disclose password hashes for local users and, when configured, API tokens, TOTP secrets, and WebAuthn credential data, enabling account compromise through usable or recoverable credentials. This issue is fixed in version 6.7.260718.",
+      "cvss_score": 8.8,
+      "published_date": "2026-09-21T17:19:13.340"
+    },
+    {
+      "cve_id": "CVE-2026-94449",
+      "description": "A flaw was found in the SmallRye Fault Tolerance library, which is used by Quarkus to provide strategies like retries and circuit breakers for microservices. The issue occurs when using the ApplyGuard or ApplyFaultTolerance annotations, where the library fails to release internal tracking objects after each request. This causes a steady increase in memory usage that eventually leads to the application slowing down and crashing due to lack of memory.",
+      "cvss_score": 7.5,
+      "published_date": "2026-09-21T17:19:20.097"
+    },
+    {
+      "cve_id": "CVE-2026-48826",
+      "description": "HomeBox is a home inventory and organization system. Prior to 0.26.0, HandleWipeInventory in backend/app/api/handlers/v1/v1_ctrl_actions.go authorizes POST /v1/actions/wipe-inventory through the global ctx.User.IsOwner value instead of the caller's role in the active group, while the active group is selected through the X-Tenant request header. Because every self-registered user who creates a group receives the global owner value, a user who is also a member of another group can select that group with X-Tenant and permanently delete its complete inventory, which is not recoverable without external backups. This issue is fixed in version 0.26.0.",
+      "cvss_score": 8.1,
+      "published_date": "2026-09-21T18:17:08.073"
+    },
+    {
+      "cve_id": "CVE-2026-48975",
+      "description": "HomeBox is a home inventory and organization system. Prior to 0.26.0, MaintenanceEntryRepository.Update and MaintenanceEntryRepository.Delete in backend/internal/data/repo/repo_maintenance_entry.go use UpdateOneID(id) and DeleteOneID(id) without verifying that the maintenance entry belongs to the authenticated user's active group. An authenticated low-privileged user who knows or enumerates another tenant's maintenance-entry UUID can overwrite that record or permanently delete it. This issue is fixed in version 0.26.0.",
+      "cvss_score": 8.1,
+      "published_date": "2026-09-21T18:17:08.410"
+    },
+    {
+      "cve_id": "CVE-2026-48976",
+      "description": "HomeBox is a home inventory and organization system. Prior to 0.26.0, NotifierRepository.Update in backend/internal/data/repo/repo_notifier.go updates a notifier through UpdateOneID(id) without requiring the record's user ID to match the authenticated user. An authenticated user who supplies another tenant's notifier UUID to PUT /v1/notifiers/{id} can read the returned stored url, which may contain plaintext Shoutrrr credentials for Slack, SMTP, Telegram, Pushover, or Discord, and can replace the URL to redirect the victim's notifications to an attacker-controlled webhook. This issue is fixed in version 0.26.0.",
+      "cvss_score": 8.1,
+      "published_date": "2026-09-21T18:17:08.557"
+    },
+    {
+      "cve_id": "CVE-2026-62182",
+      "description": "KubeEdge is an open source system for extending native containerized application orchestration capabilities to hosts at Edge. From 1.21.0 until 1.21.2, 1.22.2, and 1.23.1, ConfigUpdateJob processing in edge/pkg/taskmanager/actions/configupdatejob.go concatenates authenticated user-controlled updateFields values into the keadm config-update command and executes it through a system shell. A user with permission to create or modify ConfigUpdateJob resources can include shell metacharacters in the complete --set value and cause arbitrary commands to execute on an enrolled target edge node with the privileges of the KubeEdge process handling the job. This issue is fixed in versions 1.21.2, 1.22.2, and 1.23.1.",
+      "cvss_score": 8.8,
+      "published_date": "2026-09-21T18:17:09.420"
+    },
+    {
+      "cve_id": "CVE-2026-62369",
+      "description": "KubeEdge is an open source system for extending native containerized application orchestration capabilities to hosts at Edge. From 1.16.0 until 1.21.2, 1.22.2, and 1.23.1, the DecompressTarGz function in keadm/cmd/keadm/app/cmd/util/common.go joins archive entry names to the extraction destination without sufficient validation. During keadm join or installation on Windows edge nodes, an archive influenced through a compromised, replaced, or untrusted download source can contain parent-directory components, Windows-style backslashes, absolute paths, or drive-prefixed paths that escape the intended directory. The affected keadm process can consequently write or overwrite files with its own privileges, potentially modifying configuration, executable, or service files and enabling persistent system modification or code execution. This issue is fixed in versions 1.21.2, 1.22.2, and 1.23.1.",
+      "cvss_score": 8.1,
+      "published_date": "2026-09-21T18:17:09.580"
+    },
+    {
+      "cve_id": "CVE-2026-94488",
+      "description": "Telegram Desktop before 6.9.4 allows XSS in the HTML exporter. (The first fixed stable version is 7.0.1.) This occurs in button.text.toUtf8 in export_output_html.cpp. Exploitation cannot occur unless HTML export was used by a victim. However, the exploit payload can be exported if a message were forwarded into a group by a member (it is not necessary for the message author to be a member of a group).",
+      "cvss_score": 8.2,
+      "published_date": "2026-09-21T18:17:17.173"
+    },
+    {
+      "cve_id": "CVE-2026-17052",
+      "description": "The Time-aware GPIO syscall verification handler z_vrfy_tgpio_pin_read_ts_ec() in drivers/timeaware_gpio/timeaware_gpio_handlers.c validated only the port device object and passed the caller-supplied timestamp and event_count output pointers to the driver without a K_SYSCALL_MEMORY_WRITE() check. The other handlers in the same file (z_vrfy_tgpio_port_get_time(), z_vrfy_tgpio_port_get_cycles_per_second()) already performed that check, so the omission left one syscall unguarded.\n\ntgpio_pin_read_ts_ec() is declared __syscall, so with CONFIG_USERSPACE=y an unprivileged user-mode thread that has been granted access to the TGPIO device object can invoke it with arbitrary pointer values. tgpio_intel_read_ts_ec() in drivers/timeaware_gpio/timeaware_gpio_intel.c bounds-checks only the pin index and then unconditionally performs timestamp = ... and event_count = ..., executing two 8-byte stores in supervisor mode at addresses chosen by the user-mode caller.\n\nThe result is a write-what-where primitive that crosses the userspace/kernel boundary: the target address is fully attacker-chosen and the stored values are the hardware time-capture and event-counter register contents. Corrupting kernel data structures this way can escalate the calling thread to supervisor privilege or crash the system; the device-object permission required is a narrow capability that is not intended to confer any kernel-memory access. The fix adds the two missing K_SYSCALL_MEMORY_WRITE() validations before the driver call.\n\nExposure is narrow in practice. Only builds with CONFIG_USERSPACE=y and CONFIG_TIMEAWARE_GPIO=y compile the affected file, and from v3.6.0 onward the file additionally referenced a relocated header (<zephyr/syscall_handler.h>) and removed Z_SYSCALL_* macros, so such a configuration failed to build until those were repaired after v4.4.0. Downstream trees that locally corrected that breakage, and v3.5.0 builds where it did not exist, are the exposed population.",
+      "cvss_score": 7.8,
+      "published_date": "2026-09-21T19:17:04.080"
+    },
+    {
+      "cve_id": "CVE-2026-49810",
+      "description": "Dell Command Powershell Provider (DCPP), versions prior to 2.10.2 contain an Insertion of Sensitive Information into Log File vulnerability. A low privileged attacker with local access could potentially exploit this vulnerability, leading to Information Disclosure.",
+      "cvss_score": 7.8,
+      "published_date": "2026-09-21T19:17:06.523"
+    },
+    {
+      "cve_id": "CVE-2026-58491",
+      "description": "Warpgate is an open source SSH, HTTPS and MySQL bastion host for Linux. Prior to 0.25.5, the /@warpgate/api/sso/providers/:name/start endpoint stores an attacker-controlled next parameter that the POST /@warpgate/api/sso/return handler inserts without HTML escaping into the response generated by warpgate-protocol-http/src/api/sso_provider_list.rs. A victim who follows a crafted link and completes SSO can cause markup and JavaScript to execute in the authenticated Warpgate origin, allowing access to session data and actions through user APIs, and through administrator APIs only when the victim is an administrator. The GET /@warpgate/api/sso/return path also uses the same unvalidated value as a redirect destination, enabling an open redirect. This issue is fixed in version 0.25.5.",
+      "cvss_score": 9.3,
+      "published_date": "2026-09-21T19:17:06.910"
+    },
+    {
+      "cve_id": "CVE-2026-63330",
+      "description": "Warpgate is an open source SSH, HTTPS and MySQL bastion host for Linux. Prior to 0.25.6, api_get_recording_stream in warpgate-admin/src/api/recordings_detail.rs protects /@warpgate/admin/api/recordings/{uuid}/stream only with session authentication and omits require_admin_permission for AdminPermission::RecordingsView. Any authenticated regular user who identifies an active recording can subscribe to its WebSocket and receive real-time terminal input and output from proxied SSH, MySQL, or PostgreSQL sessions, including credentials, commands, and other sensitive data belonging to users and administrators. This issue is fixed in version 0.25.6.",
+      "cvss_score": 7.7,
+      "published_date": "2026-09-21T19:17:08.440"
+    },
+    {
+      "cve_id": "CVE-2026-94403",
+      "description": "A weakness has been identified in ColorFul iGameCenter 1.0.3.4. This impacts the function sub_140001AF0 in the library ene.sys of the component IOCTL Handler. This manipulation causes untrusted pointer dereference. The attack can only be executed locally. The exploit has been made available to the public and could be used for attacks. The vendor was contacted early about this disclosure but did not respond in any way.",
+      "cvss_score": 8.8,
+      "published_date": "2026-09-21T19:17:19.867"
+    },
+    {
+      "cve_id": "CVE-2026-94411",
+      "description": "jshERP 3.6 contains a privilege escalation vulnerability in the updateOneValueByKeyIdAndType endpoint that allows authenticated users to grant themselves arbitrary roles. Attackers can send a POST request with type=UserRole, their own user ID, and a role ID list to escalate from low-privilege tenant user to tenant administrator.",
+      "cvss_score": 8.8,
+      "published_date": "2026-09-21T19:17:20.067"
+    },
+    {
+      "cve_id": "CVE-2026-94412",
+      "description": "jshERP through 3.6 contains an authorization bypass vulnerability in the POST /user/resetPwd endpoint that allows authenticated users to reset any other user's password. Attackers can submit a request with an arbitrary target user ID to reset that account's password to a known default value, enabling unauthorized access to other user accounts including administrators.",
+      "cvss_score": 8.8,
+      "published_date": "2026-09-21T19:17:20.217"
+    },
+    {
+      "cve_id": "CVE-2026-94495",
+      "description": "jshERP through 3.6 fails to properly validate user privileges in SystemConfigService.updateSystemConfig, allowing authenticated users to modify tenant system configuration. Attackers can rewrite or delete tenant-wide settings covering company identity, stock rules, approval behavior, and printing configuration through the systemConfig endpoint.",
+      "cvss_score": 7.1,
+      "published_date": "2026-09-21T19:17:21.427"
+    },
+    {
+      "cve_id": "CVE-2026-94496",
+      "description": "jshERP through 3.6 fails to validate caller permissions in role management endpoints, allowing authenticated users to modify any role's data scope or delete roles. Attackers can exploit the /role/update and /role/delete endpoints to escalate privileges, change data visibility to all data, and access all business records in the tenant.",
+      "cvss_score": 8.3,
+      "published_date": "2026-09-21T19:17:21.590"
+    },
+    {
+      "cve_id": "CVE-2026-94497",
+      "description": "jshERP through 3.6 fails to validate object ownership in by-id info, update, and delete endpoints across multiple resource types. Authenticated users can read, modify, and delete other users' business objects by submitting direct object identifiers without authorization checks.",
+      "cvss_score": 8.3,
+      "published_date": "2026-09-21T19:17:21.743"
+    },
+    {
+      "cve_id": "CVE-2026-94501",
+      "description": "jshERP through 3.6 contains an authorization bypass vulnerability in the userBusiness CRUD endpoints that allows authenticated users to create, modify, or delete authorization-relation rows without privilege checks. Attackers can manipulate user-role mappings and access controls to escalate privileges, strip access from other accounts, or modify role-function relationships for any user in the tenant.",
+      "cvss_score": 8.8,
+      "published_date": "2026-09-21T19:17:21.910"
+    },
+    {
+      "cve_id": "CVE-2026-49811",
+      "description": "Dell Command | Monitor (DCM), versions prior to 10.13.2, contain an Incorrect Permission Assignment for Critical Resource vulnerability. A low privileged attacker with local access could potentially exploit this vulnerability, leading to Elevation of Privileges.",
+      "cvss_score": 8.4,
+      "published_date": "2026-09-21T20:17:25.660"
+    },
+    {
+      "cve_id": "CVE-2026-55159",
+      "description": "luci-app-adblock-fast a WebUI for fast, lightweight DNS-based ad-blocker for OpenWrt that works with dnsmasq, smartdns, or unbound. Prior to 1.2.4-2, the luci.adblock-fast.setCronEntry RPC method accepts an entry argument containing carriage-return or line-feed characters and serializes it into /etc/crontabs/root as though it were one logical line. An authenticated delegated user with the luci-app-adblock-fast write ACL can therefore create an additional physical root cron entry through applications/luci-app-adblock-fast/root/usr/share/rpcd/ucode/luci.adblock-fast, resulting in persistent command execution as UID 0 when cron runs. The issue is not demonstrated for unauthenticated callers or users without the component write ACL. This vulnerability is fixed in 1.2.4-2.",
+      "cvss_score": 8.8,
+      "published_date": "2026-09-21T20:17:26.500"
+    },
+    {
+      "cve_id": "CVE-2026-55897",
+      "description": "luci-app-advanced-reboot is a LuCI (web interface) application for OpenWrt that provides a  way to reboot your router into an alternative firmware partition or perform  reboot operations directly from the web UI. Prior to 1.1.2-6, the luci-app-advanced-reboot read ACL in applications/luci-app-advanced-reboot/root/usr/share/rpcd/acl.d/luci-app-advanced-reboot.json grants rpcd file.exec permission for the general shell interpreter /bin/sh. An authenticated delegated session with that read ACL can supply caller-controlled params; rpcd authorizes the executable path and passes those arguments to the shell, allowing arbitrary commands to execute as root. Builds without the /bin/sh exec grant, including the checked openwrt-24.10 and openwrt-23.05 branches, are not affected by this specific chain. This vulnerability is fixed in 1.1.2-6.",
+      "cvss_score": 8.8,
+      "published_date": "2026-09-21T20:17:26.670"
+    },
+    {
+      "cve_id": "CVE-2026-58269",
+      "description": "Sync-in Server is an open-source platform for file storage, sharing, collaboration, and syncing. Prior to version 2.4.0, `POST /api/auth/token` authenticates with username and password only, then calls `getTokens()`, which returns full access and refresh JWTs without checking whether the account has TOTP 2FA enabled. An attacker with stolen or phished credentials can bypass 2FA in a single request. The parallel login endpoint (`POST /api/auth/login`) correctly enforces 2FA by calling `setCookies(user, res, true)`, which gates on `user.twoFaEnabled`. Version 2.4.0 patches the issue.",
+      "cvss_score": 8.1,
+      "published_date": "2026-09-21T20:17:26.837"
+    },
+    {
+      "cve_id": "CVE-2026-73512",
+      "description": "Envoy is an open source edge and service proxy designed for cloud-native applications. Prior to 1.36.10, 1.37.6, 1.38.4, and 1.39.1, Envoy's HttpDatagramHandler caches the current RequestDecoder when Capsule Protocol is enabled. Stream recreation, including an internal redirect, replaces the ActiveStream and updates EnvoyQuicServerStream but does not update the handler's cached pointer. A subsequent HTTP/3 datagram can call decodeData through the freed decoder, causing invalid virtual dispatch and a process crash. The relevant scope boundary is that hTTP/3 datagrams and Capsule Protocol must be enabled, and the request must enter a stream-recreation path such as an internal redirect. This issue is fixed in versions 1.36.10, 1.37.6, 1.38.4, and 1.39.1.",
+      "cvss_score": 7.5,
+      "published_date": "2026-09-21T20:17:27.647"
+    },
+    {
+      "cve_id": "CVE-2026-73513",
+      "description": "Envoy is an open source edge and service proxy designed for cloud-native applications. Prior to 1.36.10, 1.37.6, 1.38.4, and 1.39.1, Envoy's optional oghttp2 upstream HTTP/2 codec accepts a response trailer HEADERS frame without END_STREAM. Envoy completes and deferred-deletes the ActiveRequest while oghttp2 keeps the stream open, leaving ClientStreamImpl with a dangling response_decoder_ reference. A later frame on the stream can dispatch through the freed object and crash the process. The relevant scope boundary is that the default nghttp2 codec rejects the malformed trailers, and the trigger is upstream-only with oghttp2 enabled. This issue is fixed in versions 1.36.10, 1.37.6, 1.38.4, and 1.39.1.",
+      "cvss_score": 7.5,
+      "published_date": "2026-09-21T20:17:27.820"
+    },
+    {
+      "cve_id": "CVE-2026-73546",
+      "description": "Envoy is an open source edge and service proxy designed for cloud-native applications. Prior to 1.36.10, 1.37.6, 1.38.4, and 1.39.1, Envoy's /stats?format=html admin endpoint uses StatsHtmlRender, which sanitizes string statistic values but emits statistic names without HTML encoding. A data-plane component such as grpc_stats with stats_for_all_methods enabled can incorporate attacker-controlled path segments into cached dynamic statistic names. When an operator views the HTML stats page, the stored name can execute script with the admin interface's origin and issue privileged same-origin requests. The relevant scope boundary is that the admin interface must be browser-accessible and an enabled component must persist attacker-influenced text in statistic names. This issue is fixed in versions 1.36.10, 1.37.6, 1.38.4, and 1.39.1.",
+      "cvss_score": 7.4,
+      "published_date": "2026-09-21T20:17:28.040"
+    },
+    {
+      "cve_id": "CVE-2026-73547",
+      "description": "Envoy is an open source edge and service proxy designed for cloud-native applications. Prior to 1.36.10, 1.37.6, 1.38.4, and 1.39.1, Envoy's ext_authz filter assumes that a request contains a :path pseudoheader when applying query_parameters_to_set or query_parameters_to_remove from an authorization response. A path-less CONNECT request makes request_headers_->Path() return null, and Filter::onComplete dereferences that pointer while parsing the query string. An unauthenticated downstream client can crash the Envoy process when the filter and authorization response use query-parameter mutation. The relevant scope boundary is that the deployment must accept path-less CONNECT and configure ext_authz query-parameter mutation. This issue is fixed in versions 1.36.10, 1.37.6, 1.38.4, and 1.39.1.",
+      "cvss_score": 7.5,
+      "published_date": "2026-09-21T20:17:28.230"
+    },
+    {
+      "cve_id": "CVE-2026-73548",
+      "description": "Envoy is an open source edge and service proxy designed for cloud-native applications. Prior to 1.36.10, 1.37.6, 1.38.4, and 1.39.1, Envoy forwards data for a configured non-WebSocket HTTP upgrade before the upstream accepts the upgrade. An unauthenticated HTTP/2 client can place a complete HTTP/1.1 request in extended CONNECT data; Envoy downgrades the request, writes the data unframed to a keep-alive HTTP/1.1 upstream, and returns the socket to the shared pool while the smuggled response remains queued. A different downstream client can then receive the attacker's response. The relevant scope boundary is that webSocket upgrades, plain CONNECT, disabled backend keep-alive, per-downstream pools, and max_requests_per_connection set to 1 are not affected by the demonstrated path. This issue is fixed in versions 1.36.10, 1.37.6, 1.38.4, and 1.39.1.",
+      "cvss_score": 7.5,
+      "published_date": "2026-09-21T20:17:28.397"
+    },
+    {
+      "cve_id": "CVE-2026-73550",
+      "description": "Envoy is an open source edge and service proxy designed for cloud-native applications. Prior to 1.36.10, 1.37.6, 1.38.4, and 1.39.1, Envoy copies every decoded HTTP/2 Host header value before discarding it when :authority is already present. The discarded value bypasses saveHeader, so its bytes and count are not charged against request header limits. An unauthenticated client can use HPACK indexing to submit many references to a large Host value across a bounded number of streams, forcing extreme header-copy allocation and causing the proxy to be out-of-memory killed. The relevant scope boundary is that the demonstrated amplification uses HTTP/2 HPACK and the duplicate Host discard behavior. This issue is fixed in versions 1.36.10, 1.37.6, 1.38.4, and 1.39.1.",
+      "cvss_score": 7.5,
+      "published_date": "2026-09-21T20:17:28.733"
+    },
+    {
+      "cve_id": "CVE-2026-73552",
+      "description": "Envoy is an open source edge and service proxy designed for cloud-native applications. Prior to 1.36.10, 1.37.6, 1.38.4, and 1.39.1, Envoy HTTP RBAC accepts RFC-valid opaque header bytes but evaluates safe_regex values with RE2's UTF-8 subject semantics. A downstream client can preserve a prohibited marker and add an unrelated obs-text octet, causing RE2::FullMatch to return false and a negative RBAC policy to treat the invalid subject as an ordinary no-match. A byte-oriented route matcher can still observe the marker, allowing the request to reach a route intended to be denied. The relevant scope boundary is that plain positive ALLOW regexes normally fail closed, and exact, prefix, suffix, and contains matchers are not shown to have this subject-domain failure. This issue is fixed in versions 1.36.10, 1.37.6, 1.38.4, and 1.39.1.",
+      "cvss_score": 7.5,
+      "published_date": "2026-09-21T20:17:28.900"
+    },
+    {
+      "cve_id": "CVE-2026-81469",
+      "description": "Dell Inventory Collector Client, versions prior to 15.0.0, contain an Unquoted Search Path or Element vulnerability. A low privileged attacker with local access could potentially exploit this vulnerability, leading to Code execution and Elevation of Privileges",
+      "cvss_score": 7.8,
+      "published_date": "2026-09-21T20:17:33.130"
+    },
+    {
+      "cve_id": "CVE-2026-49450",
+      "description": "Joplin is an open source note-taking and to-do application that organises notes and lists into notebooks. Prior to 3.7.2, Joplin Desktop for Windows omits publisherName from packages/app-desktop/package.json, so the generated app-update.yml causes NsisUpdater.verifySignature() to skip comparison of a downloaded update's Authenticode signer with Joplin's signer. An attacker who controls the update delivery path can replace the update metadata and installer, and the client accepts an installer signed by another publisher or left unsigned after the user approves installation. Successful exploitation runs attacker-controlled code with the user's privileges and can compromise notes, credentials, and local data. This issue is fixed in version 3.7.2.",
+      "cvss_score": 7.1,
+      "published_date": "2026-09-21T21:17:03.747"
+    },
+    {
+      "cve_id": "CVE-2026-49453",
+      "description": "Joplin is an open source note-taking and to-do application that organises notes and lists into notebooks. Prior to 3.6.15 and 3.7.2, Joplin accepts synchronized resource metadata whose id or file_extension contains parent-directory or path-separator characters. BaseItem.unserialize() stores the unvalidated fields, resourceFilename() concatenates them into a destination path, and ResourceFetcher writes the attacker-controlled resource blob outside the resource directory during background synchronization. An attacker with write access to a configured sync target or shared notebook can create or overwrite files at an attacker-chosen existing path without user interaction. This issue is fixed in versions 3.6.15 and 3.7.2.",
+      "cvss_score": 7.0,
+      "published_date": "2026-09-21T21:17:03.900"
+    },
+    {
+      "cve_id": "CVE-2026-55105",
+      "description": "Joplin is an open source note-taking and to-do application that organises notes and lists into notebooks. Prior to 3.6.15 and 3.7.2, packages/renderer/MdToHtml/rules/fountain.ts passes HTML generated by the vendored fountain.js renderer into note output without sanitizing it. A malicious Fountain code block can therefore execute script when Fountain rendering is enabled in desktop or mobile clients, or when a note is published through Joplin Server where Fountain rendering is enabled by default. The script can read content subsequently loaded in the reused note viewer or, when published notes are served from the same domain as server content, access data available to an authenticated browser in the server origin. This issue is fixed in versions 3.6.15 and 3.7.2.",
+      "cvss_score": 7.7,
+      "published_date": "2026-09-21T21:17:05.320"
+    },
+    {
+      "cve_id": "CVE-2026-73553",
+      "description": "Envoy is an open source edge and service proxy designed for cloud-native applications. Prior to 1.36.10, 1.37.6, 1.38.4, and 1.39.1, When ignore_path_parameters_in_path_matching is enabled, Envoy's router strips the semicolon suffix before matching but the RBAC url_path matcher evaluates the raw path. A downstream request such as /admin;x can therefore miss a DENY rule for /admin while the router still selects the protected /admin backend. The inconsistent canonicalization allows an unauthenticated client to bypass path-based authorization. The relevant scope boundary is that the route option and a path-based RBAC rule must both be present, and the protected route must match after stripping. This issue is fixed in versions 1.36.10, 1.37.6, 1.38.4, and 1.39.1.",
+      "cvss_score": 7.5,
+      "published_date": "2026-09-21T21:17:09.637"
+    },
+    {
+      "cve_id": "CVE-2026-77521",
+      "description": "MaxKB is an open-source AI assistant for enterprise. Prior to version 2.10.5-lts, assistants with a tool, MCP tool, skill, or sub-application use SandboxShellBackend, which exposes an execute shell tool without excluding it and omits execute from interrupt_on, so human approval is not required. Untrusted chat or ingested content can therefore cause command execution; source deployments with MAXKB_SANDBOX disabled run commands directly as the application user, while the official root container's string-based gosu wrapper allowed shell metacharacters to execute outside the intended sandbox. This issue is fixed in version 2.10.5-lts.",
+      "cvss_score": 10.0,
+      "published_date": "2026-09-21T21:17:10.943"
+    },
+    {
+      "cve_id": "CVE-2026-77523",
+      "description": "MaxKB is an open-source AI assistant for enterprise. In version 2.10.3-lts and earlier, the model parameter form route authorizes the path workspace but ModelSerializer.ModelParams loads and saves a Model by id alone without including workspace_id in the query. An authenticated user with model read permission in an attacker-controlled workspace can supply a known victim model_id to read or overwrite the victim's model_params_form in another workspace, potentially altering workflows that use those defaults. No fixed version is available as of this review.",
+      "cvss_score": 7.4,
+      "published_date": "2026-09-21T21:17:11.280"
+    },
+    {
+      "cve_id": "CVE-2026-79916",
+      "description": "MaxKB is an open-source AI assistant for enterprise. Prior to 2.10.5-lts, authenticated workspace members can inject control characters into AWS Bedrock access_key_id and secret_access_key fields that _update_aws_credentials writes to /root/.aws/credentials without safe parsing. An attacker can append a new AWS profile containing credential_process, then select that profile during a later model-validation request so botocore executes an attacker-controlled command as root. This vulnerability is fixed in 2.10.5-lts.",
+      "cvss_score": 9.1,
+      "published_date": "2026-09-21T21:17:12.450"
+    },
+    {
+      "cve_id": "CVE-2026-88406",
+      "description": "FalkorDB (Redis module) v4.20.1 to v4.20.4 was discovered to contain a stack overflow in the _ValidateUnion_Clauses function (/ast/ast_validations.c). This vulnerability allows attackers to cause a Denial of Service (DoS) via a crafted input.",
+      "cvss_score": 7.5,
+      "published_date": "2026-09-21T21:17:14.733"
+    },
+    {
+      "cve_id": "CVE-2026-88407",
+      "description": "An out-of-bounds read in the node_token_count/relation_token_count component of FalkorDB (Redis module) v4.20.1 to v4.20.4 allows attackers to cause a Denial of Service (DoS) via a crafted input.",
+      "cvss_score": 7.5,
+      "published_date": "2026-09-21T21:17:14.860"
+    },
+    {
+      "cve_id": "CVE-2026-88409",
+      "description": "FalkorDB (Redis module) v4.20.1 to v4.20.4 was discovered to contain a buffer overflow in the _Decode_GrB_Matrix function (/v19/decode_matrix.c). This vulnerability allows attackers to cause a Denial of Service (DoS) via a crafted input.",
+      "cvss_score": 8.8,
+      "published_date": "2026-09-21T21:17:15.120"
+    },
+    {
+      "cve_id": "CVE-2026-88410",
+      "description": "The graph.UDF in FalkorDB (Redis module) v4.20.1 to v4.20.4 is not registered as a write command, leading to unexpected behavior within the application.",
+      "cvss_score": 7.1,
+      "published_date": "2026-09-21T21:17:15.247"
+    },
+    {
+      "cve_id": "CVE-2026-88411",
+      "description": "Improper error handling in the GRAPH.EFFECT component (/effects/effects_apply.c) of FalkorDB (Redis module) v4.20.1 leads to a Denial of Service (DoS) within the application.",
+      "cvss_score": 7.5,
+      "published_date": "2026-09-21T21:17:15.380"
+    },
+    {
+      "cve_id": "CVE-2026-94424",
+      "description": "A vulnerability has been found in Moore Threads MTT S80 Driver Package up to 340.150. Impacted is the function sub_140001000 in the library mtdispkm64.sys of the component IOCTL Handler. The manipulation leads to heap-based buffer overflow. An attack has to be approached locally. The vendor was contacted early about this disclosure but did not respond in any way.",
+      "cvss_score": 8.8,
+      "published_date": "2026-09-21T21:17:21.793"
+    },
+    {
+      "cve_id": "CVE-2026-55210",
+      "description": "Joplin is an open source note-taking and to-do application that organises notes and lists into notebooks. Prior to 3.7.2, Joplin Server's UserModel.ssoLogin() returns an existing account matched by an IdP-asserted email without checking the account's is_external flag. In deployments using mixed local and SAML authentication, an attacker whose IdP session can assert a local user's email can pass POST /api/saml, receive a session for that local account, and access or modify the victim's notes, files, and settings without knowing the local password. This issue is fixed in version 3.7.2.",
+      "cvss_score": 7.4,
+      "published_date": "2026-09-21T22:16:56.890"
+    },
+    {
+      "cve_id": "CVE-2026-59814",
+      "description": "Joplin is an open source note-taking and to-do application that organises notes and lists into notebooks. Prior to 3.7.7, Joplin Server's GET /shares/:id?resource_id= route serves a resource with the attacker-controlled mime value and omits Content-Disposition when the resource title is empty. A low-privileged user can publish an empty-title image/svg+xml attachment whose script executes when a victim opens the public share. By default, user content shares the Joplin Server application origin, allowing the script to access same-origin data and, when the victim is authenticated, perform actions with the victim's session, including reading administrative data and anti-CSRF tokens. Installations that configure USER_CONTENT_BASE_URL to a separate origin still execute the script, but on that separate user-content origin rather than the application origin. This issue is fixed in version 3.7.7.",
+      "cvss_score": 7.6,
+      "published_date": "2026-09-21T22:16:57.050"
+    },
+    {
+      "cve_id": "CVE-2026-94534",
+      "description": "lamp-cloud through 5.10.0 fails to validate user identity in PUT /anyone/baseInfo and PUT /anyone/avatar endpoints, allowing authenticated attackers to modify arbitrary user profiles. Attackers can supply target user IDs in request bodies to rewrite profile fields including nickname, ID card, sex, nation, education, work description, and avatar attachments of other users.",
+      "cvss_score": 7.1,
+      "published_date": "2026-09-21T22:17:00.327"
+    },
+    {
+      "cve_id": "CVE-2026-94535",
+      "description": "lamp-cloud through 5.10.0 contains an authorization bypass vulnerability in the deleteMyNotice endpoint that allows authenticated users to delete other users' notifications. Attackers can call the DELETE /anyone/extendNotice/deleteMyNotice endpoint with arbitrary notice IDs to permanently remove notifications belonging to other users without recipient validation.",
+      "cvss_score": 7.1,
+      "published_date": "2026-09-21T22:17:00.487"
+    },
+    {
+      "cve_id": "CVE-2026-94540",
+      "description": "DesktopSMS 1.11.0 by MrPear contains an unauthorized access vulnerability that allows local attackers to transmit SMS, retrieve SMS-derived content, and persist an attacker-selected paired identity by interacting with the application's local service without any pairing confirmation or user interaction. Attackers can exploit the unauthenticated local service through same-device loopback to perform privileged SMS operations using the victim application's permissions.",
+      "cvss_score": 7.7,
+      "published_date": "2026-09-21T22:17:00.800"
+    },
+    {
+      "cve_id": "CVE-2026-94622",
+      "description": "vLLM versions through 0.29.0 contain a denial of service vulnerability in the NIXL connector's metadata handling for prefill/decode disaggregated deployments. Attackers can send requests with incomplete kv_transfer_params dictionary entries to trigger an uncaught KeyError in EngineCore scheduling, causing the decode engine to terminate and making all routed requests fail until manual restart.",
+      "cvss_score": 7.5,
+      "published_date": "2026-09-21T22:17:00.960"
+    },
+    {
+      "cve_id": "CVE-2026-94623",
+      "description": "vLLM through 0.29.0 contains a denial of service vulnerability in the NIXL connector's prefix caching implementation that fails to properly validate block counts across multi-prompt completion requests in prefill/decode disaggregated deployments. Attackers can trigger an assertion failure in NixlBaseConnectorWorker._apply_prefix_caching by submitting completion requests with multiple prompts of varying lengths, causing the decode worker to terminate and become unavailable until restarted.",
+      "cvss_score": 7.5,
+      "published_date": "2026-09-21T22:17:01.123"
+    },
+    {
+      "cve_id": "CVE-2026-94624",
+      "description": "vLLM through 0.29.0 contains a denial of service vulnerability in P2P KV offloading when OffloadingConnector is configured with TieringOffloadingSpec and a peer-to-peer secondary tier. Attackers can supply arbitrary remote host and port values in kv_transfer_params to create unreachable peer sessions that retain ZeroMQ sockets until the context quota is exhausted, causing an uncaught ZMQError that crashes EngineCore and stops all inference.",
+      "cvss_score": 7.5,
+      "published_date": "2026-09-21T22:17:01.280"
+    },
+    {
+      "cve_id": "CVE-2026-94626",
+      "description": "vLLM through 0.29.0 fails to validate the tp_size parameter in kv_transfer_params on OpenAI-compatible completion endpoints, allowing attackers to allocate unbounded memory. Attackers can supply arbitrary tp_size values in prefill/decode disaggregated deployments to exhaust memory and trigger kernel OOM-kill of the decode worker process.",
+      "cvss_score": 7.5,
+      "published_date": "2026-09-21T22:17:01.587"
+    },
+    {
+      "cve_id": "CVE-2026-94627",
+      "description": "vLLM Mooncake connector through 0.29.0 fails to properly manage GPU KV cache block ownership when concurrent child requests share a single transfer ID in prefill/decode disaggregated deployments. Attackers can trigger GPU memory exhaustion by submitting completion requests with multiple prompts, causing orphaned KV cache blocks to accumulate until process restart and eventually preventing legitimate requests from executing.",
+      "cvss_score": 7.5,
+      "published_date": "2026-09-21T22:17:01.740"
+    },
+    {
+      "cve_id": "CVE-2026-94425",
+      "description": "A vulnerability was found in Moore Threads MTT S80 Driver Package 340.150. The affected element is the function sub_140006F0C in the library mtdispkm64.sys of the component IOCTL Handler. The manipulation results in improper privilege management. Attacking locally is a requirement. The vendor was contacted early about this disclosure but did not respond in any way.",
+      "cvss_score": 8.8,
+      "published_date": "2026-09-21T23:16:56.697"
+    },
+    {
+      "cve_id": "CVE-2026-94491",
+      "description": "A weakness has been identified in Yonyou KSOA 9.0. This affects an unknown part of the file /cardcase/search_list.jsp. Executing a manipulation of the argument address can lead to sql injection. It is possible to launch the attack remotely. The exploit has been made available to the public and could be used for attacks. The vendor was contacted early about this disclosure but did not respond in any way.",
+      "cvss_score": 7.3,
+      "published_date": "2026-09-22T01:16:56.077"
+    },
+    {
+      "cve_id": "CVE-2026-94493",
+      "description": "A vulnerability was detected in Gigatech PDV5701 1.0.31_240305_112640. This issue affects some unknown processing of the file /index.html of the component WebSocket Service. The manipulation results in missing authentication. The attack can be launched remotely. The exploit is now public and may be used. The vendor was contacted early about this disclosure but did not respond in any way.",
+      "cvss_score": 10.0,
+      "published_date": "2026-09-22T01:16:56.437"
+    },
+    {
+      "cve_id": "CVE-2026-13355",
+      "description": "The Meta Box AIO plugin for WordPress is vulnerable to Privilege Escalation to Administrator in versions up to, and including, 3.11.0. This is due to a chained flaw: the populate_via_query_string() function in the mb-frontend-submission component unconditionally overrides the form's target object_id from the GET parameter 'rwmb_frontend_field_object_id' without any authorization check, and Form::process() lacks the user_can_edit() check present in render(), allowing unauthenticated attackers to overwrite the post_content of any page with an arbitrary shortcode via wp_update_post(); the mb-user-profile component then directly trusts the 'role' and 'auto_login' shortcode attributes in the injected [mb_user_profile_register] shortcode with no role validation. This makes it possible for unauthenticated attackers to elevate their privileges to Administrator. The standalone plugins Meta Box Frontend Submission (in versions up to 4.5.6) and Meta Box User Profile (versions up to 3.11.0) are also affected.",
+      "cvss_score": 9.8,
+      "published_date": "2026-09-22T05:16:54.960"
+    },
+    {
+      "cve_id": "CVE-2026-19658",
+      "description": "The Give Tributes plugin for WordPress is vulnerable to PHP Object Injection in all versions up to, and including, 2.3.1 via deserialization of untrusted input . This makes it possible for unauthenticated attackers to inject a PHP Object. No known POP chain is present in the vulnerable software, which means this vulnerability has no impact unless another plugin or theme containing a POP chain is installed on the site. If a POP chain is present via an additional plugin or theme installed on the target system, it may allow the attacker to perform actions like delete arbitrary files, retrieve sensitive data, or execute code depending on the POP chain present. This vulnerability is only reachable when the \"Allow Multiple Recipients\" option is enabled for the donation form, as the single-recipient code path applies sanitize_textarea_field() which would neutralize the payload. Exploitation additionally requires the eCard \"Custom Message\" option to be disabled, which is the plugin default: when it is enabled the personalized message becomes a required field and GiveWP's give_clean() blanks serialized input during validation, causing the donation to be rejected before it is stored.",
+      "cvss_score": 9.8,
+      "published_date": "2026-09-22T05:16:55.167"
+    },
+    {
+      "cve_id": "CVE-2026-12470",
+      "description": "The CMP \u2013 Coming Soon & Maintenance Plugin by NiteoThemes plugin for WordPress is vulnerable to unauthorized modification of data that can lead to privilege escalation due to a missing capability check on the 'cmp_ajax_import_settings' AJAX action in all versions up to, and including, 4.1.17. This makes it possible for authenticated attackers, with Editor-level access and above, to update arbitrary options on the WordPress site. This can be leveraged to update the default role for registration to administrator and enable user registration for attackers to gain administrative user access to a vulnerable site.",
+      "cvss_score": 7.2,
+      "published_date": "2026-09-22T06:16:48.700"
+    },
+    {
+      "cve_id": "CVE-2026-89412",
+      "description": "The TranslatePress \u2013 Translate Multilingual sites with AI Translation plugin for WordPress is vulnerable to Stored Cross-Site Scripting via Translation Memory Suggestion Panel (v-html on suggestion.original) in all versions up to, and including, 3.3.5 due to insufficient input sanitization and output escaping. This makes it possible for unauthenticated attackers to inject arbitrary web scripts in pages that will execute whenever a user accesses an injected page. Unauthenticated attackers can seed the translation dictionary's original column with executable HTML because the front-end rendering pipeline decodes entity-encoded payloads via html_entity_decode() before persistence, and the original column is deliberately exempt from kses filtering \u2014 meaning no save-time sanitizer neutralizes the stored payload before it is later rendered in an administrator's session.",
+      "cvss_score": 7.2,
+      "published_date": "2026-09-22T07:16:29.927"
+    },
+    {
+      "cve_id": "CVE-2026-91827",
+      "description": "The Ninja Forms WordPress plugin 3.15.3 does not prevent user-submitted form field values from being deserialised when an administrator later exports form submissions to CSV, allowing unauthenticated attackers to perform PHP Object Injection; if a suitable POP chain is present via another installed plugin or theme, this can lead to actions such as arbitrary file operations or remote code execution.",
+      "cvss_score": 7.5,
+      "published_date": "2026-09-22T07:16:31.093"
+    },
+    {
+      "cve_id": "CVE-2026-92438",
+      "description": "The Ninja Forms WordPress plugin 3.15.3 does not escape submitted form field values before outputting them on the submission edit screen in the admin area, which could allow unauthenticated users to submit values through a public form that then execute in the browser of any high-privileged user who reviews the submission.",
+      "cvss_score": 8.8,
+      "published_date": "2026-09-22T07:16:31.220"
+    },
+    {
+      "cve_id": "CVE-2026-94504",
+      "description": "Ninja Forms 3.15.3 stores an anonymous non-RTE textarea value and renders it without safe HTML encoding in the legacy submission editor. An attacker can break out of the textarea with stored script. When an Administrator opens the attacker-known direct submission URL, the script runs in the WordPress admin origin.",
+      "cvss_score": 7.2,
+      "published_date": "2026-09-22T07:16:31.340"
+    },
+    {
+      "cve_id": "CVE-2025-1281",
+      "description": "The BM Content Builder plugin for WordPress is vulnerable to arbitrary file deletion due to insufficient file path validation in the ux_cb_remove_layout_ajax() and ux_cb_tools_export_ajax() functions in all versions up to, and excluding, 3.17.1. This makes it possible for authenticated attackers, with Subscriber-level access and above, to delete arbitrary files on the server, which can easily lead to remote code execution when the right file is deleted (such as wp-config.php).",
+      "cvss_score": 8.8,
+      "published_date": "2026-09-22T08:16:36.250"
+    },
+    {
+      "cve_id": "CVE-2026-6922",
+      "description": "The WP Table Builder \u2013 Drag & Drop Table Builder plugin for WordPress is vulnerable to Incorrect Authorization in all versions up to, and including, 2.2.1. This is due to an operator precedence bug in the post-type guard within the trash_table_bulk() and restore_table_bulk() functions that causes the guard to never fire, combined with a permission callback that only verifies plugin role membership without per-post-type or ownership checks. This makes it possible for authenticated attackers, with subscriber-level access and above, to trash or restore any post, page, or custom post type on the site by supplying arbitrary post IDs.",
+      "cvss_score": 7.1,
+      "published_date": "2026-09-22T08:16:39.990"
+    },
+    {
+      "cve_id": "CVE-2026-92235",
+      "description": "The The WP Ultimate Review plugin for WordPress is vulnerable to arbitrary shortcode execution in all versions up to, and including, 2.4.2. This is due to the software allowing users to execute an action that does not properly validate a value before running do_shortcode. This makes it possible for authenticated attackers, with subscriber-level access and above, to execute arbitrary shortcodes.",
+      "cvss_score": 8.1,
+      "published_date": "2026-09-22T08:16:41.230"
+    },
+    {
+      "cve_id": "CVE-2026-92969",
+      "description": "The HUSKY \u2013 Products Filter for WooCommerce Professional plugin for WordPress is vulnerable to Local File Inclusion in all versions up to, and including, 1.4.4 via the 'shortcode' parameter parameter. This makes it possible for unauthenticated attackers to include and execute arbitrary .php files on the server, allowing the execution of any PHP code in those files. This can be used to bypass access controls, obtain sensitive data, or achieve code execution in cases where .php file types can be uploaded and included. This vulnerability is exploitable by unauthenticated users because the only access control is a nonce check against woof_front_nonce, which is publicly emitted into inline JavaScript on every front-end page and is therefore obtainable by any site visitor without authentication.",
+      "cvss_score": 8.1,
+      "published_date": "2026-09-22T08:16:41.370"
+    },
+    {
+      "cve_id": "CVE-2026-93778",
+      "description": "The WP Yelp Review Slider plugin for WordPress is vulnerable to Stored Cross-Site Scripting via Yelp Review Text (imported via wpyelp_download_source) in all versions up to, and including, 9.2 due to insufficient input sanitization and output escaping. This makes it possible for unauthenticated attackers to inject arbitrary web scripts in pages that will execute whenever a user accesses an injected page. The malicious payload originates from an anonymous Yelp reviewer on a public platform and requires no WordPress account; it is introduced into the database during the site administrator's ordinary use of the plugin's Download Reviews feature, making the effective attacker unauthenticated.",
+      "cvss_score": 7.2,
+      "published_date": "2026-09-22T08:16:42.767"
+    },
+    {
+      "cve_id": "CVE-2026-93836",
+      "description": "The WPC Product Bundles for WooCommerce plugin for WordPress is vulnerable to Stored Cross-Site Scripting via the 'qty' parameter in all versions up to, and including, 8.6.6 due to insufficient input sanitization and output escaping. This makes it possible for unauthenticated attackers to inject arbitrary web scripts in pages that will execute whenever a user accesses an injected page. The float cast used during quantity validation allows a numeric-prefixed payload such as '1<img src=x onerror=...>' to pass validation while retaining its malicious HTML, which is then stored verbatim in order item metadata under the '_woosb_ids' key.",
+      "cvss_score": 7.2,
+      "published_date": "2026-09-22T08:16:42.907"
+    },
+    {
+      "cve_id": "CVE-2026-93952",
+      "description": "VeloCloud Orchestrator (VCO) on-prem has a security issue where this issue may allow a remote attacker to access privileged internal functionality and impact the VCO host. Successful exploitation may compromise the confidentiality, integrity, and availability of the orchestrator and data managed by the orchestrator.\n\nHosted, including Dedicated, versions of VCO were impacted and have already been patched.",
+      "cvss_score": 10.0,
+      "published_date": "2026-09-22T08:16:43.047"
+    },
+    {
+      "cve_id": "CVE-2026-93928",
+      "description": "Authentication Bypass Using an Alternate Path or Channel vulnerability in Magepeople inc. Taxi Booking Manager for WooCommerce allows Authentication Bypass.\n\nThis issue affects Taxi Booking Manager for WooCommerce: from n/a before 2.0.8.",
+      "cvss_score": 7.3,
+      "published_date": "2026-09-22T09:17:05.940"
+    },
+    {
+      "cve_id": "CVE-2026-95508",
+      "description": "A heap-based buffer overflow was found in the DHCPv6 and TFTP response builders of libslirp. When the host is configured with a small interface MTU, a guest-supplied DHCPv6 CLIENTID option or TFTP blksize option can overflow the reply buffer with attacker-controlled content and length, resulting in denial of service and potentially arbitrary code execution in the host process. The default interface MTU is not affected.",
+      "cvss_score": 7.4,
+      "published_date": "2026-09-22T09:17:06.073"
+    },
+    {
+      "cve_id": "CVE-2026-95511",
+      "description": "A privilege escalation vulnerability was found in CUPS when used with the cups-filters serial backend. A local user who is a member of the lpadmin group can configure a printer that uses a privileged serial backend. The CUPS scheduler does not restrict the path component of non-file device URIs, so the root-privileged backend can write attacker-controlled print data to an arbitrary file. This can be used to change security-sensitive CUPS configuration and ultimately achieve root code execution. Exploitation requires local lpadmin group membership and a serial backend binary installed with root-only permissions.",
+      "cvss_score": 8.2,
+      "published_date": "2026-09-22T09:17:06.217"
+    },
+    {
+      "cve_id": "CVE-2026-9231",
+      "description": "The WP Travel Engine \u2013 Tour Booking Plugin \u2013 Tour Operator Software plugin for WordPress is vulnerable to Local File Inclusion in all versions up to, and including, 6.8.0 via the wte_get_template function. This makes it possible for authenticated attackers, with contributor-level access and above, to include and execute arbitrary .php files on the server, allowing the execution of any PHP code in those files. This can be used to bypass access controls, obtain sensitive data, or achieve code execution in cases where .php file types can be uploaded and included.",
+      "cvss_score": 7.5,
+      "published_date": "2026-09-22T09:17:06.353"
+    },
+    {
+      "cve_id": "CVE-2026-25254",
+      "description": "Improper authorization leads to Remote Code Execution via SocketIO interface.",
+      "cvss_score": 9.8,
+      "published_date": "2026-09-22T10:17:08.583"
+    },
+    {
+      "cve_id": "CVE-2026-25255",
+      "description": "Exposed dangerous function lead to privilege escalation via gRPC server.",
+      "cvss_score": 8.8,
+      "published_date": "2026-09-22T10:17:08.847"
+    },
+    {
+      "cve_id": "CVE-2026-25264",
+      "description": "Privilege escalation due to weak configuration during package extraction process.",
+      "cvss_score": 8.8,
+      "published_date": "2026-09-22T10:17:09.110"
+    },
+    {
+      "cve_id": "CVE-2026-25265",
+      "description": "Privilege escalation due to weak configuration while temporary file handling.",
+      "cvss_score": 8.8,
+      "published_date": "2026-09-22T10:17:09.243"
+    },
+    {
+      "cve_id": "CVE-2026-94117",
+      "description": "Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') vulnerability in DevItems HashBar \u2013 WordPress Notification Bar allows Blind SQL Injection.\n\nThis issue affects HashBar \u2013 WordPress Notification Bar: from n/a through 2.0.3.",
+      "cvss_score": 7.6,
+      "published_date": "2026-09-22T10:17:10.167"
+    },
+    {
+      "cve_id": "CVE-2026-74849",
+      "description": "Zohocorp ManageEngine ADSelfService Plus versions before build 7001 are vulnerable to a remote code execution vulnerability in the GINA client.",
+      "cvss_score": 9.8,
+      "published_date": "2026-09-22T12:17:14.007"
+    }
+  ],
+  "new_kev_entries": [
+    {
+      "cveID": "CVE-2026-7273",
+      "vendorProject": "Zyxel",
+      "product": "GS1900 Series Switches",
+      "vulnerabilityName": "Zyxel GS1900 Series Switches Stack-Based Buffer Overflow Vulnerability",
+      "dateAdded": "2026-09-21",
+      "shortDescription": "Zyxel GS1900 series switches contain a stack-based buffer overflow vulnerability in the CGI program which could allow a LAN-based, unauthenticated attacker to exploit the flaw and potentially execute OS commands via a crafted HTTP request.",
+      "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA\u2019s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA\u2019s \u201cForensics Triage Requirements\u201d (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "dueDate": "2026-09-24",
+      "knownRansomwareCampaignUse": "Unknown",
+      "forensicTriage": "Yes",
+      "notes": "https://www.zyxel.com/global/en/support/security-advisories/zyxel-security-advisory-for-stack-based-buffer-overflow-vulnerability-in-gs1900-series-switches-06-16-2026 ; ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-7273",
+      "cwes": [
+        "CWE-121"
+      ]
+    },
+    {
+      "cveID": "CVE-2025-39964",
+      "vendorProject": "Linux",
+      "product": "Kernel",
+      "vulnerabilityName": "Linux Kernel Race Condition Vulnerability",
+      "dateAdded": "2026-09-18",
+      "shortDescription": "Linux Kernel contains a race condition vulnerability which allows concurrent writes to the same AF_ALG socket causing data to be unpredictably interleaved and creating inconsistencies in the socket's internal state.",
+      "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA\u2019s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA\u2019s \u201cForensics Triage Requirements\u201d (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "dueDate": "2026-09-21",
+      "knownRansomwareCampaignUse": "Unknown",
+      "forensicTriage": "Yes",
+      "notes": "This vulnerability affects an open-source component, third-party library, protocol, or proprietary implementation that could be used by different products. For more information, please see: ; https://git.kernel.org/stable/c/0f28c4adbc4a97437874c9b669fd7958a8c6d6ce; https://git.kernel.org/stable/c/e4c1ec11132ec466f7362a95f36a506ce4dc08c9; https://git.kernel.org/stable/c/1f323a48e9b5ebfe6dc7d130fdf5c3c0e92a07c8; https://git.kernel.org/stable/c/7c4491b5644e3a3708f3dbd7591be0a570135b84; https://git.kernel.org/stable/c/9aee87da5572b3a14075f501752e209801160d3d; https://git.kernel.org/stable/c/45bcf60fe49b37daab1acee57b27211ad1574042; https://git.kernel.org/stable/c/1b34cbbf4f011a121ef7b2d7d6e6920a036d5285 ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2025-39964",
+      "cwes": [
+        "CWE-362"
+      ]
+    },
+    {
+      "cveID": "CVE-2026-53266",
+      "vendorProject": "Linux",
+      "product": "Kernel",
+      "vulnerabilityName": "Linux Kernel Out-of-Bounds Write Vulnerability",
+      "dateAdded": "2026-09-18",
+      "shortDescription": "Linux Kernel contains an out-of-bounds write vulnerability in the ebtables SNAT target which allows an ARP sender hardware address rewrite to write directly into a nonlinear socket-buffer fragment backed by a splice-imported file page. The impacted product(s) could be end-of-life (EoL) and/or end-of-service (EoS). Users are advised to discontinue use and/or transition to a supported version.",
+      "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA\u2019s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA\u2019s \u201cForensics Triage Requirements\u201d (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "dueDate": "2026-09-21",
+      "knownRansomwareCampaignUse": "Unknown",
+      "forensicTriage": "Yes",
+      "notes": "This vulnerability affects an open-source component, third-party library, protocol, or proprietary implementation that could be used by different products. For more information, please see: ; https://git.kernel.org/stable/c/bf84ad7c7a9ede46e31afaa41a1ba06a159e8c87; https://git.kernel.org/stable/c/76280b78cc9f23bdc6438e10ad6dff148ef8375b; https://git.kernel.org/stable/c/b7e91939ba9be805a62a257fa4e227dffbb88fa0; https://git.kernel.org/stable/c/afd64b59c3de9bbbdd3759e834fdc55cda716e0b; https://git.kernel.org/stable/c/153ea96c806aea395daba907a4f88480b6ad5093; https://git.kernel.org/stable/c/b18675263db1147c8e1cab625400c13a0d87bd2d; https://git.kernel.org/stable/c/c9b5ff59feffb92a147a84a5aa28acd2cb8ff4c5; https://git.kernel.org/stable/c/67ba971ae02514d85818fe0c32549ab4bfa3bf49 ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-53266",
+      "cwes": [
+        "CWE-787"
+      ]
+    },
+    {
+      "cveID": "CVE-2025-39682",
+      "vendorProject": "Linux",
+      "product": "Kernel",
+      "vulnerabilityName": "Linux Kernel Improper Check for Unusual or Exceptional Conditions Vulnerability",
+      "dateAdded": "2026-09-18",
+      "shortDescription": "Linux Kernel contains an improper check for unusual or exceptional conditions vulnerability in the TLS receive path which allows a zero-length record retrieved from the rx_list to bypass the intended recvmsg() record-type handling, potentially causing subsequent TLS records to be processed using incorrect zero-copy and queuing assumptions. The impacted product(s) could be end-of-life (EoL) and/or end-of-service (EoS). Users are advised to discontinue use and/or transition to a supported version.",
+      "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA\u2019s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA\u2019s \u201cForensics Triage Requirements\u201d (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "dueDate": "2026-09-21",
+      "knownRansomwareCampaignUse": "Unknown",
+      "forensicTriage": "Yes",
+      "notes": "This vulnerability affects an open-source component, third-party library, protocol, or proprietary implementation that could be used by different products. For more information, please see: ; https://git.kernel.org/stable/c/2902c3ebcca52ca845c03182000e8d71d3a5196f; https://git.kernel.org/stable/c/c09dd3773b5950e9cfb6c9b9a5f6e36d06c62677; https://git.kernel.org/stable/c/3439c15ae91a517cf3c650ea15a8987699416ad9; https://git.kernel.org/stable/c/29c0ce3c8cdb6dc5d61139c937f34cb888a6f42e; https://git.kernel.org/stable/c/62708b9452f8eb77513115b17c4f8d1a22ebf843 ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2025-39682",
+      "cwes": [
+        "CWE-754"
+      ]
+    },
+    {
+      "cveID": "CVE-2026-58704",
+      "vendorProject": "Google",
+      "product": "Pixel",
+      "vulnerabilityName": "Google Pixel Improper Authorization Vulnerability",
+      "dateAdded": "2026-09-16",
+      "shortDescription": "Google Pixel devices contain an improper authorization vulnerability in the cellular modem. A logic error may allow an attacker to bypass permission checks and escalate privileges.",
+      "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA\u2019s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA\u2019s \u201cForensics Triage Requirements\u201d (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "dueDate": "2026-09-19",
+      "knownRansomwareCampaignUse": "Unknown",
+      "forensicTriage": "Yes",
+      "notes": "https://source.android.com/docs/security/bulletin/pixel/2026/2026-09-01 ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-58704",
+      "cwes": [
+        "CWE-693"
+      ]
+    },
+    {
+      "cveID": "CVE-2026-76460",
+      "vendorProject": "Cisco",
+      "product": "Identity Services Engine",
+      "vulnerabilityName": "Cisco Identity Services Engine Incorrect Use of Privileged APIs Vulnerability",
+      "dateAdded": "2026-09-16",
+      "shortDescription": "Cisco Identity Services Engine (ISE) and Cisco ISE Passive Identity Connector (ISE-PIC) contain an incorrect use of privileged APIs vulnerability that could allow an unauthenticated, remote attacker to gain unauthorized access to the affected device by bypassing the web-based management interface.",
+      "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA\u2019s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA\u2019s \u201cForensics Triage Requirements\u201d (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "dueDate": "2026-09-19",
+      "knownRansomwareCampaignUse": "Unknown",
+      "forensicTriage": "Yes",
+      "notes": "https://sec.cloudapps.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-ISE-ABP-VNSW7Tn5 ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-76460",
+      "cwes": [
+        "CWE-648"
+      ]
+    },
+    {
+      "cveID": "CVE-2026-87886",
+      "vendorProject": "Acronis",
+      "product": "Backup",
+      "vulnerabilityName": "Acronis Backup Incorrect Default Permissions Vulnerability",
+      "dateAdded": "2026-09-16",
+      "shortDescription": "Acronis Backup plugin for cPanel & WHM and extension for Plesk contains an incorrect default permissions vulnerability that could allow for privilege escalation.",
+      "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA\u2019s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA\u2019s \u201cForensics Triage Requirements\u201d (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "dueDate": "2026-09-19",
+      "knownRansomwareCampaignUse": "Unknown",
+      "forensicTriage": "Yes",
+      "notes": "https://security-advisory.acronis.com/advisories/SEC-10986 ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-87886",
+      "cwes": [
+        "CWE-276"
+      ]
+    }
+  ],
+  "monitored_hits": [],
+  "total_kev_count": 1717,
+  "executive_summary": "",
+  "action_items": [],
+  "risk_narrative": "",
+  "pipeline_errors": [
+    "summarizer failed: Error code: 404 - {'type': 'error', 'error': {'type': 'not_found_error', 'message': 'model: claude-sonnet-4-20250514'}, 'request_id': 'req_011CfJXdFhDzVz6kkJFvkg9r'}"
+  ]
+}
