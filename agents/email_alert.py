@@ -79,8 +79,14 @@ def _build_subject(results: dict) -> str:
     risk_level = _compute_risk_level(results)
     cve_count = len(results.get("high_severity_cves", []))
     kev_count = len(results.get("new_kev_entries", []))
+    error_count = len(results.get("pipeline_errors", []))
+    prefix = (
+        f"\u26a0\ufe0f DEGRADED ({error_count} error{'s' if error_count != 1 else ''}) - "
+        if error_count
+        else "\U0001f534 "
+    )
     return (
-        f"\U0001f534 Vuln Intel Report - {run_date} - {risk_level} Risk "
+        f"{prefix}Vuln Intel Report - {run_date} - {risk_level} Risk "
         f"({cve_count} CVEs, {kev_count} KEV hits)"
     )
 

@@ -8,6 +8,7 @@ Saves results to outputs/reports/ as both JSON (raw data) and Markdown.
 import json
 import logging
 import os
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -299,6 +300,11 @@ def main() -> None:
         print("\nPipeline warnings:")
         for err in results["pipeline_errors"]:
             print(f"  - {err}")
+        # Exit non-zero so the scheduled run is flagged as failed rather than
+        # publishing a silently degraded report. Reports are still written and
+        # committed; the workflow runs those steps with if: always().
+        logger.error("Pipeline completed with %d error(s) — exiting non-zero", error_count)
+        sys.exit(1)
 
 
 if __name__ == "__main__":

@@ -42,6 +42,7 @@ jobs:
         run: python -m agents.orchestrator
 
       - name: Commit generated reports
+        if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -50,10 +51,12 @@ jobs:
           git push
 
       - name: Upload Pages artifact
+        if: always()
         uses: actions/upload-pages-artifact@v3
         with:
           path: docs/
 
       - name: Deploy to GitHub Pages
+        if: always()
         id: deployment
         uses: actions/deploy-pages@v4
