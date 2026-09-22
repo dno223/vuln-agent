@@ -1,29 +1,29 @@
 # Vulnerability Intelligence Report
 
 **Date:** 2026-09-22  
-**Generated:** 2026-09-22T13:07:05Z  
-
-## Pipeline Warnings
-
-- summarizer failed: Error code: 404 - {'type': 'error', 'error': {'type': 'not_found_error', 'message': 'model: claude-sonnet-4-20250514'}, 'request_id': 'req_011CfJXdFhDzVz6kkJFvkg9r'}
+**Generated:** 2026-09-22T23:39:29Z  
 
 ---
 
 ## Executive Summary
 
-_No summary available._
+Our environment faces critical exposure across 219 high-severity CVEs, including two rated CVSS 10.0 and 9.8 affecting network infrastructure and widely used platforms. Three monitored vulnerabilities in Arista VeloCloud, F5 BIG-IP APM, and Check Point products are actively exploited and listed in CISA's Known Exploited Vulnerabilities catalog, with remediation due by September 25, 2026. WordPress plugins represent a significant attack surface with multiple privilege escalation, PHP object injection, and cross-site scripting vulnerabilities. Immediate action is required to prevent network compromise, data breaches, and unauthorized administrative access.
 
 ---
 
 ## Risk Narrative
 
-_No risk narrative available._
+The current threat landscape reflects coordinated exploitation of network appliances and web application frameworks. CISA's addition of 11 KEV entries in seven days signals active, widespread exploitation by threat actors targeting perimeter devices including Arista, F5, Check Point, and Zyxel. Successful exploitation of these vulnerabilities could enable full network takeover, lateral movement, and data exfiltration. WordPress plugin vulnerabilities expand the attack surface to web-facing assets, risking administrator account compromise and malicious content injection. The presence of a CVSS 10.0 vulnerability in Gigatech PDV5701 represents an unacceptable risk of complete system compromise. Collectively, these exposures threaten business continuity, customer data integrity, and regulatory compliance.
 
 ---
 
 ## Prioritized Action Items
 
-_No action items available._
+1. Immediately patch CVE-2026-93952, CVE-2026-94127, and CVE-2026-93616 in Arista VeloCloud, F5 BIG-IP APM, and Check Point products before the CISA-mandated September 25, 2026 deadline.
+2. Prioritize remediation of CVE-2026-94493 (CVSS 10.0) in Gigatech PDV5701 and CVE-2026-13355 (CVSS 9.8) in the Meta Box AIO WordPress plugin to eliminate critical privilege escalation and remote compromise risks.
+3. Audit and update all WordPress plugins immediately, focusing on Ninja Forms, Give Tributes, and TranslatePress to address deserialization, XSS, and injection vulnerabilities.
+4. Upgrade Dancer2 for Perl to version 2.2.0 or later to remediate path traversal and route dispatch vulnerabilities that could expose sensitive server files.
+5. Conduct an enterprise-wide vulnerability scan to identify all affected Yonyou KSOA 9.0 instances and apply vendor mitigations or isolate systems until patches are available.
 
 ---
 
@@ -31,83 +31,8 @@ _No action items available._
 
 | CVE ID | CVSS | Published | Description |
 |--------|------|-----------|-------------|
-| CVE-2026-84285 | 8.8 | 2026-09-21 | An OS Command Injection vulnerability affecting Tuleap Enterprise Edition from 17.3 through 17.5 could allow an attacker |
-| CVE-2025-71421 | 7.2 | 2026-09-21 | UVdesk core-framework before 1.1.7 contains an improper privilege management vulnerability in the editAgent endpoint tha |
-| CVE-2026-88806 | 7.5 | 2026-09-21 | A malicious X server could exploit a buffer overflow in libX11 before 1.8.14 during handling of XkbGetMap overflowing th |
-| CVE-2026-55071 | 8.4 | 2026-09-21 | MCP-for-Stata is a MCP server for integrating Stata into agent loops with a safety-first design. Prior to version 1.19.0 |
-| CVE-2026-55567 | 7.8 | 2026-09-21 | BleachBit cleans files to free disk space and to maintain privacy. Prior to 6.0.1, privileged Windows cleaning does not  |
-| CVE-2026-61628 | 8.1 | 2026-09-21 | nginx ignition is a user interface for the nginx web server. Prior to version 2.41.1, `POST /api/users/onboarding/finish |
-| CVE-2026-61629 | 7.5 | 2026-09-21 | nginx ignition is a user interface for the nginx web server. In versions 2.29.0 through 2.40.0, the gin i18n middleware  |
-| CVE-2026-75939 | 7.4 | 2026-09-21 | A flaw was found in openshift/oc-mirror. The tool incorrectly verifies PGP (Pretty Good Privacy) release image signature |
-| CVE-2026-80110 | 8.1 | 2026-09-21 | A flaw was found in pki-core. The v2 REST ACL filter selects a tie-breaking permission for colliding literal and wildcar |
-| CVE-2026-86473 | 9.1 | 2026-09-21 | Apache Airflow: the Core API logout endpoint revokes only a session token presented as the _token cookie. When a client  |
-| CVE-2026-94184 | 8.1 | 2026-09-21 | A stack-based buffer overflow flaw was found in fetchmail when built with NTLM support. A malicious or compromised mail  |
-| CVE-2026-94301 | 9.8 | 2026-09-21 | The fix for CVE-2026-47065/ZDRES-232 ("resolveProxyClass Not Overridden - acceptMatchers Filter Bypass via java.lang.ref |
-| CVE-2026-36467 | 7.2 | 2026-09-21 | Unrestricted Upload of File with Dangerous Type in core/modules/media.php in CuteNews v.2.1.2 allows remote authenticate |
-| CVE-2026-53940 | 8.8 | 2026-09-21 | Conda is a system-level binary package and environment manager that runs on major operating systems and platforms. Prior |
-| CVE-2026-61687 | 7.1 | 2026-09-21 | Hatchet is a platform for orchestrating background tasks, AI agents, and durable workflows at scale. Prior to 0.91.1, Va |
-| CVE-2026-82412 | 8.8 | 2026-09-21 | ntopng is a web-based network traffic monitoring application. Prior to 6.7.260717, the vulnerability-scan endpoints scri |
-| CVE-2026-85751 | 9.8 | 2026-09-21 | Mailu is a mail server distributed as a set of Docker images. From Mailu 2.0 until 2024.06.55 and prior to Mailu helm-ch |
-| CVE-2026-62371 | 8.8 | 2026-09-21 | KubeEdge is an open source system for extending native containerized application orchestration capabilities to hosts at  |
-| CVE-2026-63116 | 8.8 | 2026-09-21 | deepstream is a server that allows clients and backend services to sync data, send messages and make rpcs at scale. From |
-| CVE-2026-77560 | 8.1 | 2026-09-21 | Tinyauth is an authentication and authorization server. Prior to 5.1.2, Tinyauth compares forwarded hostnames case-sensi |
-| CVE-2026-79920 | 9.9 | 2026-09-21 | Ajenti is a Linux & BSD modular server admin panel. Prior to version 2.2.16, any authenticated user can call /api/core/t |
-| CVE-2026-83621 | 8.1 | 2026-09-21 | ntopng is a web-based network traffic monitoring application. Prior to 6.7.260717, POST /lua/rest/v2/edit/system/edit_bl |
-| CVE-2026-84990 | 8.8 | 2026-09-21 | ntopng is a web-based network traffic monitoring application. Prior to 6.7.260718, scripts/lua/rest/v2/get/system/config |
-| CVE-2026-94449 | 7.5 | 2026-09-21 | A flaw was found in the SmallRye Fault Tolerance library, which is used by Quarkus to provide strategies like retries an |
-| CVE-2026-48826 | 8.1 | 2026-09-21 | HomeBox is a home inventory and organization system. Prior to 0.26.0, HandleWipeInventory in backend/app/api/handlers/v1 |
-| CVE-2026-48975 | 8.1 | 2026-09-21 | HomeBox is a home inventory and organization system. Prior to 0.26.0, MaintenanceEntryRepository.Update and MaintenanceE |
-| CVE-2026-48976 | 8.1 | 2026-09-21 | HomeBox is a home inventory and organization system. Prior to 0.26.0, NotifierRepository.Update in backend/internal/data |
-| CVE-2026-62182 | 8.8 | 2026-09-21 | KubeEdge is an open source system for extending native containerized application orchestration capabilities to hosts at  |
-| CVE-2026-62369 | 8.1 | 2026-09-21 | KubeEdge is an open source system for extending native containerized application orchestration capabilities to hosts at  |
-| CVE-2026-94488 | 8.2 | 2026-09-21 | Telegram Desktop before 6.9.4 allows XSS in the HTML exporter. (The first fixed stable version is 7.0.1.) This occurs in |
-| CVE-2026-17052 | 7.8 | 2026-09-21 | The Time-aware GPIO syscall verification handler z_vrfy_tgpio_pin_read_ts_ec() in drivers/timeaware_gpio/timeaware_gpio_ |
-| CVE-2026-49810 | 7.8 | 2026-09-21 | Dell Command Powershell Provider (DCPP), versions prior to 2.10.2 contain an Insertion of Sensitive Information into Log |
-| CVE-2026-58491 | 9.3 | 2026-09-21 | Warpgate is an open source SSH, HTTPS and MySQL bastion host for Linux. Prior to 0.25.5, the /@warpgate/api/sso/provider |
-| CVE-2026-63330 | 7.7 | 2026-09-21 | Warpgate is an open source SSH, HTTPS and MySQL bastion host for Linux. Prior to 0.25.6, api_get_recording_stream in war |
-| CVE-2026-94403 | 8.8 | 2026-09-21 | A weakness has been identified in ColorFul iGameCenter 1.0.3.4. This impacts the function sub_140001AF0 in the library e |
-| CVE-2026-94411 | 8.8 | 2026-09-21 | jshERP 3.6 contains a privilege escalation vulnerability in the updateOneValueByKeyIdAndType endpoint that allows authen |
-| CVE-2026-94412 | 8.8 | 2026-09-21 | jshERP through 3.6 contains an authorization bypass vulnerability in the POST /user/resetPwd endpoint that allows authen |
-| CVE-2026-94495 | 7.1 | 2026-09-21 | jshERP through 3.6 fails to properly validate user privileges in SystemConfigService.updateSystemConfig, allowing authen |
-| CVE-2026-94496 | 8.3 | 2026-09-21 | jshERP through 3.6 fails to validate caller permissions in role management endpoints, allowing authenticated users to mo |
-| CVE-2026-94497 | 8.3 | 2026-09-21 | jshERP through 3.6 fails to validate object ownership in by-id info, update, and delete endpoints across multiple resour |
-| CVE-2026-94501 | 8.8 | 2026-09-21 | jshERP through 3.6 contains an authorization bypass vulnerability in the userBusiness CRUD endpoints that allows authent |
-| CVE-2026-49811 | 8.4 | 2026-09-21 | Dell Command \| Monitor (DCM), versions prior to 10.13.2, contain an Incorrect Permission Assignment for Critical Resourc |
-| CVE-2026-55159 | 8.8 | 2026-09-21 | luci-app-adblock-fast a WebUI for fast, lightweight DNS-based ad-blocker for OpenWrt that works with dnsmasq, smartdns,  |
-| CVE-2026-55897 | 8.8 | 2026-09-21 | luci-app-advanced-reboot is a LuCI (web interface) application for OpenWrt that provides a  way to reboot your router in |
-| CVE-2026-58269 | 8.1 | 2026-09-21 | Sync-in Server is an open-source platform for file storage, sharing, collaboration, and syncing. Prior to version 2.4.0, |
-| CVE-2026-73512 | 7.5 | 2026-09-21 | Envoy is an open source edge and service proxy designed for cloud-native applications. Prior to 1.36.10, 1.37.6, 1.38.4, |
-| CVE-2026-73513 | 7.5 | 2026-09-21 | Envoy is an open source edge and service proxy designed for cloud-native applications. Prior to 1.36.10, 1.37.6, 1.38.4, |
-| CVE-2026-73546 | 7.4 | 2026-09-21 | Envoy is an open source edge and service proxy designed for cloud-native applications. Prior to 1.36.10, 1.37.6, 1.38.4, |
-| CVE-2026-73547 | 7.5 | 2026-09-21 | Envoy is an open source edge and service proxy designed for cloud-native applications. Prior to 1.36.10, 1.37.6, 1.38.4, |
-| CVE-2026-73548 | 7.5 | 2026-09-21 | Envoy is an open source edge and service proxy designed for cloud-native applications. Prior to 1.36.10, 1.37.6, 1.38.4, |
-| CVE-2026-73550 | 7.5 | 2026-09-21 | Envoy is an open source edge and service proxy designed for cloud-native applications. Prior to 1.36.10, 1.37.6, 1.38.4, |
-| CVE-2026-73552 | 7.5 | 2026-09-21 | Envoy is an open source edge and service proxy designed for cloud-native applications. Prior to 1.36.10, 1.37.6, 1.38.4, |
-| CVE-2026-81469 | 7.8 | 2026-09-21 | Dell Inventory Collector Client, versions prior to 15.0.0, contain an Unquoted Search Path or Element vulnerability. A l |
-| CVE-2026-49450 | 7.1 | 2026-09-21 | Joplin is an open source note-taking and to-do application that organises notes and lists into notebooks. Prior to 3.7.2 |
-| CVE-2026-49453 | 7.0 | 2026-09-21 | Joplin is an open source note-taking and to-do application that organises notes and lists into notebooks. Prior to 3.6.1 |
-| CVE-2026-55105 | 7.7 | 2026-09-21 | Joplin is an open source note-taking and to-do application that organises notes and lists into notebooks. Prior to 3.6.1 |
-| CVE-2026-73553 | 7.5 | 2026-09-21 | Envoy is an open source edge and service proxy designed for cloud-native applications. Prior to 1.36.10, 1.37.6, 1.38.4, |
-| CVE-2026-77521 | 10.0 | 2026-09-21 | MaxKB is an open-source AI assistant for enterprise. Prior to version 2.10.5-lts, assistants with a tool, MCP tool, skil |
-| CVE-2026-77523 | 7.4 | 2026-09-21 | MaxKB is an open-source AI assistant for enterprise. In version 2.10.3-lts and earlier, the model parameter form route a |
-| CVE-2026-79916 | 9.1 | 2026-09-21 | MaxKB is an open-source AI assistant for enterprise. Prior to 2.10.5-lts, authenticated workspace members can inject con |
-| CVE-2026-88406 | 7.5 | 2026-09-21 | FalkorDB (Redis module) v4.20.1 to v4.20.4 was discovered to contain a stack overflow in the _ValidateUnion_Clauses func |
-| CVE-2026-88407 | 7.5 | 2026-09-21 | An out-of-bounds read in the node_token_count/relation_token_count component of FalkorDB (Redis module) v4.20.1 to v4.20 |
-| CVE-2026-88409 | 8.8 | 2026-09-21 | FalkorDB (Redis module) v4.20.1 to v4.20.4 was discovered to contain a buffer overflow in the _Decode_GrB_Matrix functio |
-| CVE-2026-88410 | 7.1 | 2026-09-21 | The graph.UDF in FalkorDB (Redis module) v4.20.1 to v4.20.4 is not registered as a write command, leading to unexpected  |
-| CVE-2026-88411 | 7.5 | 2026-09-21 | Improper error handling in the GRAPH.EFFECT component (/effects/effects_apply.c) of FalkorDB (Redis module) v4.20.1 lead |
-| CVE-2026-94424 | 8.8 | 2026-09-21 | A vulnerability has been found in Moore Threads MTT S80 Driver Package up to 340.150. Impacted is the function sub_14000 |
-| CVE-2026-55210 | 7.4 | 2026-09-21 | Joplin is an open source note-taking and to-do application that organises notes and lists into notebooks. Prior to 3.7.2 |
-| CVE-2026-59814 | 7.6 | 2026-09-21 | Joplin is an open source note-taking and to-do application that organises notes and lists into notebooks. Prior to 3.7.7 |
-| CVE-2026-94534 | 7.1 | 2026-09-21 | lamp-cloud through 5.10.0 fails to validate user identity in PUT /anyone/baseInfo and PUT /anyone/avatar endpoints, allo |
-| CVE-2026-94535 | 7.1 | 2026-09-21 | lamp-cloud through 5.10.0 contains an authorization bypass vulnerability in the deleteMyNotice endpoint that allows auth |
-| CVE-2026-94540 | 7.7 | 2026-09-21 | DesktopSMS 1.11.0 by MrPear contains an unauthorized access vulnerability that allows local attackers to transmit SMS, r |
-| CVE-2026-94622 | 7.5 | 2026-09-21 | vLLM versions through 0.29.0 contain a denial of service vulnerability in the NIXL connector's metadata handling for pre |
-| CVE-2026-94623 | 7.5 | 2026-09-21 | vLLM through 0.29.0 contains a denial of service vulnerability in the NIXL connector's prefix caching implementation tha |
-| CVE-2026-94624 | 7.5 | 2026-09-21 | vLLM through 0.29.0 contains a denial of service vulnerability in P2P KV offloading when OffloadingConnector is configur |
-| CVE-2026-94626 | 7.5 | 2026-09-21 | vLLM through 0.29.0 fails to validate the tp_size parameter in kv_transfer_params on OpenAI-compatible completion endpoi |
-| CVE-2026-94627 | 7.5 | 2026-09-21 | vLLM Mooncake connector through 0.29.0 fails to properly manage GPU KV cache block ownership when concurrent child reque |
-| CVE-2026-94425 | 8.8 | 2026-09-21 | A vulnerability was found in Moore Threads MTT S80 Driver Package 340.150. The affected element is the function sub_1400 |
+| CVE-2026-93710 | 7.5 | 2026-09-22 | Dancer2 versions from 2.0.0 before 2.2.0 for Perl dispatch a route that a dying hook refused when the exception handler  |
+| CVE-2026-93712 | 7.5 | 2026-09-22 | Dancer2 versions from 2.1.0 before 2.2.0 for Perl serve files from outside public_dir via relative path segments in the  |
 | CVE-2026-94491 | 7.3 | 2026-09-22 | A weakness has been identified in Yonyou KSOA 9.0. This affects an unknown part of the file /cardcase/search_list.jsp. E |
 | CVE-2026-94493 | 10.0 | 2026-09-22 | A vulnerability was detected in Gigatech PDV5701 1.0.31_240305_112640. This issue affects some unknown processing of the |
 | CVE-2026-13355 | 9.8 | 2026-09-22 | The Meta Box AIO plugin for WordPress is vulnerable to Privilege Escalation to Administrator in versions up to, and incl |
@@ -117,8 +42,15 @@ _No action items available._
 | CVE-2026-91827 | 7.5 | 2026-09-22 | The Ninja Forms WordPress plugin 3.15.3 does not prevent user-submitted form field values from being deserialised when a |
 | CVE-2026-92438 | 8.8 | 2026-09-22 | The Ninja Forms WordPress plugin 3.15.3 does not escape submitted form field values before outputting them on the submis |
 | CVE-2026-94504 | 7.2 | 2026-09-22 | Ninja Forms 3.15.3 stores an anonymous non-RTE textarea value and renders it without safe HTML encoding in the legacy su |
+| CVE-2016-15059 | 9.8 | 2026-09-22 | Net::IDN::Punycode versions before 2.301 for Perl allow a heap buffer overflow via unchecked writes past the output buff |
 | CVE-2025-1281 | 8.8 | 2026-09-22 | The BM Content Builder plugin for WordPress is vulnerable to arbitrary file deletion due to insufficient file path valid |
 | CVE-2026-6922 | 7.1 | 2026-09-22 | The WP Table Builder – Drag & Drop Table Builder plugin for WordPress is vulnerable to Incorrect Authorization in all ve |
+| CVE-2026-74766 | 8.4 | 2026-09-22 | Net::IDN::Punycode versions from 2.301 before 2.590 for Perl allow a heap use-after-free via a decoded code point that r |
+| CVE-2026-87078 | 9.1 | 2026-09-22 | Net::IDN::Punycode versions from 2.302 before 2.590 for Perl leak the output buffer on every rejected label in decode_pu |
+| CVE-2026-87079 | 7.5 | 2026-09-22 | Net::IDN::Punycode versions before 2.590 for Perl allow CPU exhaustion via quadratic insertion cost when decoding a long |
+| CVE-2026-87080 | 9.1 | 2026-09-22 | Net::IDN::Punycode::PP versions before 2.590 for Perl decode a truncated label to a name containing a character it never |
+| CVE-2026-87081 | 7.5 | 2026-09-22 | Net::IDN::UTS46 versions before 2.590 for Perl allow CPU exhaustion via quadratic punycode encoding of an overlong label |
+| CVE-2026-87082 | 7.5 | 2026-09-22 | Net::IDN::Punycode versions before 2.590 for Perl hang, crash or return a wrong label via unvalidated malformed UTF-8 in |
 | CVE-2026-92235 | 8.1 | 2026-09-22 | The The WP Ultimate Review plugin for WordPress is vulnerable to arbitrary shortcode execution in all versions up to, an |
 | CVE-2026-92969 | 8.1 | 2026-09-22 | The HUSKY – Products Filter for WooCommerce Professional plugin for WordPress is vulnerable to Local File Inclusion in a |
 | CVE-2026-93778 | 7.2 | 2026-09-22 | The WP Yelp Review Slider plugin for WordPress is vulnerable to Stored Cross-Site Scripting via Yelp Review Text (import |
@@ -126,7 +58,6 @@ _No action items available._
 | CVE-2026-93952 | 10.0 | 2026-09-22 | VeloCloud Orchestrator (VCO) on-prem has a security issue where this issue may allow a remote attacker to access privile |
 | CVE-2026-93928 | 7.3 | 2026-09-22 | Authentication Bypass Using an Alternate Path or Channel vulnerability in Magepeople inc. Taxi Booking Manager for WooCo |
 | CVE-2026-95508 | 7.4 | 2026-09-22 | A heap-based buffer overflow was found in the DHCPv6 and TFTP response builders of libslirp. When the host is configured |
-| CVE-2026-95511 | 8.2 | 2026-09-22 | A privilege escalation vulnerability was found in CUPS when used with the cups-filters serial backend. A local user who  |
 | CVE-2026-9231 | 7.5 | 2026-09-22 | The WP Travel Engine – Tour Booking Plugin – Tour Operator Software plugin for WordPress is vulnerable to Local File Inc |
 | CVE-2026-25254 | 9.8 | 2026-09-22 | Improper authorization leads to Remote Code Execution via SocketIO interface. |
 | CVE-2026-25255 | 8.8 | 2026-09-22 | Exposed dangerous function lead to privilege escalation via gRPC server. |
@@ -134,6 +65,191 @@ _No action items available._
 | CVE-2026-25265 | 8.8 | 2026-09-22 | Privilege escalation due to weak configuration while temporary file handling. |
 | CVE-2026-94117 | 7.6 | 2026-09-22 | Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') vulnerability in DevItems HashBar – |
 | CVE-2026-74849 | 9.8 | 2026-09-22 | Zohocorp ManageEngine ADSelfService Plus versions before build 7001 are vulnerable to a remote code execution vulnerabil |
+| CVE-2026-75791 | 8.6 | 2026-09-22 | Zohocorp ManageEngine ADSelfService Plus versions before build 7001 are vulnerable to an authentication bypass vulnerabi |
+| CVE-2026-93616 | 9.8 | 2026-09-22 | A directory traversal and file upload vulnerability allows an unauthenticated attacker to upload and execute arbitrary s |
+| CVE-2026-95271 | 7.3 | 2026-09-22 | A vulnerability has been found in dgtlmoon changedetection.io up to 0.60.7. The impacted element is the function check_a |
+| CVE-2026-95619 | 7.7 | 2026-09-22 | A flaw was found in libstdc++. An integer overflow can occur when processing large inputs to the aligned operator new in |
+| CVE-2026-12718 | 9.8 | 2026-09-22 | Improper neutralization of special elements used in an SQL command ('SQL injection') vulnerability in Karel Electronic I |
+| CVE-2026-95499 | 7.3 | 2026-09-22 | A flaw has been found in JosephChuks php-file-manager-with-code-editor up to 3.0. This issue affects the function move_u |
+| CVE-2026-95675 | 9.8 | 2026-09-22 | D-Link DAP-1360 firmware version 6.14 and earlier contains an unauthenticated remote code execution vulnerability that a |
+| CVE-2026-24239 | 7.8 | 2026-09-22 | NVIDIA NeMo Speech for all platforms contains a vulnerability where malicious data created by an attacker could cause re |
+| CVE-2026-24267 | 7.8 | 2026-09-22 | NVIDIA NeMo Speech for all platforms contains a vulnerability in the speech data explorer component, where malicious dat |
+| CVE-2026-65111 | 7.8 | 2026-09-22 | NVIDIA NeMo Speech for all platforms contains a vulnerability where malicious input created by an attacker could cause a |
+| CVE-2026-65113 | 9.8 | 2026-09-22 | NVIDIA Infrastructure Controller for Linux contains a vulnerability where an attacker could cause use of hard-coded cred |
+| CVE-2026-65114 | 8.3 | 2026-09-22 | NVIDIA Infrastructure Controller for Linux contains a vulnerability where an attacker could cause missing authentication |
+| CVE-2026-65118 | 7.5 | 2026-09-22 | NVIDIA Infrastructure Controller for Linux contains a vulnerability where an attacker could cause improper certificate v |
+| CVE-2026-65121 | 8.2 | 2026-09-22 | NVIDIA Infrastructure Controller for Linux contains a vulnerability where an  attacker could cause an improper authentic |
+| CVE-2026-65128 | 8.8 | 2026-09-22 | NVIDIA Infrastructure Controller for Linux contains a vulnerability where an attacker could cause SQL injection. A succe |
+| CVE-2026-65130 | 8.0 | 2026-09-22 | NVIDIA Infrastructure Controller for Linux contains a vulnerability where an attacker could cause OS command injection.  |
+| CVE-2026-65178 | 7.8 | 2026-09-22 | NVIDIA NeMo contains a vulnerability in its dataset-loading workflow where a maliciously crafted model_config.yaml can i |
+| CVE-2026-65179 | 8.8 | 2026-09-22 | NVIDIA NeMo contains a vulnerability in the TabularTokenizer class where it deserializes an untrusted, attacker-controll |
+| CVE-2026-79313 | 9.8 | 2026-09-22 | webpy web.py 0.76 is vulnerable to Insufficient Session Expiration. The application's session management relies on perio |
+| CVE-2026-84388 | 9.6 | 2026-09-22 | A improper restriction of rendered ui layers or frames vulnerability in Fortinet FortiPAM Chrome Extension 8.0 all versi |
+| CVE-2026-89407 | 7.5 | 2026-09-22 | NumberInput.looksLikeValidNumber() in FasterXML jackson-core pre-validates "stringified numbers" with two regular expres |
+| CVE-2026-93088 | 9.8 | 2026-09-22 | SGLang's multimodal generation runtime is vulnerable to unauthenticated arbitrary code execution because the disaggregat |
+| CVE-2026-94127 | 9.8 | 2026-09-22 | When a BIG-IP APM access policy and an OAuth profile is configured on a virtual server, specific malicious traffic can l |
+| CVE-2026-95500 | 7.3 | 2026-09-22 | A vulnerability has been found in JosephChuks php-file-manager-with-code-editor up to 3.0. Impacted is the function file |
+| CVE-2026-56681 | 7.3 | 2026-09-22 | 9Router is an AI router & token saver. Prior to 0.5.6, 9Router deployments that allow requests to reach Next.js without  |
+| CVE-2026-70410 | 8.8 | 2026-09-22 | Use of Externally-Controlled Input to Select Classes or Code ('Unsafe Reflection') vulnerability in Apache Calcite Avati |
+| CVE-2026-75607 | 8.1 | 2026-09-22 | Frigate is an open source network video recorder. Prior to 0.17.2, the WebSocket handler in frigate/comms/ws.py forwards |
+| CVE-2026-75608 | 7.7 | 2026-09-22 | Frigate is an open source network video recorder. Prior to 0.18.0, the prefix-matched location /api/go2rtc/api in docker |
+| CVE-2026-77633 | 7.1 | 2026-09-22 | Cloudreve is a self-hosted file management and sharing system. Prior to 4.18.0, PrepareUpload in pkg/filemanager/fs/dbfs |
+| CVE-2026-80143 | 9.9 | 2026-09-22 | Lantronix SLC8000 before firmware v9.7.0.2, EMG8500/EMG7500 before firmware v9.7.0.1, and all firmware versions of SLB88 |
+| CVE-2026-80144 | 9.9 | 2026-09-22 | Lantronix SLC8000 before firmware v9.7.0.2, EMG8500/EMG7500 before firmware v9.7.0.1, and all firmware versions of SLB88 |
+| CVE-2026-80145 | 9.1 | 2026-09-22 | Lantronix SLC8000 before firmware v9.7.0.2, EMG8500/EMG7500 before firmware v9.7.0.1, and all firmware versions of SLB88 |
+| CVE-2026-80146 | 9.9 | 2026-09-22 | Lantronix SLC8000 before firmware v9.7.0.2, EMG8500/EMG7500 before firmware v9.7.0.1, and all firmware versions of SLB88 |
+| CVE-2026-80147 | 9.9 | 2026-09-22 | Lantronix SLC8000 before firmware v9.7.0.2, EMG8500/EMG7500 before firmware v9.7.0.1, and all firmware versions of SLB88 |
+| CVE-2026-80148 | 8.6 | 2026-09-22 | Lantronix SLC8000 before firmware v9.7.0.3, EMG8500/EMG7500 before firmware v9.7.0.1, and all firmware versions of SLB88 |
+| CVE-2026-80149 | 8.6 | 2026-09-22 | Lantronix SLC8000 before firmware v9.7.0.3, EMG8500/EMG7500 before firmware v9.7.0.1, and all firmware versions of SLB88 |
+| CVE-2026-80150 | 7.5 | 2026-09-22 | Lantronix SLC8000 before firmware v9.7.0.3, EMG8500/EMG7500 before firmware v9.7.0.1, and all firmware versions of SLB88 |
+| CVE-2026-80151 | 9.1 | 2026-09-22 | Lantronix SLC8000 before firmware v9.7.0.3, EMG8500/EMG7500 before firmware v9.7.0.1, and all firmware versions of SLB88 |
+| CVE-2026-80152 | 9.1 | 2026-09-22 | Lantronix SLC8000 before firmware v9.7.0.3, EMG8500/EMG7500 before firmware v9.7.0.1, and all firmware versions of SLB88 |
+| CVE-2026-80154 | 9.6 | 2026-09-22 | All firmware versions of Lantronix SLC8000, EMG8500, EMG7500, SLB882, SLCx-03, and SLCx-02 contain an authentication byp |
+| CVE-2026-80155 | 10.0 | 2026-09-22 | Lantronix SLC8000 before firmware v9.7.0.5, EMG8500/EMG7500 before firmware v9.7.0.1, and all firmware versions of SLB88 |
+| CVE-2026-80156 | 9.1 | 2026-09-22 | Lantronix SLC8000 before firmware v9.7.0.5, EMG8500/EMG7500 before firmware v9.7.0.1, and all firmware versions of SLB88 |
+| CVE-2026-94640 | 7.5 | 2026-09-22 | A flaw was found in rpcbind. This vulnerability allows a remote, unauthenticated attacker to cause a Denial of Service ( |
+| CVE-2026-95653 | 7.5 | 2026-09-22 | Concrete CMS Community Store before 2.7.8 derives digital product download tokens from order creation timestamps instead |
+| CVE-2026-95654 | 7.4 | 2026-09-22 | Databasement before 1.7.14 validates invitation tokens only when the acceptance page loads, caching the authorization de |
+| CVE-2026-95655 | 8.1 | 2026-09-22 | Aureus ERP before 1.5.0 fails to scope message lookups to the current record in ChatterPanel, allowing authenticated use |
+| CVE-2026-13087 | 8.8 | 2026-09-22 | A heap out-of-bounds write vulnerability was found in the Linux kernel's RPC-over-RDMA server reply path in net/sunrpc/x |
+| CVE-2026-83598 | 7.8 | 2026-09-22 | Netdata is an open source observability tool. From rom 2.0.0 until 2.10.4, during Netdata Windows Agent MSI repair, powe |
+| CVE-2026-83599 | 7.5 | 2026-09-22 | Netdata is an open source observability tool. Prior to 2.11.0, Netdata's unauthenticated WebSocket server negotiates per |
+| CVE-2026-83603 | 8.4 | 2026-09-22 | Netdata is an open source observability tool. Prior to 2.10.4, the setuid-root ndsudo helper command fail2ban-client-sta |
+| CVE-2026-85734 | 9.1 | 2026-09-22 | LightRAG provides simple and fast retrieval-augmented generation. Prior to 1.5.5, the POST /login endpoint in lightrag/a |
+| CVE-2026-85740 | 7.1 | 2026-09-22 | LightRAG provides simple and fast retrieval-augmented generation. Prior to 1.5.5, _validated_addresses in lightrag/parse |
+| CVE-2026-86059 | 9.6 | 2026-09-22 | Dokploy is a free, self-hostable Platform as a Service (PaaS). Prior to 0.29.13, Dokploy organization members without Gi |
+| CVE-2026-87902 | 8.1 | 2026-09-22 | An unauthenticated attacker can make `get_page_template()` page-template resolution include a chosen readable local `.ph |
+| CVE-2026-94455 | 7.1 | 2026-09-22 | An HTTP endpoint intended for provisioning enterprise and reseller organisations is reachable without any session. The a |
+| CVE-2026-94456 | 9.1 | 2026-09-22 | Postiz generates security-sensitive credentials using `Math.random()` instead of a cryptographically secure source. The  |
+| CVE-2026-43641 | 9.8 | 2026-09-22 | Softaculous Virtualizor before 3.2.9 (Patch 9) and 3.0.0 contains an OS command injection vulnerability in the billing m |
+| CVE-2026-43642 | 8.1 | 2026-09-22 | Softaculous Virtualizor before 3.2.9 (Patch 9) and 3.0.0 contains a PHP object injection vulnerability in the billing mo |
+| CVE-2026-43643 | 7.5 | 2026-09-22 | Softaculous Virtualizor before 3.2.9 (Patch 9) and 3.0.0 contains an authorization bypass vulnerability in the billing m |
+| CVE-2026-73369 | 10.0 | 2026-09-22 | Adobe Campaign Classic (ACC) is affected by an Improper Control of Generation of Code ('Code Injection') vulnerability t |
+| CVE-2026-75699 | 10.0 | 2026-09-22 | Adobe Campaign Classic (ACC) is affected by an Improper Control of Generation of Code ('Code Injection') vulnerability t |
+| CVE-2026-75703 | 10.0 | 2026-09-22 | Adobe Campaign Classic (ACC) is affected by an Improper Control of Generation of Code ('Code Injection') vulnerability t |
+| CVE-2026-75721 | 10.0 | 2026-09-22 | Adobe Campaign Classic (ACC) is affected by an Improper Control of Generation of Code ('Code Injection') vulnerability t |
+| CVE-2026-75723 | 10.0 | 2026-09-22 | Adobe Campaign Classic (ACC) is affected by an Incorrect Authorization vulnerability that could result in arbitrary code |
+| CVE-2026-75728 | 9.1 | 2026-09-22 | Adobe Campaign Classic (ACC) is affected by an Incorrect Authorization vulnerability that could result in arbitrary code |
+| CVE-2026-77242 | 7.5 | 2026-09-22 | MCP Atlassian is a Model Context Protocol (MCP) server for Atlassian products (Confluence and Jira). Prior to 0.22.0, va |
+| CVE-2026-77243 | 8.8 | 2026-09-22 | MCP Atlassian is a Model Context Protocol (MCP) server for Atlassian products (Confluence and Jira). Prior to 0.22.0, EN |
+| CVE-2026-77244 | 10.0 | 2026-09-22 | MCP Atlassian is a Model Context Protocol (MCP) server for Atlassian products (Confluence and Jira). Prior to 0.22.0, th |
+| CVE-2026-77258 | 7.7 | 2026-09-22 | MCP Atlassian is a Model Context Protocol (MCP) server for Atlassian products (Confluence and Jira). Prior to 0.22.0, up |
+| CVE-2026-77261 | 7.1 | 2026-09-22 | MCP Atlassian is a Model Context Protocol (MCP) server for Atlassian products (Confluence and Jira). Prior to 0.22.0, _m |
+| CVE-2026-77605 | 7.8 | 2026-09-22 | Notepad++ is a free and open-source source code editor. Prior to 8.9.8, the Folder as Workspace Run by system action in  |
+| CVE-2026-82003 | 8.5 | 2026-09-22 | Adobe Campaign Classic (ACC) is affected by an Improper Input Validation vulnerability that could result in arbitrary co |
+| CVE-2026-82008 | 9.9 | 2026-09-22 | Adobe Campaign Classic (ACC) is affected by an Improper Input Validation vulnerability that could result in arbitrary co |
+| CVE-2026-82009 | 9.1 | 2026-09-22 | Adobe Campaign Classic (ACC) is affected by an Improper Neutralization of Special Elements used in an SQL Command ('SQL  |
+| CVE-2026-82010 | 9.9 | 2026-09-22 | Adobe Campaign Classic (ACC) is affected by an Improper Neutralization of Special Elements used in an SQL Command ('SQL  |
+| CVE-2026-82011 | 9.1 | 2026-09-22 | Adobe Campaign Classic (ACC) is affected by an Improper Neutralization of Special Elements used in an SQL Command ('SQL  |
+| CVE-2026-82013 | 9.9 | 2026-09-22 | Adobe Campaign Classic (ACC) is affected by a Server-Side Request Forgery (SSRF) vulnerability that could result in priv |
+| CVE-2026-82443 | 9.6 | 2026-09-22 | Adobe Campaign Classic (ACC) is affected by a Server-Side Request Forgery (SSRF) vulnerability that could result in priv |
+| CVE-2026-83597 | 7.0 | 2026-09-22 | Netdata is an open source observability tool. From version 2.0.0 until 2.10.4, Netdata Windows Agent MSI repair launches |
+| CVE-2026-83660 | 9.9 | 2026-09-22 | Adobe Campaign Classic (ACC) is affected by a Server-Side Request Forgery (SSRF) vulnerability that could result in priv |
+| CVE-2026-84412 | 10.0 | 2026-09-22 | Adobe Campaign Classic (ACC) is affected by an Improper Control of Generation of Code ('Code Injection') vulnerability t |
+| CVE-2026-85279 | 8.6 | 2026-09-22 | Notepad++ is a free and open-source source code editor. Prior to 8.9.8, Notepad++ contains a stack buffer overflow in Pl |
+| CVE-2026-85995 | 7.3 | 2026-09-22 | Notepad++ is a free and open-source source code editor. From 8.9.7 until 8.9.8, the Notepad++ updater and signature veri |
+| CVE-2026-86054 | 7.8 | 2026-09-22 | Notepad++ is a free and open-source source code editor. Prior to 8.9.8, Notepad++ contains a stack buffer overflow in Np |
+| CVE-2026-89275 | 10.0 | 2026-09-22 | Adobe Campaign Classic (ACC) is affected by an Improper Control of Generation of Code ('Code Injection') vulnerability t |
+| CVE-2026-89276 | 9.9 | 2026-09-22 | Adobe Campaign Classic (ACC) is affected by an Improper Control of Generation of Code ('Code Injection') vulnerability t |
+| CVE-2026-93345 | 7.5 | 2026-09-22 | MikroTik RouterOS before 7.25beta4 contains an improper input validation vulnerability in the labelled-VPN NLRI iterator |
+| CVE-2026-94384 | 8.1 | 2026-09-22 | Missing authorization in Amazon amazon-connect-salesforce-lambda before 5.26 allows any IAM principal with lambda:Invoke |
+| CVE-2026-95656 | 7.3 | 2026-09-22 | A vulnerability was found in dgtlmoon changedetection.io up to 50389b07. This vulnerability affects the function add_wat |
+| CVE-2026-19480 | 7.5 | 2026-09-22 | CAI Content Credentials is affected by an Improper Input Validation vulnerability that could result in a Security featur |
+| CVE-2026-34689 | 8.6 | 2026-09-22 | Adobe Connect is affected by an Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal') vulnerabi |
+| CVE-2026-57149 | 9.9 | 2026-09-22 | plone.app.portlets.portlets provides a Plone-specific user interface for plone.portlets, as well as a standard set of po |
+| CVE-2026-75632 | 7.5 | 2026-09-22 | CAI Content Credentials is affected by an Uncontrolled Resource Consumption vulnerability that could lead to application |
+| CVE-2026-75649 | 7.8 | 2026-09-22 | Bridge is affected by a Heap-based Buffer Overflow vulnerability that could result in arbitrary code execution in the co |
+| CVE-2026-75655 | 7.8 | 2026-09-22 | Bridge is affected by an Uncontrolled Recursion vulnerability that could result in arbitrary code execution in the conte |
+| CVE-2026-75658 | 7.8 | 2026-09-22 | Bridge is affected by an out-of-bounds write vulnerability that could result in arbitrary code execution in the context  |
+| CVE-2026-75663 | 7.8 | 2026-09-22 | Bridge is affected by an out-of-bounds write vulnerability that could result in arbitrary code execution in the context  |
+| CVE-2026-75665 | 7.8 | 2026-09-22 | Bridge is affected by a Heap-based Buffer Overflow vulnerability that could result in arbitrary code execution in the co |
+| CVE-2026-75676 | 7.8 | 2026-09-22 | Bridge is affected by a Stack-based Buffer Overflow vulnerability that could result in arbitrary code execution in the c |
+| CVE-2026-75682 | 9.9 | 2026-09-22 | Adobe Connect is affected by an Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') vul |
+| CVE-2026-75684 | 9.3 | 2026-09-22 | Adobe Connect is affected by a stored Cross-Site Scripting (XSS) vulnerability that could be abused by an attacker to in |
+| CVE-2026-75686 | 9.3 | 2026-09-22 | Adobe Connect is affected by an Improper Input Validation vulnerability that could result in arbitrary code execution in |
+| CVE-2026-75689 | 9.3 | 2026-09-22 | Adobe Connect is affected by a stored Cross-Site Scripting (XSS) vulnerability that could be abused by an attacker to in |
+| CVE-2026-75697 | 9.3 | 2026-09-22 | Adobe Connect is affected by a stored Cross-Site Scripting (XSS) vulnerability that could be abused by an attacker to in |
+| CVE-2026-75698 | 9.3 | 2026-09-22 | Adobe Connect is affected by a reflected Cross-Site Scripting (XSS) vulnerability. An attacker could exploit this vulner |
+| CVE-2026-75743 | 7.1 | 2026-09-22 | Adobe Experience Manager Forms JEE is affected by a Cross-Site Request Forgery (CSRF) vulnerability that could result in |
+| CVE-2026-75744 | 8.1 | 2026-09-22 | Adobe Experience Manager Forms JEE is affected by a stored Cross-Site Scripting (XSS) vulnerability that could be abused |
+| CVE-2026-75745 | 10.0 | 2026-09-22 | Adobe Experience Manager Forms JEE is affected by an Incorrect Authorization vulnerability that could result in arbitrar |
+| CVE-2026-77246 | 7.4 | 2026-09-22 | MCP Atlassian is a Model Context Protocol (MCP) server for Atlassian products (Confluence and Jira). Prior to 0.22.0, an |
+| CVE-2026-77248 | 8.6 | 2026-09-22 | MCP Atlassian is a Model Context Protocol (MCP) server for Atlassian products (Confluence and Jira). Prior to 0.22.0, th |
+| CVE-2026-77253 | 7.1 | 2026-09-22 | MCP Atlassian is a Model Context Protocol (MCP) server for Atlassian products (Confluence and Jira). Prior to 0.22.0, Ji |
+| CVE-2026-77254 | 9.1 | 2026-09-22 | MCP Atlassian is a Model Context Protocol (MCP) server for Atlassian products (Confluence and Jira). Prior to 0.22.0, re |
+| CVE-2026-77255 | 8.6 | 2026-09-22 | MCP Atlassian is a Model Context Protocol (MCP) server for Atlassian products (Confluence and Jira). Prior to 0.22.0, th |
+| CVE-2026-77259 | 7.7 | 2026-09-22 | MCP Atlassian is a Model Context Protocol (MCP) server for Atlassian products (Confluence and Jira). Prior to 0.22.0, co |
+| CVE-2026-77262 | 8.6 | 2026-09-22 | MCP Atlassian is a Model Context Protocol (MCP) server for Atlassian products (Confluence and Jira). Prior to 0.22.0, co |
+| CVE-2026-77544 | 7.5 | 2026-09-22 | A malicious actor with access to the network could exploit an Out-of-bounds Write vulnerability found in certain UniFi g |
+| CVE-2026-77555 | 7.5 | 2026-09-22 | A malicious actor with access to the network could exploit an Out-of-bounds Write vulnerability found in certain UniFi g |
+| CVE-2026-77556 | 7.5 | 2026-09-22 | A malicious actor with access to the network could exploit an Out-of-bounds Read vulnerability found in certain UniFi ga |
+| CVE-2026-77558 | 7.5 | 2026-09-22 | A malicious actor with access to the network could exploit an Out-of-bounds Read vulnerability found in certain UniFi ga |
+| CVE-2026-79906 | 7.8 | 2026-09-22 | Substance3D - Modeler is affected by an out-of-bounds write vulnerability that could result in arbitrary code execution  |
+| CVE-2026-81995 | 9.1 | 2026-09-22 | Adobe Experience Manager Forms JEE is affected by an Improper Input Validation vulnerability that could result in arbitr |
+| CVE-2026-81998 | 7.8 | 2026-09-22 | Substance3D - Modeler is affected by an out-of-bounds write vulnerability that could result in arbitrary code execution  |
+| CVE-2026-81999 | 8.7 | 2026-09-22 | Adobe Experience Manager Forms JEE is affected by a Server-Side Request Forgery (SSRF) vulnerability that could result i |
+| CVE-2026-82000 | 9.6 | 2026-09-22 | Adobe Experience Manager Forms JEE is affected by a Server-Side Request Forgery (SSRF) vulnerability that could result i |
+| CVE-2026-83962 | 7.8 | 2026-09-22 | Substance3D - Modeler is affected by a Stack-based Buffer Overflow vulnerability that could result in arbitrary code exe |
+| CVE-2026-83963 | 7.8 | 2026-09-22 | Substance3D - Modeler is affected by an out-of-bounds write vulnerability that could result in arbitrary code execution  |
+| CVE-2026-84395 | 7.1 | 2026-09-22 | Premiere Pro is affected by a Server-Side Request Forgery (SSRF) vulnerability that could result in privilege escalation |
+| CVE-2026-94462 | 7.1 | 2026-09-22 | Spree is an open source e-commerce solution built with Ruby on Rails. From 5.4.0 until 5.4.4 and 5.5.4, PATCH /api/v3/st |
+| CVE-2026-95831 | 7.8 | 2026-09-22 | Crypt::SelfCertificate versions from 1.01 through 1.05 for Perl contains malware which executes Python code from an obfu |
+| CVE-2026-95861 | 7.5 | 2026-09-22 | A malicious actor with access to the network could exploit an Uncontrolled Recursion vulnerability found in certain UniF |
+| CVE-2026-95862 | 7.5 | 2026-09-22 | A malicious actor with access to the network could exploit an Out-of-bounds Write vulnerability found in certain UniFi g |
+| CVE-2026-28324 | 9.8 | 2026-09-22 | SolarWinds Observability Self-Hosted was found to be affected by an unauthenticated remote code execution vulnerability  |
+| CVE-2026-28325 | 8.8 | 2026-09-22 | SolarWinds Observability Self-Hosted was found to be affected by an unauthenticated remote code execution vulnerability  |
+| CVE-2026-47116 | 9.8 | 2026-09-22 | LTSecurity LTK3500SF contains a hard-coded credentials vulnerability where root and guest account passwords are stored a |
+| CVE-2026-58268 | 7.5 | 2026-09-22 | SIPGO is a library for writing SIP services in the GO language. Prior to 1.4.1, ParserStream.parseSingle in sip/parser_s |
+| CVE-2026-59991 | 7.5 | 2026-09-22 | psd-tools is a Python package for working with Adobe Photoshop PSD files. Prior to 1.17.4, PSDImage.composite() and PSDI |
+| CVE-2026-61570 | 7.5 | 2026-09-22 | MPXJ is an open source library to read and write project plans from a variety of file formats and databases. From 5.5.5  |
+| CVE-2026-62985 | 7.5 | 2026-09-22 | request-filtering-agent is an http(s).Agent implementation that blocks requests to Private/Reserved IP addresses. Prior  |
+| CVE-2026-63104 | 8.1 | 2026-09-22 | Kaneo versions 2.3.12 before 2.12.2 contain a missing authorization vulnerability that allows authenticated workspace me |
+| CVE-2026-76708 | 9.8 | 2026-09-22 | A vulnerability exists in the Analytics and Location Engine (ALE) where the application and underlying operating system  |
+| CVE-2026-76709 | 9.8 | 2026-09-22 | A vulnerability exists in the internal administrative component of Analytics and Location Engine (ALE). Successful explo |
+| CVE-2026-76710 | 7.5 | 2026-09-22 | A vulnerability exists in the Analytics and Location Engine (ALE) management interface that may allow for the disclosure |
+| CVE-2026-76711 | 7.5 | 2026-09-22 | A vulnerability exists in an Analytics and Location Engine (ALE) component where the impacted process improperly process |
+| CVE-2026-76712 | 7.3 | 2026-09-22 | A vulnerability exists in the Analytics and Location Engine (ALE) that may allow for unauthorized access, information di |
+| CVE-2026-76713 | 7.2 | 2026-09-22 | A vulnerability exists in the maintenance restore functionality of Analytics and Location Engine (ALE). Successful explo |
+| CVE-2026-76714 | 7.2 | 2026-09-22 | Vulnerabilities in the Analytics and Location Engine web interface allows remote authenticated users to run arbitrary co |
+| CVE-2026-76715 | 7.1 | 2026-09-22 | A vulnerability in an administrative component of Analytics and Location Engine (ALE) is vulnerable to a man-in-the-midd |
+| CVE-2026-77322 | 7.5 | 2026-09-22 | SIPGO is a library for writing SIP services in the GO language. Prior to 1.4.3, WSConnection.Read in sip/transport_ws.go |
+| CVE-2026-87121 | 9.8 | 2026-09-22 | lwIP TCP/IP Stack MQTT is vulnerable to an out-of-bounds write, which may allow an attacker to gain full code execution  |
+| CVE-2026-88419 | 8.8 | 2026-09-22 | An unrestricted upload of files with a dangerous type in the thumbnail-upload endpoint (/index.php?m=member&f=article&v= |
+| CVE-2026-67615 | 8.8 | 2026-09-22 | openEQUELLA before 2026.1.0 contains an authenticated remote code execution vulnerability that allows any authenticated  |
+| CVE-2026-91018 | 8.8 | 2026-09-22 | lwIP (Lightweight IP) has a double free vulnerability, which could crash the system, cause a DoS, memory corruption, or  |
+| CVE-2026-94450 | 7.5 | 2026-09-22 | Improper validation of the Destination Connection ID length in s2n-quic 1.88.0 and earlier may allow an unauthenticated  |
+| CVE-2026-95814 | 8.1 | 2026-09-22 | Vaultwarden through 1.37.3 omits organization membership status validation from three cipher access-restriction queries, |
+| CVE-2026-16346 | 9.9 | 2026-09-22 | IBM DataStage on Cloud Pak for Data 5.4.0.0 could allow a remote authenticated attacker to execute arbitrary commands du |
+| CVE-2026-16468 | 8.8 | 2026-09-22 | IBM DataStage on Cloud Pak for Data 5.4.0.0 could allow a remote authenticated attacker to execute arbitrary commands du |
+| CVE-2026-16469 | 8.8 | 2026-09-22 | IBM DataStage on Cloud Pak for Data 5.4.0.0 px-runtime could allow a remote authenticated attacker to execute arbitrary  |
+| CVE-2026-16672 | 8.8 | 2026-09-22 | IBM DataStage on Cloud Pak for Data 5.4.0.0 could allow a remote authenticated attacker to execute arbitrary code due to |
+| CVE-2026-17102 | 8.8 | 2026-09-22 | IBM DataStage on Cloud Pak for Data 5.4.0.0 could allow a remote authenticated attacker to execute arbitrary commands du |
+| CVE-2026-17472 | 9.6 | 2026-09-22 | IBM Concert 1.0.0 through 3.0.0 could allow a remote authenticated attacker to access or modify unauthorized resources d |
+| CVE-2026-17618 | 7.3 | 2026-09-22 | IBM Financial Transaction Manager (FTM) for RedHat OpenShift could allow a remote unauthenticated attacker to view and m |
+| CVE-2026-17635 | 9.1 | 2026-09-22 | IBM Financial Transaction Manager (FTM) for RedHat OpenShift could allow a remote attacker to perform unauthorized actio |
+| CVE-2026-17636 | 8.8 | 2026-09-22 | IBM Financial Transaction Manager (FTM) for RedHat OpenShift could allow a remote authenticated attacker to execute arbi |
+| CVE-2026-17637 | 8.8 | 2026-09-22 | IBM Financial Transaction Manager (FTM) for RedHat OpenShift could allow an adjacent-network attacker to execute arbitra |
+| CVE-2026-17643 | 8.8 | 2026-09-22 | IBM Financial Transaction Manager (FTM) for RedHat OpenShift could allow a local attacker to obtain sensitive informatio |
+| CVE-2026-17644 | 8.8 | 2026-09-22 | IBM Financial Transaction Manager (FTM) for RedHat OpenShift could allow a local attacker to gain unauthorized access to |
+| CVE-2026-17645 | 9.1 | 2026-09-22 | IBM Financial Transaction Manager (FTM) for RedHat OpenShift could allow a remote authenticated attacker to gain elevate |
+| CVE-2026-17646 | 8.5 | 2026-09-22 | IBM Financial Transaction Manager (FTM) for RedHat OpenShift could allow a remote authenticated attacker to obtain sensi |
+| CVE-2026-17647 | 8.8 | 2026-09-22 | IBM Financial Transaction Manager (FTM) for RedHat OpenShift could allow a local attacker to execute arbitrary commands  |
+| CVE-2026-18066 | 7.9 | 2026-09-22 | IBM Financial Transaction Manager (FTM) for RedHat OpenShift could allow a local attacker to obtain sensitive informatio |
+| CVE-2026-18074 | 8.2 | 2026-09-22 | IBM Financial Transaction Manager (FTM) for RedHat OpenShift could allow a remote attacker to perform unauthorized actio |
+| CVE-2026-18095 | 8.5 | 2026-09-22 | IBM Financial Transaction Manager (FTM) for RedHat OpenShift could allow a remote authenticated attacker to execute arbi |
+| CVE-2026-18123 | 7.6 | 2026-09-22 | IBM Financial Transaction Manager (FTM) for RedHat OpenShift could allow a remote attacker to cause a denial of service  |
+| CVE-2026-18131 | 8.2 | 2026-09-22 | IBM Financial Transaction Manager (FTM) for RedHat OpenShift could allow a remote attacker to execute arbitrary JavaScri |
+| CVE-2026-18134 | 7.5 | 2026-09-22 | IBM Financial Transaction Manager (FTM) for RedHat OpenShift could allow a remote attacker to obtain sensitive informati |
+| CVE-2026-18137 | 8.1 | 2026-09-22 | IBM Financial Transaction Manager (FTM) for RedHat OpenShift could allow a remote attacker to execute arbitrary ESQL com |
+| CVE-2026-18152 | 7.4 | 2026-09-22 | IBM Financial Transaction Manager (FTM) for RedHat OpenShift could allow a remote attacker to forge validly-signed messa |
+| CVE-2026-18154 | 8.0 | 2026-09-22 | IBM Financial Transaction Manager (FTM) for RedHat OpenShift could allow a remote attacker to obtain sensitive informati |
+| CVE-2026-95819 | 7.3 | 2026-09-22 | A vulnerability has been found in anirbandutta9 College-Notes-Gallery up to 8c1cf3d98f30982d069c88ca172612c001eb39f6. Af |
+| CVE-2026-18162 | 9.8 | 2026-09-22 | IBM Financial Transaction Manager (FTM) for RedHat OpenShift could allow a remote attacker to execute arbitrary code due |
+| CVE-2026-18163 | 9.8 | 2026-09-22 | IBM Financial Transaction Manager (FTM) for RedHat OpenShift could allow a remote attacker to execute arbitrary code due |
+| CVE-2026-18169 | 9.9 | 2026-09-22 | IBM Financial Transaction Manager (FTM) for RedHat OpenShift could allow a remote authenticated attacker to obtain sensi |
+| CVE-2026-18172 | 7.4 | 2026-09-22 | IBM Financial Transaction Manager (FTM) for RedHat OpenShift could allow a remote attacker to obtain sensitive informati |
+| CVE-2026-18176 | 7.4 | 2026-09-22 | IBM Financial Transaction Manager (FTM) for RedHat OpenShift could allow a remote attacker to obtain sensitive informati |
+| CVE-2026-61685 | 7.5 | 2026-09-22 | ReactPress is a publishing system for React developers. Prior to version 3.7.0, ReactPress API list endpoints build Type |
 
 ---
 
@@ -141,6 +257,10 @@ _No action items available._
 
 | CVE ID | Vendor / Product | Date Added | Due Date | Ransomware |
 |--------|-----------------|------------|----------|------------|
+| CVE-2026-93952 | Arista / VeloCloud Orchestrator | 2026-09-22 | 2026-09-25 | Unknown |
+| CVE-2026-94127 | F5 / BIG-IP APM | 2026-09-22 | 2026-09-25 | Unknown |
+| CVE-2026-93616 | Check Point / Multiple Products | 2026-09-22 | 2026-09-25 | Unknown |
+| CVE-2026-85102 | Check Point / Multiple Products | 2026-09-22 | 2026-09-25 | Unknown |
 | CVE-2026-7273 | Zyxel / GS1900 Series Switches | 2026-09-21 | 2026-09-24 | Unknown |
 | CVE-2025-39964 | Linux / Kernel | 2026-09-18 | 2026-09-21 | Unknown |
 | CVE-2026-53266 | Linux / Kernel | 2026-09-18 | 2026-09-21 | Unknown |
@@ -151,4 +271,4 @@ _No action items available._
 
 ---
 
-*Total entries in CISA KEV catalog: 1717*
+*Total entries in CISA KEV catalog: 1721*
