@@ -1,0 +1,1114 @@
+{
+  "run_date": "2026-10-23",
+  "run_timestamp": "2026-10-23T13:04:56Z",
+  "high_severity_cves": [
+    {
+      "cve_id": "CVE-2026-113582",
+      "description": "UNSUPPORTED WHEN ASSIGNED Improper restriction of XML external entity references in Apache Abdera allows an attacker to access sensitive data or make server-side requests when an application parses attacker-controlled XML with Abdera.\n\n\n\nThis issue affects Apache Abdera: all versions.\n\n\n\nApache Abdera is retired and no longer supported, so we do not plan to release a version that fixes this issue. Users are recommended to migrate to a maintained alternative. Applications that cannot migrate should ensure that untrusted XML cannot reach the affected Abdera parser or JDBC adapter parsing paths. Actively maintained downstream products may still be impacted if they include an affected Abdera artifact.\n\n\n\nNOTE: This vulnerability only affects products that are no longer supported by the maintainer.",
+      "cvss_score": 7.5,
+      "published_date": "2026-10-22T14:17:38.053"
+    },
+    {
+      "cve_id": "CVE-2026-92709",
+      "description": "Rsyslog is a rocket-fast system for log processing. From versions 1.15.0 to 8.2610.0, rsyslog's omfile dynaFile facility intentionally allows templates to generate flexible output paths. This supports valid deployments that route logs into different directories or use dynamically generated file names. A deployment becomes unsafe when a dynaFile template uses a value influenced by untrusted input as a path component without explicit secure-path handling. In that configuration, the rendered path can escape the operator's intended log directory. This is not limited to the RFC5424 HOSTNAME field. Any untrusted value that reaches a dynaFile path component can create the condition. At time of publication, there are no publicly available patches.",
+      "cvss_score": 8.1,
+      "published_date": "2026-10-22T14:17:51.473"
+    },
+    {
+      "cve_id": "CVE-2026-111181",
+      "description": "body-parser is body parsing middleware for Node.js and Express. In versions before 1.20.9 and in versions from 2.0.0 before 2.4.0, a single request can crash any application using body-parser with default options. When a request carries a Content-Encoding such as gzip, body-parser pipes it into a decompression stream and, after reading the body, leaves that stream with no error listener. A payload of one valid compressed frame followed by trailing bytes decodes and the application responds normally, but the trailing bytes then reach the already-finished decoder, which emits an error that is re-thrown as an uncaught exception and terminates the process. No matching route is required because body parsing runs before routing, so any endpoint that parses a body is affected. The issue is fixed in body-parser 2.4.0 and 1.20.9, and users should upgrade to one of those versions or later. As a workaround, disable request-body inflation (set the body-parser inflate option to false) so encoded requests are rejected before any decompression stream is created.",
+      "cvss_score": 7.5,
+      "published_date": "2026-10-22T15:17:04.763"
+    },
+    {
+      "cve_id": "CVE-2026-113872",
+      "description": "multer is a middleware for Node.js that handles multipart/form-data file uploads. In versions from 2.0.0 before 2.5.0, when multer is configured with an asynchronous fileFilter, a single request can crash the Node.js process. If the request is aborted while one file's asynchronous fileFilter is still pending, the pending callback later resumes a parsing stream that multer has already torn down, and the underlying parser emits an error on a stream that no longer has an error listener, which Node raises as an unhandled error event so the process exits. Any application using multer with an asynchronous fileFilter is affected regardless of storage engine, while uploads using a synchronous fileFilter are not affected. The issue is fixed in multer 2.5.0, and users should upgrade to 2.5.0 or later. As a workaround, use a synchronous fileFilter.",
+      "cvss_score": 7.5,
+      "published_date": "2026-10-22T15:17:05.377"
+    },
+    {
+      "cve_id": "CVE-2026-114510",
+      "description": "Flexible GraphRAG is a Python framework for building graph and retrieval-augmented generation applications across multiple graph, vector, and search backends. From 0.6.0 until 0.8.2, the _escape() helper in flexible-graphrag/langchain/graph/pg_store_adapters/falkordb_adapter.py escapes quotes before backslashes and then interpolates the result into Cypher assembled by FalkorDBAdapter.add_graph_documents, allowing an inserted escape to be doubled and a quote to terminate the string early. When GRAPH_BACKEND=langchain and GRAPH_DB=falkordb are configured, attacker-influenced ingested document content can cause the extraction model to produce malicious entity or relationship values that reach these queries, allowing injected Cypher clauses to modify or delete graph data and, when the calling code surfaces query results to the user or LLM, disclose graph data. Dynamic node and relationship type identifiers are also inserted into backtick-quoted query positions without safe parameterization. The LlamaIndex FalkorDB store is not affected. This issue is fixed in version 0.8.2.",
+      "cvss_score": 7.1,
+      "published_date": "2026-10-22T15:17:05.500"
+    },
+    {
+      "cve_id": "CVE-2026-61791",
+      "description": "OCO-Server is a self-hosted endpoint management application for computer inventory, software deployment, and mobile device management. Prior to 1.2.1, `Html::commandButton()` in `lib/Html.class.php` embeds an action URL containing a stored computer hostname into a JavaScript string in an inline `onclick` handler, using `htmlspecialchars(ENT_QUOTES)` only for HTML escaping. Browsers decode the HTML entities before interpreting the handler as JavaScript, allowing a crafted hostname to escape the string and execute script in an administrator's authenticated session when an affected command button is activated. `frontend/views/computer-details.php` passes `$computer->hostname` to this helper using `Computer::DEFAULT_COMPUTER_COMMANDS` in `lib/Models/Computer.class.php`, whose VNC, RDP, SSH, and Ping entries use `new_tab=false` and the vulnerable `window.location` branch. A remote attacker who possesses the shared `agent-registration-key` can use the `oco.agent.hello` handler in `frontend/api-agent.php` to store an unchecked hostname when `agent-self-registration-enabled` is enabled; self-registration is disabled by default. The vulnerable default command buttons require no custom command configuration. The injected script can abuse the administrator's privileges, including permission to deploy software jobs to managed computers. This issue is fixed in version 1.2.1.",
+      "cvss_score": 7.4,
+      "published_date": "2026-10-22T15:17:05.980"
+    },
+    {
+      "cve_id": "CVE-2026-115482",
+      "description": "In lsquic before 4.9.0, the HTTP/3 implementation can use an excessive amount of memory because the number of buffered header sets is not limited, as demonstrated by a QPACK amplification attack. This is related to header_out_dynamic_entry and es_max_header_list_size.",
+      "cvss_score": 7.5,
+      "published_date": "2026-10-22T16:17:35.490"
+    },
+    {
+      "cve_id": "CVE-2026-104068",
+      "description": "JetBackup plugin for WordPress before 3.1.24.10 contains a symlink-based arbitrary file write vulnerability that allows an authenticated WordPress administrator to write attacker-controlled file contents outside the intended restore destination during backup import and restore. Attackers can craft a backup archive containing a symbolic link that archive extraction follows without validating targets or enforcing destination containment, potentially leading to server-side code execution depending on the writable destination and server configuration.",
+      "cvss_score": 7.2,
+      "published_date": "2026-10-22T17:16:56.720"
+    },
+    {
+      "cve_id": "CVE-2026-114605",
+      "description": "dnspython is a DNS toolkit for Python. Prior to 2.9.0, dns.name.from_wire_parser follows attacker-controlled DNS compression pointer chains without a hop limit. A malicious DNS wire-format message can force excessive pointer traversal during name decompression, causing high CPU use, application degradation, or denial of service in applications that process untrusted DNS messages. This issue is fixed in version 2.9.0.",
+      "cvss_score": 7.5,
+      "published_date": "2026-10-22T17:16:58.237"
+    },
+    {
+      "cve_id": "CVE-2026-114607",
+      "description": "Better Auth is an authentication and authorization library for TypeScript. From 1.4.0-beta.18 until 1.7.7, deployments that enable Magic Link with storeToken set to plain, or with storeToken set to hashed and the global verification.storeIdentifier setting also set to hashed, enable a built-in social or Generic OAuth provider, and use account.storeStateStrategy set to database can accept an OAuth sign-in state value as a Magic Link token. These settings can cause Magic Link verification records and OAuth state to resolve to the same stored identifier, allowing an unauthenticated attacker to start OAuth sign-in for a known email address and redeem the returned state through Magic Link without controlling the mailbox or completing the provider callback. The attacker can obtain a normal session for an existing user, or create an account incorrectly marked as email verified when sign-up is enabled. This issue is fixed in version 1.7.7.",
+      "cvss_score": 9.1,
+      "published_date": "2026-10-22T17:16:58.577"
+    },
+    {
+      "cve_id": "CVE-2026-115416",
+      "description": "Incorrect authorization checks in Amazon Athena engine version 3 query processing could have allowed an authenticated user to read AWS account identifiers and SQL statement text query metadata from other AWS accounts. Query results, and data stored in Amazon S3 or other data sources, were not accessible through this issue.\n\n\n\nAWS remediated the issue on October 7, 2026. No customer action is required.",
+      "cvss_score": 7.7,
+      "published_date": "2026-10-22T17:16:58.913"
+    },
+    {
+      "cve_id": "CVE-2026-115513",
+      "description": "OpenCATS before 0.12.0 contains a stored cross-site scripting vulnerability that allows a low-privileged authenticated user to inject HTML/JavaScript payloads by setting a Candidate, Company, Contact, Job Order, or List name/title field, which is stored unsanitized and later rendered unescaped in the 'Recent' (MRU) navigation panel displayed on nearly every page via lib/MRU.php's getFormatted() function. Attackers can exploit this by crafting a malicious record name that executes arbitrary JavaScript in the session of any other user, including Site Administrators, who views the record, enabling session/cookie theft and privilege escalation to full administrative control.",
+      "cvss_score": 8.7,
+      "published_date": "2026-10-22T17:16:59.217"
+    },
+    {
+      "cve_id": "CVE-2026-75507",
+      "description": "GraphQL-core is a Python port of the GraphQL.js reference implementation. From 3.0.0 until 3.2.12 and 3.3.0rc1, the OverlappingFieldsCanBeMerged rule in specified_rules repeatedly compares fields that share response names and recursively re-compares flattened inline fragments during the validation phase. The prior named-fragment memoization does not cover this path, so nested repeated inline fragments can drive quadratic and worst-case O(n\u00b2\u00b7m\u00b2) CPU work before any resolver or AST-based depth or complexity control runs. An unauthenticated remote attacker can submit a shallow, highly compressible GraphQL query that pins a worker process and can saturate a multi-worker service. This issue is fixed in versions 3.2.12 and 3.3.0rc1.",
+      "cvss_score": 7.5,
+      "published_date": "2026-10-22T17:16:59.757"
+    },
+    {
+      "cve_id": "CVE-2026-75508",
+      "description": "GraphQL-core is a Python port of the GraphQL.js reference implementation. From 3.2.3 until 3.2.12 and 3.3.0rc1, the parser's max_tokens limit in Parser.advance_lexer counts only non-comment tokens returned after Lexer.lookahead skips comments. Each skipped comment is still allocated as a Token and retained through token.next and token.prev, allowing a highly compressible comment-padded GraphQL document to pass a low token limit while consuming memory. An unauthenticated remote attacker can exhaust worker memory before AST-based depth or complexity controls run. This issue is fixed in versions 3.2.12 and 3.3.0rc1.",
+      "cvss_score": 7.5,
+      "published_date": "2026-10-22T17:16:59.933"
+    },
+    {
+      "cve_id": "CVE-2026-113873",
+      "description": "SmileCDR HAPI FHIR does not properly handle highly compressed data, allowing an unauthenticated attacker to send compressed payloads that exhaust server heap or crash certain services when decompressed.",
+      "cvss_score": 7.5,
+      "published_date": "2026-10-22T18:17:27.077"
+    },
+    {
+      "cve_id": "CVE-2026-113874",
+      "description": "SmileCDR HAPI FHIR allows an untrusted bundle body to replace a partition identity previously established by a trusted source, and does not enforce storage partition entitlement by default. An attacker authorized for one tenant can read from or write to another tenant's partition.",
+      "cvss_score": 8.1,
+      "published_date": "2026-10-22T18:17:27.237"
+    },
+    {
+      "cve_id": "CVE-2026-114611",
+      "description": "OCO-Server is a self-hosted endpoint management application for computer inventory, software deployment, and mobile device management. Prior to 1.2.3,the Apple MDM enrollment endpoint `frontend/api-mdm.php` verifies the signed enrollment-request plist with `openssl_pkcs7_verify(..., PKCS7_NOVERIFY, ...)`. `PKCS7_NOVERIFY` disables signer certificate chain and trust validation, so the signature only has to be self-consistent with whatever certificate is embedded in the PKCS#7 blob. A self-signed certificate from an unrelated attacker is accepted. Because the endpoint trusts the `SERIAL` field taken from the unverified payload, anyone who knows a registered device's serial number can sign a forged plist (`SERIAL` = victim device, attacker-chosen `UDID`) with an arbitrary self-signed certificate; POST it unauthenticated to `/api-mdm.php/profile` (Content-Type: `application/pkcs7-signature`); and receive the victim device's freshly minted MDM identity: a certificate with `CN=<serial>` issued by the server's internal MDM device CA, bundled with its private key in a PKCS#12 payload inside the returned `.mobileconfig` enrollment profile. Additionally, the victim's `mobile_device` database row is silently overwritten with the attacker-supplied `UDID` (device-record hijack). With the stolen certificate and key, the attacker can impersonate the victim device on all subsequent MDM traffic (`/checkin`, `/mdm`, `/parameters`), which authenticate callers by the certificate CN (the serial number) via `checkSignature()` in the same file. This yields control over the victim device's MDM relationship: reading its management data, replacing its push token, and disrupting or redirecting its enrollment. Version 1.2.3 fixes the issue.",
+      "cvss_score": 9.1,
+      "published_date": "2026-10-22T18:17:28.377"
+    },
+    {
+      "cve_id": "CVE-2026-13599",
+      "description": "Missing authentication for critical function vulnerability in ABB Ability Edgenius.\n\nThis issue affects Ability Edgenius: through 3.2.3.0.",
+      "cvss_score": 7.8,
+      "published_date": "2026-10-22T18:17:28.663"
+    },
+    {
+      "cve_id": "CVE-2026-97635",
+      "description": "The Agent Zero Web UI before 1.15 does not correctly sanitize user-provided input in chat messages or file uploads. When Agent Zero reproduces content in the chat interface, any injected JavaScript is executed in the context of the victim\u2019s authenticated Agent Zero Web UI session.",
+      "cvss_score": 8.1,
+      "published_date": "2026-10-22T18:17:32.337"
+    },
+    {
+      "cve_id": "CVE-2022-51026",
+      "description": "Bytebase 0.12.0 before 1.0.1 contains an authentication bypass vulnerability that allows unauthenticated attackers to log in as any user. The flaw stems from trusting client-supplied GitLab provider configuration in the POST /api/auth/login/GITLAB_SELF_HOST endpoint. Attackers can set instanceUrl to a server they control that returns an active user with a chosen email. Bytebase then issues session tokens for that principal, letting attackers impersonate existing users including the Owner or create new members.",
+      "cvss_score": 9.8,
+      "published_date": "2026-10-22T19:17:30.883"
+    },
+    {
+      "cve_id": "CVE-2026-114612",
+      "description": "LiteLLM is a proxy server (AI Gateway) to call LLM APIs in OpenAI (or native) format. From 1.87.0 until 1.100.4, 1.101.3, 1.102.2, 1.103.1, and 1.104.0-rc.2, the proxy reuses one cryptographic context for at-rest secrets and session tokens, allowing an authenticated internal user to have crafted metadata containing a forged administrator credential encrypted and returned by the API-key flow. Replaying that ciphertext as a bearer token causes the proxy to trust the forged proxy administrator identity, permitting administrative access and arbitrary commands through the MCP stdio endpoint. Versions 1.87.0 through 1.90.x require EXPERIMENTAL_UI_LOGIN to be enabled, while versions after 1.91.0 are exploitable in the default configuration. This issue was fixed in LiteLLM 1.100.4, 1.101.3, 1.102.2, 1.103.1, and 1.104.0-rc.2.",
+      "cvss_score": 9.9,
+      "published_date": "2026-10-22T19:17:37.540"
+    },
+    {
+      "cve_id": "CVE-2026-114613",
+      "description": "MessagePack is the serializer implementation for Python msgpack.org. Prior to 1.2.3, the msgpack-python C extension (msgpack._cmsgpack) leaks a decoded map value when deserialization rejects a key with strict_map_key=True (the default). Repeated malformed inputs can cause unbounded process memory growth and denial of service in applications that deserialize attacker-controlled MessagePack data. Both unpackb() and the streaming Unpacker API are affected. The pure-Python fallback does not exhibit this leak in the reported tests. This issue is fixed in version 1.2.3.",
+      "cvss_score": 7.5,
+      "published_date": "2026-10-22T19:17:37.733"
+    },
+    {
+      "cve_id": "CVE-2026-114648",
+      "description": "The MongoDB C# Driver does not neutralize dot and dollar characters in dictionary keys, field names and array-filter identifiers used in LINQ queries before placing them into the field paths it sends to the server. An application user whose input reaches these positions can redirect a query or update to fields the application did not name, which can expose other users' documents and widen updates beyond the intended data. Certain values can also write malformed fields that leave stored documents unreadable by the application until they are repaired.",
+      "cvss_score": 7.6,
+      "published_date": "2026-10-22T19:17:38.567"
+    },
+    {
+      "cve_id": "CVE-2026-115347",
+      "description": "Mistune before 3.3.0 contains an inefficient algorithmic complexity vulnerability in parse_link_text that allows remote attackers to cause denial of service through unbalanced square brackets. Attackers can submit markdown containing long runs of unmatched brackets to mistune.html(), triggering repeated forward scans that stall worker processes for minutes.",
+      "cvss_score": 7.5,
+      "published_date": "2026-10-22T19:17:40.267"
+    },
+    {
+      "cve_id": "CVE-2026-115348",
+      "description": "Mistune from 3.0.0 before 3.3.0 contains an algorithmic complexity vulnerability in the inline link parser's parse_link_text function that allows unauthenticated attackers to exhaust CPU with unbalanced brackets. Attackers can submit Markdown containing many unbalanced '[' or '![' characters, forcing repeated unbounded forward scans and tying up worker processes for minutes.",
+      "cvss_score": 7.5,
+      "published_date": "2026-10-22T19:17:40.430"
+    },
+    {
+      "cve_id": "CVE-2026-115349",
+      "description": "Mistune from 3.0.0 before 3.3.0 contains an algorithmic complexity denial of service vulnerability in the parse_link_text function in src/mistune/helpers.py. Attackers can submit markdown with deeply nested square brackets triggering quadratic parsing time, exhausting server CPU with small crafted requests.",
+      "cvss_score": 7.5,
+      "published_date": "2026-10-22T19:17:40.597"
+    },
+    {
+      "cve_id": "CVE-2026-115352",
+      "description": "Mistune before 3.3.0 contains an algorithmic complexity vulnerability in the inline link parser that allows unauthenticated attackers to exhaust CPU by submitting long runs of unmatched '[' characters. Attackers can send small markdown payloads that trigger O(N^2) parse_link_text and parse_link_label probing, occupying rendering workers for 30+ seconds per 16 KB input.",
+      "cvss_score": 7.5,
+      "published_date": "2026-10-22T19:17:41.077"
+    },
+    {
+      "cve_id": "CVE-2026-115353",
+      "description": "Mistune before 3.3.0 contains a path traversal vulnerability in the RST include directive that allows attackers to read arbitrary files by supplying relative or absolute paths. Attackers can submit markdown containing include directives referencing ../ sequences or absolute paths to embed sensitive files like credentials or environment data in rendered HTML.",
+      "cvss_score": 8.6,
+      "published_date": "2026-10-22T19:17:41.227"
+    },
+    {
+      "cve_id": "CVE-2026-115355",
+      "description": "Mistune before 3.3.0 contains a path traversal vulnerability in the Include directive that allows attackers to read arbitrary files by supplying ../ sequences in include paths. Attackers can also inject HTML through unescaped error messages and included file contents to perform cross-site scripting even when escape=True is set.",
+      "cvss_score": 7.5,
+      "published_date": "2026-10-22T19:17:41.520"
+    },
+    {
+      "cve_id": "CVE-2026-115371",
+      "description": "Incus 6.0.3 before 6.0.7, 6.6.0 before 7.0.2, and 7.1.0 before 7.5.0 contains an improper authorization vulnerability that allows restricted TLS clients to read storage bucket keys in the default project. Attackers can query the bucket keys endpoints to obtain S3 access and secret keys, then read, modify or delete objects in those buckets.",
+      "cvss_score": 7.1,
+      "published_date": "2026-10-22T19:17:43.530"
+    },
+    {
+      "cve_id": "CVE-2026-115372",
+      "description": "Incus from 7.3.0 before 7.5.0 contains a project restriction bypass that allows restricted project users to set block.create_options through volume update, copy, and move operations. Attackers can set the option on a custom volume and trigger a copy or move onto a formatting pool to inject arguments into mkfs executed as root.",
+      "cvss_score": 8.5,
+      "published_date": "2026-10-22T19:17:43.670"
+    },
+    {
+      "cve_id": "CVE-2026-115374",
+      "description": "Incus 7.0.0 before 7.0.2 and 7.1.0 before 7.5.0 contains a signature verification flaw in its built-in S3 server that allows presigned URL holders to inject unsigned x-amz-* headers. Attackers can add an unsigned X-Amz-Copy-Source header to a presigned upload URL to copy other bucket objects onto the granted key, disclosing their contents and ETags.",
+      "cvss_score": 7.1,
+      "published_date": "2026-10-22T19:17:43.953"
+    },
+    {
+      "cve_id": "CVE-2026-115375",
+      "description": "Incus 7.0.0 before 7.0.2 and 7.1.0 before 7.5.0 contains a path traversal vulnerability that allows clients able to create instances to write files on the host. The flaw stems from unvalidated dependent custom volume names in instance backup index.yaml files. Attackers can import a crafted instance backup with ../ sequences in dependent volume names to create root-owned directories with controlled content, leading to full host compromise.",
+      "cvss_score": 9.9,
+      "published_date": "2026-10-22T19:17:44.133"
+    },
+    {
+      "cve_id": "CVE-2026-115376",
+      "description": "Incus 7.0.1 before 7.0.2 and 7.2.0 before 7.5.0 contains an authorization bypass vulnerability that allows project-restricted clients to copy volumes by omitting source.type. Attackers can send crafted POST requests to the custom volumes endpoint with a chosen source.project to copy and read other projects' volumes, snapshots, and configuration.",
+      "cvss_score": 7.7,
+      "published_date": "2026-10-22T19:17:44.320"
+    },
+    {
+      "cve_id": "CVE-2026-115377",
+      "description": "Incus before 6.0.7, 6.1.0 before 7.0.2, and 7.1.0 before 7.5.0 contains an arbitrary file write vulnerability that allows malicious migration sources to write host files by planting symlinks in transferred volumes. Attackers can craft rsync or btrfs receive streams with a symlink such as rootfs pointing to the host root, writing files as root for full host compromise.",
+      "cvss_score": 9.9,
+      "published_date": "2026-10-22T19:17:44.460"
+    },
+    {
+      "cve_id": "CVE-2026-115384",
+      "description": "Wasmtime 39.0.0 before 48.0.4 and 49.0.0 before 49.0.2 contains a stack buffer overflow vulnerability that allows malicious guests to write ~16KB to the native stack via unvalidated async callback result types. Attackers can supply components with mistyped component-model-async callback functions to overwrite return addresses, crashing the host or escaping the sandbox.",
+      "cvss_score": 9.9,
+      "published_date": "2026-10-22T19:17:45.543"
+    },
+    {
+      "cve_id": "CVE-2026-115392",
+      "description": "Wasmtime before 24.0.13, 25.0.0 before 36.0.14, 37.0.0 before 46.0.3, and 47.0.0 before 47.0.4 allows a filesystem sandbox escape in wasmtime-wasi because its cap-std dependency mishandles symlinks with trailing slashes on macOS and Linux kernels lacking openat2. A guest with write access to any sandboxed directory can read and write any host-accessible file, and read-only guests may read host files via preexisting symlinks.",
+      "cvss_score": 7.9,
+      "published_date": "2026-10-22T19:17:46.863"
+    },
+    {
+      "cve_id": "CVE-2026-115414",
+      "description": "OS command injection in the Terraform hook in AWS SAM CLI before 1.166.2 might allow an actor who can influence the Terraform configuration or plan file consumed by a build to execute arbitrary commands as the build user on the host running the build via a crafted Terraform resource address.\n\n\n\nTo remediate this issue, users should upgrade to version 1.166.2 or later.",
+      "cvss_score": 7.8,
+      "published_date": "2026-10-22T19:17:47.843"
+    },
+    {
+      "cve_id": "CVE-2026-79844",
+      "description": "No description provided",
+      "cvss_score": 10.0,
+      "published_date": "2026-10-22T19:17:56.367"
+    },
+    {
+      "cve_id": "CVE-2026-79846",
+      "description": "No description provided",
+      "cvss_score": 10.0,
+      "published_date": "2026-10-22T19:17:56.490"
+    },
+    {
+      "cve_id": "CVE-2026-79847",
+      "description": "No description provided",
+      "cvss_score": 10.0,
+      "published_date": "2026-10-22T19:17:56.633"
+    },
+    {
+      "cve_id": "CVE-2026-79848",
+      "description": "No description provided",
+      "cvss_score": 10.0,
+      "published_date": "2026-10-22T19:17:56.850"
+    },
+    {
+      "cve_id": "CVE-2026-79849",
+      "description": "No description provided",
+      "cvss_score": 10.0,
+      "published_date": "2026-10-22T19:17:57.070"
+    },
+    {
+      "cve_id": "CVE-2026-79850",
+      "description": "No description provided",
+      "cvss_score": 10.0,
+      "published_date": "2026-10-22T19:17:57.183"
+    },
+    {
+      "cve_id": "CVE-2026-79851",
+      "description": "No description provided",
+      "cvss_score": 10.0,
+      "published_date": "2026-10-22T19:17:57.290"
+    },
+    {
+      "cve_id": "CVE-2026-79852",
+      "description": "No description provided",
+      "cvss_score": 9.8,
+      "published_date": "2026-10-22T19:17:57.410"
+    },
+    {
+      "cve_id": "CVE-2026-79853",
+      "description": "No description provided",
+      "cvss_score": 9.8,
+      "published_date": "2026-10-22T19:17:57.513"
+    },
+    {
+      "cve_id": "CVE-2026-79854",
+      "description": "No description provided",
+      "cvss_score": 9.8,
+      "published_date": "2026-10-22T19:17:57.627"
+    },
+    {
+      "cve_id": "CVE-2026-79855",
+      "description": "No description provided",
+      "cvss_score": 9.8,
+      "published_date": "2026-10-22T19:17:57.743"
+    },
+    {
+      "cve_id": "CVE-2026-79856",
+      "description": "No description provided",
+      "cvss_score": 9.8,
+      "published_date": "2026-10-22T19:17:57.857"
+    },
+    {
+      "cve_id": "CVE-2026-79857",
+      "description": "No description provided",
+      "cvss_score": 9.8,
+      "published_date": "2026-10-22T19:17:57.963"
+    },
+    {
+      "cve_id": "CVE-2026-79858",
+      "description": "No description provided",
+      "cvss_score": 9.8,
+      "published_date": "2026-10-22T19:17:58.083"
+    },
+    {
+      "cve_id": "CVE-2026-79859",
+      "description": "No description provided",
+      "cvss_score": 9.8,
+      "published_date": "2026-10-22T19:17:58.190"
+    },
+    {
+      "cve_id": "CVE-2026-79860",
+      "description": "No description provided",
+      "cvss_score": 9.8,
+      "published_date": "2026-10-22T19:17:58.303"
+    },
+    {
+      "cve_id": "CVE-2026-79861",
+      "description": "No description provided",
+      "cvss_score": 9.8,
+      "published_date": "2026-10-22T19:17:58.407"
+    },
+    {
+      "cve_id": "CVE-2026-79862",
+      "description": "No description provided",
+      "cvss_score": 9.6,
+      "published_date": "2026-10-22T19:17:58.520"
+    },
+    {
+      "cve_id": "CVE-2026-79863",
+      "description": "No description provided",
+      "cvss_score": 9.6,
+      "published_date": "2026-10-22T19:17:58.630"
+    },
+    {
+      "cve_id": "CVE-2026-79864",
+      "description": "No description provided",
+      "cvss_score": 9.6,
+      "published_date": "2026-10-22T19:17:58.743"
+    },
+    {
+      "cve_id": "CVE-2026-79865",
+      "description": "No description provided",
+      "cvss_score": 9.6,
+      "published_date": "2026-10-22T19:17:58.850"
+    },
+    {
+      "cve_id": "CVE-2026-79866",
+      "description": "No description provided",
+      "cvss_score": 9.6,
+      "published_date": "2026-10-22T19:17:58.960"
+    },
+    {
+      "cve_id": "CVE-2026-79867",
+      "description": "No description provided",
+      "cvss_score": 9.6,
+      "published_date": "2026-10-22T19:17:59.067"
+    },
+    {
+      "cve_id": "CVE-2026-79868",
+      "description": "No description provided",
+      "cvss_score": 9.6,
+      "published_date": "2026-10-22T19:17:59.177"
+    },
+    {
+      "cve_id": "CVE-2026-79869",
+      "description": "No description provided",
+      "cvss_score": 9.6,
+      "published_date": "2026-10-22T19:17:59.280"
+    },
+    {
+      "cve_id": "CVE-2026-79870",
+      "description": "No description provided",
+      "cvss_score": 9.6,
+      "published_date": "2026-10-22T19:17:59.390"
+    },
+    {
+      "cve_id": "CVE-2026-79871",
+      "description": "No description provided",
+      "cvss_score": 9.6,
+      "published_date": "2026-10-22T19:17:59.493"
+    },
+    {
+      "cve_id": "CVE-2026-79872",
+      "description": "No description provided",
+      "cvss_score": 9.4,
+      "published_date": "2026-10-22T19:17:59.600"
+    },
+    {
+      "cve_id": "CVE-2026-79873",
+      "description": "No description provided",
+      "cvss_score": 9.3,
+      "published_date": "2026-10-22T19:17:59.727"
+    },
+    {
+      "cve_id": "CVE-2026-79874",
+      "description": "No description provided",
+      "cvss_score": 9.3,
+      "published_date": "2026-10-22T19:17:59.837"
+    },
+    {
+      "cve_id": "CVE-2026-79875",
+      "description": "No description provided",
+      "cvss_score": 9.3,
+      "published_date": "2026-10-22T19:17:59.943"
+    },
+    {
+      "cve_id": "CVE-2026-79876",
+      "description": "No description provided",
+      "cvss_score": 9.3,
+      "published_date": "2026-10-22T19:18:00.050"
+    },
+    {
+      "cve_id": "CVE-2026-79877",
+      "description": "No description provided",
+      "cvss_score": 8.8,
+      "published_date": "2026-10-22T19:18:00.163"
+    },
+    {
+      "cve_id": "CVE-2026-79878",
+      "description": "No description provided",
+      "cvss_score": 8.8,
+      "published_date": "2026-10-22T19:18:00.273"
+    },
+    {
+      "cve_id": "CVE-2026-79879",
+      "description": "No description provided",
+      "cvss_score": 8.8,
+      "published_date": "2026-10-22T19:18:00.380"
+    },
+    {
+      "cve_id": "CVE-2026-79880",
+      "description": "No description provided",
+      "cvss_score": 8.7,
+      "published_date": "2026-10-22T19:18:00.490"
+    },
+    {
+      "cve_id": "CVE-2026-79881",
+      "description": "No description provided",
+      "cvss_score": 8.3,
+      "published_date": "2026-10-22T19:18:00.600"
+    },
+    {
+      "cve_id": "CVE-2026-79882",
+      "description": "No description provided",
+      "cvss_score": 8.3,
+      "published_date": "2026-10-22T19:18:00.707"
+    },
+    {
+      "cve_id": "CVE-2026-79883",
+      "description": "No description provided",
+      "cvss_score": 8.3,
+      "published_date": "2026-10-22T19:18:00.820"
+    },
+    {
+      "cve_id": "CVE-2026-79884",
+      "description": "No description provided",
+      "cvss_score": 8.2,
+      "published_date": "2026-10-22T19:18:00.917"
+    },
+    {
+      "cve_id": "CVE-2026-79885",
+      "description": "No description provided",
+      "cvss_score": 8.2,
+      "published_date": "2026-10-22T19:18:01.023"
+    },
+    {
+      "cve_id": "CVE-2026-79886",
+      "description": "No description provided",
+      "cvss_score": 8.2,
+      "published_date": "2026-10-22T19:18:01.130"
+    },
+    {
+      "cve_id": "CVE-2026-79887",
+      "description": "No description provided",
+      "cvss_score": 8.1,
+      "published_date": "2026-10-22T19:18:01.247"
+    },
+    {
+      "cve_id": "CVE-2026-79888",
+      "description": "No description provided",
+      "cvss_score": 8.1,
+      "published_date": "2026-10-22T19:18:01.350"
+    },
+    {
+      "cve_id": "CVE-2026-79889",
+      "description": "No description provided",
+      "cvss_score": 8.1,
+      "published_date": "2026-10-22T19:18:01.457"
+    },
+    {
+      "cve_id": "CVE-2026-79890",
+      "description": "No description provided",
+      "cvss_score": 8.1,
+      "published_date": "2026-10-22T19:18:01.557"
+    },
+    {
+      "cve_id": "CVE-2026-79891",
+      "description": "No description provided",
+      "cvss_score": 8.1,
+      "published_date": "2026-10-22T19:18:01.663"
+    },
+    {
+      "cve_id": "CVE-2026-79892",
+      "description": "No description provided",
+      "cvss_score": 7.8,
+      "published_date": "2026-10-22T19:18:01.767"
+    },
+    {
+      "cve_id": "CVE-2026-79893",
+      "description": "No description provided",
+      "cvss_score": 7.5,
+      "published_date": "2026-10-22T19:18:01.877"
+    },
+    {
+      "cve_id": "CVE-2026-79894",
+      "description": "No description provided",
+      "cvss_score": 7.5,
+      "published_date": "2026-10-22T19:18:01.983"
+    },
+    {
+      "cve_id": "CVE-2026-79895",
+      "description": "No description provided",
+      "cvss_score": 7.5,
+      "published_date": "2026-10-22T19:18:02.090"
+    },
+    {
+      "cve_id": "CVE-2026-79955",
+      "description": "No description provided",
+      "cvss_score": 7.5,
+      "published_date": "2026-10-22T19:18:02.200"
+    },
+    {
+      "cve_id": "CVE-2026-79956",
+      "description": "No description provided",
+      "cvss_score": 7.2,
+      "published_date": "2026-10-22T19:18:02.303"
+    },
+    {
+      "cve_id": "CVE-2026-95704",
+      "description": "No description provided",
+      "cvss_score": 7.2,
+      "published_date": "2026-10-22T19:18:06.120"
+    },
+    {
+      "cve_id": "CVE-2026-95705",
+      "description": "No description provided",
+      "cvss_score": 7.2,
+      "published_date": "2026-10-22T19:18:06.230"
+    },
+    {
+      "cve_id": "CVE-2026-95706",
+      "description": "No description provided",
+      "cvss_score": 7.2,
+      "published_date": "2026-10-22T19:18:06.337"
+    },
+    {
+      "cve_id": "CVE-2026-95707",
+      "description": "No description provided",
+      "cvss_score": 7.2,
+      "published_date": "2026-10-22T19:18:06.447"
+    },
+    {
+      "cve_id": "CVE-2026-95708",
+      "description": "No description provided",
+      "cvss_score": 7.2,
+      "published_date": "2026-10-22T19:18:06.553"
+    },
+    {
+      "cve_id": "CVE-2026-95709",
+      "description": "No description provided",
+      "cvss_score": 7.2,
+      "published_date": "2026-10-22T19:18:06.660"
+    },
+    {
+      "cve_id": "CVE-2026-95710",
+      "description": "No description provided",
+      "cvss_score": 7.1,
+      "published_date": "2026-10-22T19:18:06.770"
+    },
+    {
+      "cve_id": "CVE-2026-95711",
+      "description": "No description provided",
+      "cvss_score": 7.1,
+      "published_date": "2026-10-22T19:18:06.880"
+    },
+    {
+      "cve_id": "CVE-2026-95712",
+      "description": "No description provided",
+      "cvss_score": 7.1,
+      "published_date": "2026-10-22T19:18:07.040"
+    },
+    {
+      "cve_id": "CVE-2026-95713",
+      "description": "No description provided",
+      "cvss_score": 7.0,
+      "published_date": "2026-10-22T19:18:07.313"
+    },
+    {
+      "cve_id": "CVE-2026-112330",
+      "description": "Motor.NET before 0.19.0 contains a denial of service vulnerability that allows a remote attacker who can publish to a consumed queue to crash the service permanently by sending a message with crafted cloudEvents headers. Attackers can supply an invalid cloudEvents:motorversion, a single double-quote header value, or an unparsable typed attribute such as cloudEvents:time to trigger an unhandled exception in ExtractCloudEvent that is treated as fatal, causing the application to stop and the unacknowledged message to be redelivered on restart, resulting in a permanent crash-loop.",
+      "cvss_score": 7.5,
+      "published_date": "2026-10-22T20:17:05.580"
+    },
+    {
+      "cve_id": "CVE-2026-112331",
+      "description": "Motor.NET before 0.19.0 contains a denial-of-service vulnerability that allows a remote attacker who can produce records to a consumed topic to crash the service permanently by sending a single crafted record. By setting the content-type header to application/cloudevents+json and omitting required CloudEvent attributes (id, source, type), the attacker triggers an ArgumentException in KafkaMessageConsumer.SingleMessageHandlingAsync that is treated as fatal, causing the host to stop and re-process the same poison record on every restart, resulting in a permanent crash-loop.",
+      "cvss_score": 7.5,
+      "published_date": "2026-10-22T20:17:05.750"
+    },
+    {
+      "cve_id": "CVE-2026-112332",
+      "description": "Motor.NET before 0.19.0 contains an uncaught exception vulnerability in JsonNetDeserializer.Deserialize that allows a remote attacker who can publish to a consumed queue or topic to crash the service permanently by sending structurally valid JSON that does not match the handler's expected type. Attackers can exploit the fact that JsonSerializationException is not caught alongside JsonReaderException and InvalidCastException, causing TypedConsumerService.SingleMessageConsumeAsync to treat the error as CriticalFailure and call StopApplication, which combined with the unacknowledged message being redelivered on restart results in a permanent crash-loop.",
+      "cvss_score": 7.5,
+      "published_date": "2026-10-22T20:17:05.890"
+    },
+    {
+      "cve_id": "CVE-2026-115504",
+      "description": "CFITSIO through 4.7.0 contains an out-of-bounds write vulnerability in ffgcls2() in getcols.c that trusts attacker-controlled heap descriptor lengths for variable-length string columns. Attackers can supply a crafted FITS file that overflows a fixed 28,800-byte stack buffer and the caller's string array, enabling arbitrary code execution.",
+      "cvss_score": 7.8,
+      "published_date": "2026-10-22T20:17:06.313"
+    },
+    {
+      "cve_id": "CVE-2026-115505",
+      "description": "libsmb2 before 6.3 contains integer overflow vulnerabilities in the DCE/RPC NDR decoder in lib/dcerpc.c that allow heap out-of-bounds reads and writes. A malicious SMB server or machine-in-the-middle on unsigned connections can send crafted NetrShareEnum replies with wrapping actual_count or max_count values when clients call smb2_share_enum_async(), corrupting heap memory.",
+      "cvss_score": 7.6,
+      "published_date": "2026-10-22T20:17:06.470"
+    },
+    {
+      "cve_id": "CVE-2026-115506",
+      "description": "libexpat through 2.9.0 contains a denial of service vulnerability because billion laughs protection in accountingDiffTolerated() in xmlparse.c detects entity amplification too late. Attackers can supply a moderately sized XML document with a large DTD and nested entity expansions to consume tens of seconds of CPU per parse.",
+      "cvss_score": 7.5,
+      "published_date": "2026-10-22T20:17:06.620"
+    },
+    {
+      "cve_id": "CVE-2026-114625",
+      "description": "VeloCloud Orchestrator (VCO) on-prem has a security issue where this issue may allow a remote attacker to access privileged internal functionality and impact the VCO host. Successful exploitation may compromise the confidentiality, integrity, and availability of the orchestrator and data managed by the orchestrator.\n\nOn an affected system, any authenticated user can gain operator privileges and masquerade as a local \"superuser operator\" user. This includes access to functionality that is intended for internal use only and which is not intended to be remotely accessible.\n\nHosted, including Dedicated, versions of VCO were impacted and have already been patched.",
+      "cvss_score": 9.9,
+      "published_date": "2026-10-22T21:17:16.870"
+    },
+    {
+      "cve_id": "CVE-2026-115417",
+      "description": "Memory allocation with excessive size value in the MQTT 3.1.1 compatibility adapter in AWS aws-c-mqtt before 0.16.2 might allow a remote actor to cause a denial of service of the client application.\n\n\n\nTo remediate this issue, users should upgrade to aws-c-mqtt 0.16.2 or later, or to an AWS Common Runtime or AWS IoT Device SDK release that bundles it.",
+      "cvss_score": 7.5,
+      "published_date": "2026-10-22T21:17:17.633"
+    },
+    {
+      "cve_id": "CVE-2026-115419",
+      "description": "The A2A server component in Amazon Strands Agents SDK for Python before 1.43.0 and Amazon Strands Agents SDK for TypeScript before 1.5.0 does not properly isolate conversation state between callers. An authenticated remote user could read other tenants' conversation history and add persistent instructions that alter model behavior for subsequent callers via HTTP requests to the A2A endpoint using a different context_id.\n\n\n\nTo mitigate this issue, users should upgrade to strands-agents 1.43.0 (Python) or @strands-agents/sdk 1.5.0 (TypeScript).",
+      "cvss_score": 8.1,
+      "published_date": "2026-10-22T21:17:17.790"
+    },
+    {
+      "cve_id": "CVE-2026-105014",
+      "description": "Improper neutralization of special elements used in a command ('command injection') in Azure Pipelines allows an unauthorized attacker to execute code over a network.",
+      "cvss_score": 9.1,
+      "published_date": "2026-10-22T22:17:52.183"
+    },
+    {
+      "cve_id": "CVE-2026-108456",
+      "description": "Server-side request forgery (ssrf) in Azure AI Foundry allows an authorized attacker to elevate privileges over a network.",
+      "cvss_score": 7.7,
+      "published_date": "2026-10-22T22:17:58.473"
+    },
+    {
+      "cve_id": "CVE-2026-109122",
+      "description": "The network management service on affected Kiloview E3 NDI encoder firmware fails to sanitize one field used when configuring static routes via the web management API. An authenticated web user with permission to configure static routes can exploit this to execute arbitrary operating system commands as root, and the malicious configuration persists across reboots. Successful exploitation could result in full device compromise, including exposure of stored credentials and cryptographic material.",
+      "cvss_score": 9.1,
+      "published_date": "2026-10-22T22:17:59.930"
+    },
+    {
+      "cve_id": "CVE-2026-110063",
+      "description": "Improper link resolution before file access ('link following') in VM Inspector for Azure Virtual Machines allows an unauthorized attacker to elevate privileges over a network.",
+      "cvss_score": 10.0,
+      "published_date": "2026-10-22T22:18:00.750"
+    },
+    {
+      "cve_id": "CVE-2026-111594",
+      "description": "InterSystems IRIS for Health has TLS/SSL encryption turned off by default, which may enable an attacker to view transmitted data and use that data to log into the device.",
+      "cvss_score": 8.1,
+      "published_date": "2026-10-22T22:18:01.060"
+    },
+    {
+      "cve_id": "CVE-2026-114615",
+      "description": "Authlib is a Python library which builds OAuth and OpenID Connect servers. From 1.3.1 until 1.9.0, OctKey.import_key() checks asymmetric-key markers only at byte zero while Authlib's PEM loaders accept leading whitespace, comments, or a byte-order mark. In deployments that use the documented mixed algorithm registry and already configure verification with PEM or certificate bytes containing such a prefix, an unauthenticated attacker who knows those same public-key bytes can use them as an HMAC secret and forge HS256 tokens with arbitrary identity or authorization claims. This is a bypass of the remediation for CVE-2024-37568. The module-level jwt object reaches OctKey.import_key() in authlib/jose/rfc7518/oct_key.py, where POSSIBLE_UNSAFE_KEYS fails to identify prefixed asymmetric key material. This issue is fixed in version 1.9.0.",
+      "cvss_score": 7.4,
+      "published_date": "2026-10-22T22:18:04.257"
+    },
+    {
+      "cve_id": "CVE-2026-114616",
+      "description": "Authlib is a Python library which builds OAuth and OpenID Connect servers. Prior to 1.9.1, Authlib's OctKey.import_key() and HMAC signing and verification path accept zero-length key material. If an application's secret lookup can return an empty string or empty bytes, a remote attacker can compute the deterministic HS256, HS384, or HS512 signature for arbitrary token claims and have Authlib treat the token as authentic. This issue is fixed in version 1.9.1.",
+      "cvss_score": 7.4,
+      "published_date": "2026-10-22T22:18:04.420"
+    },
+    {
+      "cve_id": "CVE-2026-83938",
+      "description": "Missing authentication for critical function in Azure Kubernetes Configuration Service allows an unauthorized attacker to elevate privileges over a network.",
+      "cvss_score": 10.0,
+      "published_date": "2026-10-22T22:19:18.540"
+    },
+    {
+      "cve_id": "CVE-2026-96185",
+      "description": "Stack-based buffer overflow in Microsoft Exchange Online allows an authorized attacker to execute code over a network.",
+      "cvss_score": 7.5,
+      "published_date": "2026-10-22T22:19:53.850"
+    },
+    {
+      "cve_id": "CVE-2026-97785",
+      "description": "Improper authentication in AAD App Proxy allows an unauthorized attacker to elevate privileges over a network.",
+      "cvss_score": 10.0,
+      "published_date": "2026-10-22T22:20:13.483"
+    },
+    {
+      "cve_id": "CVE-2026-107861",
+      "description": "The system control service on affected Kiloview E3 NDI encoder firmware fails to sanitize the hostname parameter accepted by its device naming endpoint, passing it unquoted into a shell command. An authenticated web user with access to this function can embed characters to execute arbitrary operating system commands as root, resulting in full device compromise.",
+      "cvss_score": 9.9,
+      "published_date": "2026-10-22T23:18:17.190"
+    },
+    {
+      "cve_id": "CVE-2026-110243",
+      "description": "The network management service on affected Kiloview E3 NDI encoder firmware fails to validate the network interface name accepted by its link maintenance address configuration endpoint before passing it to a shell command, unlike sibling handlers that perform the same validation. An authenticated web user with permission to configure network settings can exploit this to execute arbitrary operating system commands as root.",
+      "cvss_score": 9.9,
+      "published_date": "2026-10-22T23:18:22.520"
+    },
+    {
+      "cve_id": "CVE-2026-110491",
+      "description": "The ONVIF service on the E3 can be rendered unresponsive by sending malformed or incomplete requests to certain operations. The affected service stops accepting new connections while the rest of the device continues operating normally, and will recover automatically after a period. This can be triggered repeatedly by any unauthenticated party with network access to the device.",
+      "cvss_score": 7.5,
+      "published_date": "2026-10-22T23:18:22.797"
+    },
+    {
+      "cve_id": "CVE-2026-110825",
+      "description": "The ONVIF device service on affected Kiloview E3 NDI encoder firmware accepts hostname, DNS, and NTP configuration write operations without requiring authentication, regardless of the device's configured authentication setting for this service. A remote, unauthenticated attacker can alter the device hostname, redirect DNS resolution, or modify the configured time source, enabling follow on attacks such as traffic interception or certificate validation bypass.",
+      "cvss_score": 7.5,
+      "published_date": "2026-10-22T23:18:22.940"
+    },
+    {
+      "cve_id": "CVE-2026-92450",
+      "description": "The authentication framework used by affected Kiloview E3 NDI encoder firmware signs session JSON Web Tokens using an HMAC-SHA256 secret hardcoded as a static string within the firmware image, identical across all deployed devices. An attacker with access to the publicly distributed firmware can recover this secret and forge arbitrary session tokens, including administrative tokens, without valid credentials, enabling unauthenticated access to privileged device functions.",
+      "cvss_score": 7.5,
+      "published_date": "2026-10-22T23:20:33.703"
+    },
+    {
+      "cve_id": "CVE-2026-115484",
+      "description": "A flaw was found in the iscsiuio component of open-iscsi. The DHCPv4 option parser incorrectly calculates the length of the options data, causing it to read beyond the allocated buffer into adjacent heap memory. An attacker on the same network segment can send a crafted DHCP response to crash the daemon or corrupt its network configuration.",
+      "cvss_score": 7.6,
+      "published_date": "2026-10-23T01:16:53.670"
+    },
+    {
+      "cve_id": "CVE-2026-115486",
+      "description": "A flaw was found in the iscsiuio component of open-iscsi. The IPv6 Neighbor Discovery handler accesses link-layer address options at a fixed offset without verifying the packet contains them. Additionally, the ARP table is updated unconditionally with attacker-controlled addresses from the packet headers. An attacker on the same network segment can send a minimal Neighbor Advertisement to poison the ARP table and redirect network traffic.",
+      "cvss_score": 7.1,
+      "published_date": "2026-10-23T01:16:53.943"
+    },
+    {
+      "cve_id": "CVE-2026-115546",
+      "description": "Okta Access Gateway (OAG) does not validate the selected authentication source during sign-on. An authenticated user with an active session can modify the authentication source parameter, which may generate a SAML assertion granting access to the Admin Console.",
+      "cvss_score": 8.1,
+      "published_date": "2026-10-23T04:18:15.047"
+    },
+    {
+      "cve_id": "CVE-2026-115547",
+      "description": "An input validation issue in the Okta Access Gateway (OAG) Admin Console allows the processing of specially formatted configuration values. An authenticated administrator can leverage this to execute system commands within the context of the OAG service account.",
+      "cvss_score": 9.1,
+      "published_date": "2026-10-23T04:18:16.030"
+    },
+    {
+      "cve_id": "CVE-2026-54630",
+      "description": "Part-DB is an open source inventory management system for electronic components. Prior to version 2.12.1, the part attachment upload handler stores uploaded files under the web-served media directory using the client-supplied file extension, and its extension blocklist does not include phar. AttachmentSubmitHandler::renameBlacklistedExtensions() rewrites dangerous extensions (php, phtml, sh, cgi, py, js, html, htaccess, ...) to .txt, but phar is absent from the list, so a .phar file keeps its extension. Public attachments (the default) are written into public/media/, which is the Apache document root. The shipped Apache configuration routes .phar to PHP-FPM, so the stored file is executed as PHP on request. The per-attachment-type extension filter is empty by default and is not consulted by the upload handler in a way that blocks this, and a non-admin user in the default users group can create an attachment type with no filter and attach files to parts. Any authenticated user in the default users group uploads a .phar attachment to a part and fetches it under /media/, executing arbitrary PHP as the www-data web user. Ability to exploit depends on the webserver config, docker image contained the vulnerability by default. This issue has been patched in version 2.12.1.",
+      "cvss_score": 9.6,
+      "published_date": "2026-10-23T04:18:17.007"
+    },
+    {
+      "cve_id": "CVE-2026-109198",
+      "description": "The Anti-Spam by CleanTalk \u2013 Spam Protection Without CAPTCHA plugin for WordPress is vulnerable to Stored Cross-Site Scripting via the 'user_email' parameter in all versions up to, and including, 6.89.1 due to insufficient input sanitization and output escaping. This makes it possible for unauthenticated attackers to inject arbitrary web scripts in pages that will execute whenever a user accesses an injected page. Successful exploitation requires user registration to be open on the site, and script execution is triggered when an Administrator subsequently runs the plugin's user-spam scan and views the resulting Non-checkable users or Spam users tab \u2014 the plugin's own documented workflow.",
+      "cvss_score": 7.2,
+      "published_date": "2026-10-23T05:17:14.773"
+    },
+    {
+      "cve_id": "CVE-2026-115497",
+      "description": "The Music Store \u2013 WordPress eCommerce plugin for WordPress is vulnerable to Directory Traversal in all versions up to, and including, 1.4.7 via the 'f' parameter parameter. This makes it possible for unauthenticated attackers to read the contents of arbitrary files on the server, which can contain sensitive information. Exploitation requires a valid purchase_id token, which any user can obtain by making a single low-cost purchase or receiving a shared download link.",
+      "cvss_score": 7.5,
+      "published_date": "2026-10-23T05:17:15.063"
+    },
+    {
+      "cve_id": "CVE-2026-109936",
+      "description": "The Otter Blocks  WordPress plugin before 3.2.8 does not correctly bound a pattern it uses to rewrite its dynamic-content tokens while rendering blocks, so the pattern can consume the quote that closes an HTML attribute and pull adjacent unescaped data into the markup as new attributes. This allows unauthenticated users to achieve stored Cross-Site Scripting that executes in the browser of any visitor who views an affected page, including a logged-in administrator.",
+      "cvss_score": 7.5,
+      "published_date": "2026-10-23T06:17:05.487"
+    },
+    {
+      "cve_id": "CVE-2026-111982",
+      "description": "The User Profile Builder  WordPress plugin before 4.0.5 does not verify that a user is authorized to edit the specific account selected on its front-end Edit Profile form, allowing an Administrator of a Multisite subsite to change any other user's account email, including a Network Super Admin's, and take over that account through the password-reset flow.",
+      "cvss_score": 7.2,
+      "published_date": "2026-10-23T06:17:06.097"
+    },
+    {
+      "cve_id": "CVE-2026-113499",
+      "description": "The LiteSpeed Cache WordPress plugin before 7.9.2 does not restrict one of its HTML rewriting routines to stylesheet content, so it removes a quote that terminates an attribute in the rendered page, and combined with unescaped comment author output this allows unauthenticated users whose comment is published to inject attributes that execute JavaScript in the browser of any visitor, including a logged-in administrator, who views front-end pages while the affected option is enabled.",
+      "cvss_score": 7.5,
+      "published_date": "2026-10-23T06:17:06.490"
+    },
+    {
+      "cve_id": "CVE-2026-113500",
+      "description": "The LiteSpeed Cache WordPress plugin before 7.9.2 does not limit one of its HTML optimization routines to stylesheet content, so it can delete the markup that closes an attribute in the rendered page, and combined with unescaped comment author output this allows unauthenticated users whose comments are published to inject event-handler attributes that run JavaScript in the browser of any visitor, including a logged-in administrator, viewing front-end pages while the optimization is enabled.",
+      "cvss_score": 7.5,
+      "published_date": "2026-10-23T06:17:06.587"
+    },
+    {
+      "cve_id": "CVE-2026-94262",
+      "description": "The Advanced Custom Fields: Extended WordPress plugin before 0.9.2.8, Advanced Custom Fields: Extended PRO WordPress plugin before 0.9.2.8 does not verify that the requester is authorised to edit the targeted user account in the update-user action of its front-end Forms module, performing that check only when the target account holds an administrator role, which allows unauthenticated visitors to overwrite any non-administrator account's credentials and obtain a session for that account. Exploitation requires the site to publish a form whose user-update action maps its target to a visitor-submitted value rather than to the default current user.",
+      "cvss_score": 8.1,
+      "published_date": "2026-10-23T06:17:08.000"
+    },
+    {
+      "cve_id": "CVE-2026-94267",
+      "description": "The Advanced Custom Fields: Extended WordPress plugin before 0.9.2.8, Advanced Custom Fields: Extended PRO WordPress plugin before 0.9.2.8 does not perform any capability check when updating a post through one of its front-end form actions, allowing unauthenticated visitors to overwrite arbitrary posts, including the ones in which the site stores its own field definitions, which in turn leads to arbitrary code execution on the server. Exploitation requires the site to publish a form whose post-update action maps both its target and its content to visitor-submitted values.",
+      "cvss_score": 9.0,
+      "published_date": "2026-10-23T06:17:08.200"
+    },
+    {
+      "cve_id": "CVE-2026-94268",
+      "description": "The Advanced Custom Fields: Extended WordPress plugin before 0.9.2.8, Advanced Custom Fields: Extended PRO WordPress plugin before 0.9.2.8 does not resolve the target of the update-user action in its front-end Forms module consistently between the stage that authorises the request and the stage that carries it out, which allows unauthenticated visitors to bypass the guard protecting administrator accounts, take over the site administrator's account and be issued a valid session for it. Exploitation requires the site to publish two separate front-end form configurations whose targets are mapped to visitor-submitted values.",
+      "cvss_score": 8.1,
+      "published_date": "2026-10-23T06:17:08.297"
+    },
+    {
+      "cve_id": "CVE-2026-55981",
+      "description": "A firmware verification vulnerability in Creative Sound\nBlaster Katana could allow an attacker to modify a legitimate firmware image\nand upload the modified firmware to an affected device.",
+      "cvss_score": 9.6,
+      "published_date": "2026-10-23T07:16:38.420"
+    },
+    {
+      "cve_id": "CVE-2026-63244",
+      "description": "An authentication\nbypass vulnerability in WizLearn Technologies' Learning Management System (LMS)\ncould allow an unauthenticated remote attacker to bypass password\nauthentication and the OAuth authentication flow by sending a specially crafted\nPOST request, potentially resulting in unauthorised access to user accounts and\nfull administrative control of the LMS platform.",
+      "cvss_score": 9.8,
+      "published_date": "2026-10-23T08:16:55.320"
+    },
+    {
+      "cve_id": "CVE-2026-112359",
+      "description": "Missing Authorization vulnerability in Amauri.IO WPMobile.App wpappninja allows Exploiting Incorrectly Configured Access Control Security Levels.This issue affects WPMobile.App: from n/a through 11.86.",
+      "cvss_score": 7.5,
+      "published_date": "2026-10-23T09:17:05.540"
+    },
+    {
+      "cve_id": "CVE-2026-112835",
+      "description": "Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') vulnerability in e4jvikwp VikRentCar vikrentcar allows Reflected XSS.This issue affects VikRentCar: from n/a through 1.4.8.",
+      "cvss_score": 7.1,
+      "published_date": "2026-10-23T09:17:05.927"
+    },
+    {
+      "cve_id": "CVE-2026-112837",
+      "description": "Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') vulnerability in Ruben Garcia GamiPress gamipress allows Blind SQL Injection.This issue affects GamiPress: from n/a through 8.0.7.",
+      "cvss_score": 8.5,
+      "published_date": "2026-10-23T09:17:06.043"
+    },
+    {
+      "cve_id": "CVE-2026-112838",
+      "description": "Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') vulnerability in e4jvikwp VikRentCar vikrentcar allows Stored XSS.This issue affects VikRentCar: from n/a through 1.4.8.",
+      "cvss_score": 7.1,
+      "published_date": "2026-10-23T09:17:06.163"
+    },
+    {
+      "cve_id": "CVE-2026-112860",
+      "description": "Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') vulnerability in xnau webdesign Participants Database participants-database allows Blind SQL Injection.This issue affects Participants Database: from n/a through 2.7.8.5.",
+      "cvss_score": 9.3,
+      "published_date": "2026-10-23T09:17:06.280"
+    },
+    {
+      "cve_id": "CVE-2026-112862",
+      "description": "Deserialization of Untrusted Data vulnerability in xnau webdesign Participants Database participants-database allows Object Injection.This issue affects Participants Database: from n/a through 2.7.8.5.",
+      "cvss_score": 9.8,
+      "published_date": "2026-10-23T09:17:06.393"
+    },
+    {
+      "cve_id": "CVE-2026-25716",
+      "description": "Missing Authorization vulnerability in Hallo Welt! GmbH BlueSpice (Extension:BlueSpiceUserManager) allows any authenticated user without special privileges to block or unblock arbitrary user accounts, including administrators. The REST endpoints /bs-usermanager/v1/block/create and /bs-usermanager/v1/block/delete call UserManager::blockUser() and UserManager::unblockUser(), which do not verify the permissions of the acting user. This allows locking out all administrators (denial of service) and lifting blocks imposed by administrators.\n\nThis issue affects BlueSpice: from 5.0.0 before 5.1.11, from 5.2.0 before 5.2.7.",
+      "cvss_score": 7.1,
+      "published_date": "2026-10-23T09:17:06.790"
+    },
+    {
+      "cve_id": "CVE-2026-25784",
+      "description": "Initialization of a Resource with an Insecure Default vulnerability in Hallo Welt! GmbH BlueSpice (container image bluespice/wiki) allows privilege escalation. The default value of $mwsgTokenAuthenticatorServiceCIDR in the container's LocalSettings.php was intended to restrict internal service authentication to the container network, but evaluated to an empty string when the environment variable WIKI_SERVICE_TOKEN_AUTH_ALLOWED was not set. An empty value disables the IP restriction in the token authenticator component (mwstake/mediawiki-component-token-authenticator). As a result, any user with read access to the wiki (anonymous users on publicly readable wikis) could obtain an application token from the REST API and use it to get a session with sysop privileges as the internal service user.\n\nThis issue affects BlueSpice: from 5.2.3 before 5.2.7, and the 5.2.7 container images published before 2026-10-19 15:37 UTC.",
+      "cvss_score": 9.8,
+      "published_date": "2026-10-23T09:17:06.943"
+    },
+    {
+      "cve_id": "CVE-2026-112904",
+      "description": "Vvveb is a powerful and easy to use CMS with page builder to build websites, blogs or ecommerce stores. In versions 1.0.8.6 and prior, the nextRestore() and nextBackup() functions in the backup controller accept a file GET parameter and concatenate it directly to DIR_BACKUP without calling sanitizeFileName(). This allows an authenticated administrator to read arbitrary files on the server (via nextRestore) and write SQL dump content to arbitrary locations (via nextBackup). This is inconsistent with the sibling functions restore(), delete(), and download() which all correctly call sanitizeFileName() first. This issue has been patched via commit aa29cb0.",
+      "cvss_score": 8.7,
+      "published_date": "2026-10-23T12:18:11.050"
+    },
+    {
+      "cve_id": "CVE-2026-115723",
+      "description": "Snap7 through 1.4.3 contains an out-of-bounds write vulnerability in the passive partner that allows a malicious active partner to overflow application buffers by declaring an unvalidated BSend total length. Attackers connecting from the configured peer address can declare up to 65535 bytes and send a short fragment, causing BRecv to memcpy past the buffer and crash or corrupt SCADA, HMI or gateway processes.",
+      "cvss_score": 7.4,
+      "published_date": "2026-10-23T12:18:12.983"
+    },
+    {
+      "cve_id": "CVE-2026-115726",
+      "description": "Aider through 0.86.2 contains a command execution vulnerability that allows attackers to run shell commands by committing a malicious .aider.conf.yml that is auto-loaded without a trust prompt. Attackers can set notifications-command or editor values that are executed via subprocess with shell=True after model replies or /editor use, running commands with the victim's privileges.",
+      "cvss_score": 7.8,
+      "published_date": "2026-10-23T12:18:13.413"
+    },
+    {
+      "cve_id": "CVE-2026-115727",
+      "description": "AgenticSeek before commit 409840c contains a remote code execution vulnerability because llm_server/app.py hardcodes Flask debug mode while binding to all interfaces. Attackers who reach the server port and obtain the derivable Werkzeug debugger PIN can execute Python code and operating system commands with llm_server privileges.",
+      "cvss_score": 8.1,
+      "published_date": "2026-10-23T12:18:13.560"
+    },
+    {
+      "cve_id": "CVE-2026-56832",
+      "description": "PraisonAI is a multi-agent teams system. From version 4.5.2 to before version 4.6.59, praisonai.bots.DiscordApproval approves a pending dangerous tool call when it sees any later non-bot message in the configured Discord channel whose text is classified as approval, such as yes. As a result, any user who can post in the configured approval channel can approve a pending high-risk tool call by sending yes after the approval message appears. the same PoV also shows that the Slack and Telegram messaging approval backends have no explicit approver allowlist parameter, but the primary report-grade issue is the Discord backend's unthreaded channel cross-talk: the approving message does not need to be a reply or otherwise request-bound. This issue has been patched in version 4.6.59.",
+      "cvss_score": 8.8,
+      "published_date": "2026-10-23T12:18:14.437"
+    },
+    {
+      "cve_id": "CVE-2026-56833",
+      "description": "PraisonAI is a multi-agent teams system. From version 3.8.1 to before version 4.6.59, PraisonAI's Dynamic Context module provides filesystem-backed history and terminal-log storage. The module also exports agent-callable tool factories. Those tools accept run_id and agent_id arguments from the tool caller. The underlying stores join those values into filesystem paths without rejecting absolute paths or .. traversal. Because run_id can be an absolute path and agent_id can contain traversal, a lower-trust prompt/user that can call these tools can read .jsonl and .log files outside the configured Dynamic Context base directory. This issue has been patched in version 4.6.59.",
+      "cvss_score": 7.5,
+      "published_date": "2026-10-23T12:18:14.600"
+    },
+    {
+      "cve_id": "CVE-2026-56834",
+      "description": "PraisonAI is a multi-agent teams system. From version 3.8.1 to before version 4.6.59, PraisonAI's Dynamic Context Discovery feature exposes artifact helper tools through ctx.get_tools(). The implemented artifact tools do not enforce that the supplied artifact_path is an artifact created by the configured store or that it lives under the configured artifact base directory. Instead, artifact_head, artifact_tail, artifact_grep, and artifact_chunk wrap the caller-supplied path directly into an ArtifactRef and then read it from the host filesystem. As a result, any prompt/user/tool-caller that can influence those tool arguments can read files readable by the PraisonAI process, such as project .env files, cloud credentials, SSH keys, source files, or other local data. This issue has been patched in version 4.6.59.",
+      "cvss_score": 7.5,
+      "published_date": "2026-10-23T12:18:14.750"
+    },
+    {
+      "cve_id": "CVE-2026-56835",
+      "description": "PraisonAI is a multi-agent teams system. From version 3.11.0 to before version 4.6.59, PraisonAI's Slack bot applies its configured allowed_users, allowed_channels, and unknown-user pairing policy in the normal Slack message event handler, but not in the adjacent Slack app_mention event handler. A Slack workspace user who can mention the bot in a channel where the Slack app is present can trigger the configured PraisonAI agent even when: the sender is not in BotConfig.allowed_users; the channel is not in BotConfig.allowed_channels; unknown_user_policy=\"deny\" is configured; and the same event content is correctly dropped by the normal message handler. This issue has been patched in version 4.6.59.",
+      "cvss_score": 8.3,
+      "published_date": "2026-10-23T12:18:14.897"
+    },
+    {
+      "cve_id": "CVE-2026-56836",
+      "description": "PraisonAI is a multi-agent teams system. From version 4.5.112 to before version 4.6.59, PraisonAI's installed console entrypoint is Typer-first. In current releases, the recipe command is registered in the Typer app and praisonai recipe serve dispatches to the deprecated Typer command in src/praisonai/praisonai/cli/commands/recipe.py. That Typer command can start the Recipe HTTP server on a non-localhost interface with no authentication. It prints a deprecation warning, and then launches the server. Because config.auth is absent, create_app() does not attach the API-key or JWT middleware. Unauthenticated requests can then reach the recipe API and, when enabled, /admin/reload. This issue has been patched in version 4.6.59.",
+      "cvss_score": 8.2,
+      "published_date": "2026-10-23T12:18:15.050"
+    },
+    {
+      "cve_id": "CVE-2026-56837",
+      "description": "PraisonAI is a multi-agent teams system. From version 4.6.56 to before version 4.6.59, PraisonAI's LinearBot starts a public webhook listener on 0.0.0.0 and treats LINEAR_WEBHOOK_SECRET as optional. When the secret is absent, startup only logs a warning and _handle_webhook() skips Linear-Signature verification entirely. An unauthenticated network caller who can reach the webhook endpoint can submit a forged Linear-Event: AgentSession request. The forged request is parsed, scheduled for background processing, dispatched to _handle_agent_session(), and passed into BotSessionManager.chat(). The bot then attempts to post the agent response back to Linear under the configured bot token. The PoV is offline and deterministic. It does not contact Linear. It calls the webhook handler directly, monkey-patches the outbound Linear comment path, and proves both sides of the boundary. This issue has been patched in version 4.6.59.",
+      "cvss_score": 8.6,
+      "published_date": "2026-10-23T12:18:15.203"
+    },
+    {
+      "cve_id": "CVE-2026-56838",
+      "description": "PraisonAI is a multi-agent teams system. From version 4.5.87 to before version 4.6.59, PraisonAI recipe execution blocks default-denied dangerous tools unless the caller explicitly passes allow_dangerous_tools=True. The normal recipe.run() path enforces this with _check_tool_policy(). The streaming path, recipe.run_stream(), loads the same recipe, checks dependencies, and then calls _execute_recipe() without running the dangerous-tool policy check. As a result, a recipe that honestly declares execute_command in TEMPLATE.yaml requires.tools is denied by recipe.run(), but reaches the execution engine through recipe.run_stream() with allow_dangerous_tools=False. This issue has been patched in version 4.6.59.",
+      "cvss_score": 7.8,
+      "published_date": "2026-10-23T12:18:15.357"
+    },
+    {
+      "cve_id": "CVE-2026-56840",
+      "description": "PraisonAI is a multi-agent teams system. From version 4.5.2 to before version 4.6.59, praisonai.bots.HTTPApproval renders pending tool approval arguments directly into the approval dashboard HTML. An attacker-controlled tool argument can inject JavaScript into that page. When a human opens the approval URL to inspect the risky tool request, the script runs in the dashboard origin and can POST to the same request's /approve/{request_id}/decide endpoint, causing HTTPApproval to return approved=True. This issue has been patched in version 4.6.59.",
+      "cvss_score": 8.8,
+      "published_date": "2026-10-23T12:18:15.510"
+    }
+  ],
+  "new_kev_entries": [
+    {
+      "cveID": "CVE-2026-106931",
+      "vendorProject": "EG Secure Solutions",
+      "product": "SiteGuard Server Edition",
+      "vulnerabilityName": "EG Secure Solutions SiteGuard Server Edition OS Command Injection Vulnerability",
+      "dateAdded": "2026-10-20",
+      "shortDescription": "EG Secure Solutions SiteGuard Server Edition contains an OS command injection vulnerability which may allow an attacker to execute arbitrary OS commands with root or SYSTEM privileges on the system running the affected product.",
+      "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA\u2019s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA\u2019s \u201cForensics Triage Requirements\u201d (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "dueDate": "2026-10-23",
+      "knownRansomwareCampaignUse": "Unknown",
+      "forensicTriage": "Yes",
+      "notes": "https://www.eg-secure.co.jp/siteguard/news/alert-202610-1 ; ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-106931",
+      "cwes": [
+        "CWE-78"
+      ]
+    },
+    {
+      "cveID": "CVE-2026-96656",
+      "vendorProject": "Plex",
+      "product": "Media Server",
+      "vulnerabilityName": "Plex Media Server External Control of File Name or Path Vulnerability",
+      "dateAdded": "2026-10-20",
+      "shortDescription": "Plex Media Server contains an external control of file name or path vulnerability which can allow an admin user to write arbitrary files that may be executed on load. This vulnerability can be chained with CVE-2026-96652, CVE-2026-96654, and CVE-2026-96655.",
+      "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA\u2019s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA\u2019s \u201cForensics Triage Requirements\u201d (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "dueDate": "2026-10-23",
+      "knownRansomwareCampaignUse": "Unknown",
+      "forensicTriage": "Yes",
+      "notes": "https://forums.plex.tv/t/important-security-update-for-plex-media-server-v1-43-2-and-earlier/942319 ; ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-96656",
+      "cwes": [
+        "CWE-73"
+      ]
+    },
+    {
+      "cveID": "CVE-2026-96655",
+      "vendorProject": "Plex",
+      "product": "Media Server",
+      "vulnerabilityName": "Plex Media Server Server-Side Request Forgery (SSRF) Vulnerability",
+      "dateAdded": "2026-10-20",
+      "shortDescription": "Plex Media Server contains a server-side request forgery (SSRF) vulnerability that could allow an authenticated user to request arbitrary internal or external addresses via the '/video/:/transcode/universal' path parameter. This vulnerability can be chained with CVE-2026-96652, CVE-2026-96654, and CVE-2026-96656.",
+      "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA\u2019s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA\u2019s \u201cForensics Triage Requirements\u201d (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "dueDate": "2026-11-03",
+      "knownRansomwareCampaignUse": "Unknown",
+      "forensicTriage": "No",
+      "notes": "https://forums.plex.tv/t/important-security-update-for-plex-media-server-v1-43-2-and-earlier/942319 ; ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-96655",
+      "cwes": [
+        "CWE-918"
+      ]
+    },
+    {
+      "cveID": "CVE-2026-96654",
+      "vendorProject": "Plex",
+      "product": "Media Server",
+      "vulnerabilityName": "Plex Media Server Improper Neutralization of Encoded URI Schemes in a Web Page Vulnerability",
+      "dateAdded": "2026-10-20",
+      "shortDescription": "Plex Media Server contains an improper neutralization of encoded URI schemes in a web page vulnerability that could allow an attacker to call other plugins' functions and supply their own parameters. This vulnerability can be chained with CVE-2026-96652, CVE-2026-96655, and CVE-2026-96656.",
+      "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA\u2019s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA\u2019s \u201cForensics Triage Requirements\u201d (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "dueDate": "2026-10-23",
+      "knownRansomwareCampaignUse": "Unknown",
+      "forensicTriage": "No",
+      "notes": "https://forums.plex.tv/t/important-security-update-for-plex-media-server-v1-43-2-and-earlier/942319 ; ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-96654",
+      "cwes": [
+        "CWE-84"
+      ]
+    },
+    {
+      "cveID": "CVE-2026-96652",
+      "vendorProject": "Plex",
+      "product": "Media Server",
+      "vulnerabilityName": "Plex Media Server Server-Side Request Forgery (SSRF) Vulnerability",
+      "dateAdded": "2026-10-20",
+      "shortDescription": "Plex Media Server contains a server-side request forgery (SSRF) vulnerability which could allow an attacker using any X-Plex-Token value to include a full URL in the 'protocol' parameter and force the Plex server to POST to the attacker's chosen destination. This vulnerability can be chained with CVE-2026-96654, CVE-2026-96655, and CVE-2026-96656. ",
+      "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA\u2019s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA\u2019s \u201cForensics Triage Requirements\u201d (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "dueDate": "2026-11-03",
+      "knownRansomwareCampaignUse": "Unknown",
+      "forensicTriage": "No",
+      "notes": "https://forums.plex.tv/t/important-security-update-for-plex-media-server-v1-43-2-and-earlier/942319 ; ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-96652",
+      "cwes": [
+        "CWE-918"
+      ]
+    },
+    {
+      "cveID": "CVE-2026-110936",
+      "vendorProject": "Siemens",
+      "product": "Software Center",
+      "vulnerabilityName": "Siemens Software Center Uncontrolled Search Path Element Vulnerability",
+      "dateAdded": "2026-10-20",
+      "shortDescription": "Siemens Software Center contains an uncontrolled search path element vulnerability that could allow an authenticated local attacker to place a specially crafted DLL in a directory that the application searches, leading to arbitrary code execution with the privileges of the affected application.",
+      "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA\u2019s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA\u2019s \u201cForensics Triage Requirements\u201d (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "dueDate": "2026-11-03",
+      "knownRansomwareCampaignUse": "Unknown",
+      "forensicTriage": "No",
+      "notes": "https://productcert.siemens.com/productcert/html/ssa-580366.html ; ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-110936",
+      "cwes": [
+        "CWE-427"
+      ]
+    },
+    {
+      "cveID": "CVE-2026-102764",
+      "vendorProject": "BeyondTrust",
+      "product": "Remote Support",
+      "vulnerabilityName": "BeyondTrust Remote Support Authentication Bypass by Spoofing Vulnerability",
+      "dateAdded": "2026-10-16",
+      "shortDescription": "BeyondTrust Remote Support contains an authentication bypass by spoofing vulnerability that could allow a remote attacker to perform file operations on the appliance.",
+      "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA\u2019s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA\u2019s \u201cForensics Triage Requirements\u201d (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "dueDate": "2026-10-19",
+      "knownRansomwareCampaignUse": "Unknown",
+      "forensicTriage": "Yes",
+      "notes": "https://www.beyondtrust.com/trust-center/security-advisories/bt26-05 ; ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-102764",
+      "cwes": [
+        "CWE-290"
+      ]
+    },
+    {
+      "cveID": "CVE-2025-61624",
+      "vendorProject": "Fortinet",
+      "product": "Multiple Products",
+      "vulnerabilityName": "Fortinet Multiple Products Path Traversal Vulnerability",
+      "dateAdded": "2026-10-16",
+      "shortDescription": "FortiOS, FortiPAM, FortiProxy, and FortiSwitchManager contain a path traversal vulnerability that may allow an authenticated attacker with admin profile and at least read-write permissions to write or delete arbitrary files via specific CLI commands.",
+      "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA\u2019s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA\u2019s \u201cForensics Triage Requirements\u201d (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "dueDate": "2026-10-19",
+      "knownRansomwareCampaignUse": "Unknown",
+      "forensicTriage": "Yes",
+      "notes": "https://fortiguard.fortinet.com/psirt/FG-IR-26-122 ; ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2025-61624",
+      "cwes": [
+        "CWE-22"
+      ]
+    }
+  ],
+  "monitored_hits": [],
+  "total_kev_count": 1754,
+  "executive_summary": "Our environment currently faces 161 high-severity vulnerabilities across critical components including authentication libraries, log processing, Node.js middleware, DNS toolkits, and XML parsers. The most critical finding is CVE-2026-114607 (CVSS 9.1), a Better Auth authentication bypass enabling unauthorized account access. Eight new entries were added to the CISA Known Exploited Vulnerabilities catalog this week, primarily targeting Plex Media Server and SiteGuard, signaling active exploitation in the wild. While no monitored CVEs currently overlap with the KEV catalog, the volume and severity of open vulnerabilities represent significant organizational risk requiring immediate prioritization and remediation.",
+  "action_items": [
+    "Immediately patch or disable Better Auth Magic Link functionality to remediate CVE-2026-114607 (CVSS 9.1), which allows full authentication bypass.",
+    "Audit all Plex Media Server and SiteGuard deployments and apply available patches or isolate systems, as four Plex CVEs and one SiteGuard CVE are now actively exploited per CISA KEV.",
+    "Update rsyslog to a version above 8.2610.0 to close the dynaFile privilege escalation vulnerability (CVE-2026-92709, CVSS 8.1) on all log processing infrastructure.",
+    "Upgrade Node.js middleware packages body-parser and multer to their patched versions to prevent denial-of-service and file upload exploitation across web applications.",
+    "Conduct a full inventory review of Apache Abdera and dnspython deployments and apply patches or implement compensating controls to address XML injection and DNS pointer chain vulnerabilities."
+  ],
+  "risk_narrative": "The current threat landscape reflects a broad attack surface spanning web middleware, authentication systems, DNS infrastructure, and legacy XML processing components. The CISA KEV additions indicate threat actors are actively exploiting media server and endpoint management software, heightening the urgency for rapid response. CVE-2026-114607's near-perfect CVSS score poses direct risk to customer identity and access controls, potentially enabling account takeover at scale. Unpatched Node.js middleware and log processing vulnerabilities expose backend services to denial-of-service and privilege escalation. Collectively, these vulnerabilities create pathways for data exfiltration, service disruption, and unauthorized access that could result in regulatory penalties, reputational damage, and significant operational downtime if left unaddressed.",
+  "pipeline_errors": []
+}
