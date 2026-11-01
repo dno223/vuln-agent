@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vulnerability Intelligence Report — 2026-11-01</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #22263a;
+    --border: #2d3148;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --accent: #6366f1;
+    --critical: #dc2626;
+    --high: #ea580c;
+    --medium: #ca8a04;
+    --success: #16a34a;
+  }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace; line-height: 1.6; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* Header */
+  .header { background: linear-gradient(135deg, #1a1d27 0%, #0f1117 100%); border-bottom: 1px solid var(--border); padding: 24px 32px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+  .header-left h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: 0.01em; color: #f1f5f9; }
+  .header-left h1 span { color: var(--accent); }
+  .header-meta { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
+  .risk-badge { display: inline-flex; align-items: center; gap: 6px; padding: 8px 20px; border-radius: 9999px; font-weight: 700; font-size: 0.95rem; letter-spacing: 0.05em; text-transform: uppercase; background: #dc262622; color: #dc2626; border: 2px solid #dc2626; }
+  .risk-dot { width: 8px; height: 8px; border-radius: 50%; background: #dc2626; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  /* Layout */
+  .container { max-width: 1400px; margin: 0 auto; padding: 32px; }
+
+  /* KPI cards */
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 32px; }
+  .kpi-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; }
+  .kpi-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 8px; }
+  .kpi-value { font-size: 2.5rem; font-weight: 700; line-height: 1; color: #f1f5f9; }
+  .kpi-value.danger { color: var(--critical); }
+  .kpi-value.warn { color: var(--high); }
+  .kpi-sub { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+
+  /* Sections */
+  .section { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 24px; }
+  .section-title { font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+  .section p { color: var(--text-muted); line-height: 1.8; }
+
+  /* Action list */
+  .action-list { padding-left: 20px; }
+  .action-list li { color: var(--text-muted); margin-bottom: 10px; padding-left: 4px; line-height: 1.7; }
+  .action-list li::marker { color: var(--accent); font-weight: 700; }
+  .empty-msg { color: var(--text-muted); font-style: italic; }
+
+  /* Tables */
+  .table-wrapper { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+  th { background: var(--surface2); padding: 10px 14px; text-align: left; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); border-bottom: 1px solid var(--border); cursor: pointer; user-select: none; white-space: nowrap; }
+  th:hover { color: var(--text); }
+  th .sort-icon { margin-left: 4px; opacity: 0.4; }
+  th.sorted .sort-icon { opacity: 1; color: var(--accent); }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface2); }
+  .empty-row { text-align: center; color: var(--text-muted); font-style: italic; padding: 24px; }
+  .desc-cell { max-width: 500px; color: var(--text-muted); font-size: 0.8rem; }
+
+  /* Score badges */
+  .score-badge { display: inline-block; padding: 2px 8px; border-radius: 6px; font-weight: 700; font-size: 0.8rem; }
+  .score-badge.critical { background: #dc262622; color: #dc2626; border: 1px solid #dc262644; }
+  .score-badge.high { background: #ea580c22; color: #ea580c; border: 1px solid #ea580c44; }
+  .score-badge.medium { background: #ca8a0422; color: #ca8a04; border: 1px solid #ca8a0444; }
+
+  /* Misc badges */
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
+  .ransomware-known { background: #dc262622; color: #dc2626; border: 1px solid #dc262644; }
+  .ransomware-unknown { background: #37415122; color: #94a3b8; border: 1px solid #37415144; }
+  .cve-link { color: var(--accent); font-family: monospace; }
+
+  /* Warning */
+  .warning-box { background: #78350f22; border: 1px solid #92400e; border-radius: 8px; padding: 16px; margin-bottom: 24px; color: #fbbf24; font-size: 0.875rem; }
+  .warning-box ul { padding-left: 16px; margin-top: 8px; }
+
+  /* Footer */
+  footer { margin-top: 48px; padding: 24px 0; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); font-size: 0.8rem; }
+  footer a { color: var(--text-muted); }
+  footer a:hover { color: var(--text); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <h1>Vulnerability <span>Intelligence</span> Report</h1>
+    <div class="header-meta">Date: 2026-11-01 &nbsp;|&nbsp; Generated: 2026-11-01T14:44:57Z</div>
+  </div>
+  <div class="risk-badge">
+    <span class="risk-dot"></span>
+    Critical Risk
+  </div>
+</div>
+
+<div class="container">
+  
+
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">Total CVEs Found</div>
+      <div class="kpi-value danger">22</div>
+      <div class="kpi-sub">CVSS &ge; 7.0 in last 24h</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">CVSS Avg Score</div>
+      <div class="kpi-value danger">9.2</div>
+      <div class="kpi-sub">across all found CVEs</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">KEV New Entries</div>
+      <div class="kpi-value danger">10</div>
+      <div class="kpi-sub">added in last 7 days</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">KEV Due This Week</div>
+      <div class="kpi-value danger">3</div>
+      <div class="kpi-sub">remediation deadlines</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Executive Summary</div>
+    <p>Our environment faces a critical threat landscape with 22 high-severity CVEs, including two rated CVSS 9.8 and one rated a perfect 10.0. A D-Link device vulnerability allows complete remote code execution, while hard-coded JWT secrets and authentication bypass flaws in Jpom and AJ-Report expose administrative access without credentials. Ten new CISA Known Exploited Vulnerabilities were added this week across Ivanti, GitLab, Cisco, and VMware products, signaling active exploitation in the wild. Immediate patching and compensating controls are required to reduce organizational exposure.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Risk Narrative</div>
+    <p>Active exploitation of Ivanti, Cisco, GitLab, and VMware products confirmed by CISA KEV additions this week represents an immediate, real-world threat to enterprise infrastructure. Attackers leveraging authentication bypass and hard-coded credential flaws can achieve full administrative compromise with no user interaction. The CVSS 10.0 D-Link vulnerability poses total device takeover risk, threatening network integrity. Stored XSS and CSRF vulnerabilities broaden the attack surface to end users and web-facing services. Compounding these risks, the unsupported Apache MINA deserialization flaw will receive no vendor patch, making compensating controls essential. Collectively, these vulnerabilities increase ransomware, data exfiltration, and lateral movement risk.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Prioritized Action Items</div>
+    <ol class='action-list'><li>Immediately isolate or patch D-Link DIR-505 devices affected by the CVSS 10.0 remote code execution vulnerability CVE-2026-120189.</li>
+<li>Patch Ivanti Connect Secure systems for CVE-2026-118527 and CVE-2026-111357, both newly added to the CISA KEV catalog indicating active exploitation.</li>
+<li>Remediate authentication bypass vulnerabilities in Jpom (CVE-2026-120201) and AJ-Report (CVE-2026-120209) to prevent unauthorized super-administrator access.</li>
+<li>Apply available patches for Cisco Secure Firewall ASA/FTD (CVE-2026-76418) and VMware ESX (CVE-2026-41709) flagged as actively exploited by CISA.</li>
+<li>Address remaining high-severity CVEs in ShowDoc, Thelia, and libheif through vendor patching or temporary service restrictions to limit attack surface.</li></ol>
+  </div>
+
+  <div class="section">
+    <div class="section-title">High Severity CVEs — 22 found (CVSS &ge; 7.0)</div>
+    <div class="table-wrapper">
+      <table id="cve-table">
+        <thead>
+          <tr>
+            <th onclick="sortTable('cve-table',0)" data-col="0">CVE ID <span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable('cve-table',1)" data-col="1">CVSS <span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable('cve-table',2)" data-col="2">Published <span class="sort-icon">&#8597;</span></th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-120201" target="_blank" rel="noopener noreferrer">CVE-2026-120201</a></td><td><span class="score-badge critical">9.8</span></td><td>2026-10-31</td><td class="desc-cell">Jpom 2.10.0 through 2.11.12 contains an authentication bypass vulnerability that allows unauthenticated attackers to gain super-administrator access by injecting query conditions into the JPOM-USER-TO…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-120203" target="_blank" rel="noopener noreferrer">CVE-2026-120203</a></td><td><span class="score-badge high">8.8</span></td><td>2026-10-31</td><td class="desc-cell">ShowDoc 2.8.14 before 3.9.6 contains a code injection vulnerability in its Mock feature that allows authenticated users to execute shell commands through mockjs templates. Attackers can store a templa…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-120205" target="_blank" rel="noopener noreferrer">CVE-2026-120205</a></td><td><span class="score-badge high">8.0</span></td><td>2026-10-31</td><td class="desc-cell">Thelia before 3.1.0 contains a stored cross-site scripting vulnerability in ForSomeCustomers::getSummary() that allows unauthenticated attackers to inject scripts via unescaped customer names. Attacke…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-120207" target="_blank" rel="noopener noreferrer">CVE-2026-120207</a></td><td><span class="score-badge high">7.1</span></td><td>2026-10-31</td><td class="desc-cell">Thelia Page Module before 2.0.4 contains a cross-site request forgery vulnerability that allows remote attackers to delete page tags, documents and images by abusing back-office delete routes lacking …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-120208" target="_blank" rel="noopener noreferrer">CVE-2026-120208</a></td><td><span class="score-badge high">7.5</span></td><td>2026-10-31</td><td class="desc-cell">libheif 1.18.0 before 1.23.3 contains a heap-based buffer overflow vulnerability in unc_decoder_mixed_interleave::processTile() that allows attackers to write out of bounds by supplying chroma compone…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-120209" target="_blank" rel="noopener noreferrer">CVE-2026-120209</a></td><td><span class="score-badge critical">9.8</span></td><td>2026-10-31</td><td class="desc-cell">AJ-Report through 1.7.1 signs share tokens with a hard-coded JWT secret, allowing attackers to forge valid Share-Tokens offline. Attackers can mint a token with reportCode 'dataSet' to access the test…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-118147" target="_blank" rel="noopener noreferrer">CVE-2026-118147</a></td><td><span class="score-badge high">7.4</span></td><td>2026-10-31</td><td class="desc-cell">Improper certificate validation in Visual Studio allows an unauthorized attacker to perform spoofing over a network.</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-118636" target="_blank" rel="noopener noreferrer">CVE-2026-118636</a></td><td><span class="score-badge critical">9.8</span></td><td>2026-10-31</td><td class="desc-cell">**UNSUPPORTED WHEN ASSIGNED** 
+
+JavaNativeMessageDecoder in the MINA 3.0 codec module calls ObjectInputStream.readObject() on frame bytes with no class filter, so an
+application that puts it in front …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-120189" target="_blank" rel="noopener noreferrer">CVE-2026-120189</a></td><td><span class="score-badge critical">10.0</span></td><td>2026-11-01</td><td class="desc-cell">A vulnerability was identified in D-Link DIR-505 1.10B02. Affected is the function save_upload_file/mp_upload_file of the file /usr/bin/tftpd of the component TFTP Upload Filename Handler. The manipul…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-120191" target="_blank" rel="noopener noreferrer">CVE-2026-120191</a></td><td><span class="score-badge high">7.3</span></td><td>2026-11-01</td><td class="desc-cell">A weakness has been identified in Presenton up to 0.9.11-beta. Affected by this issue is some unknown functionality of the component API. This manipulation causes missing authentication. It is possibl…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-120195" target="_blank" rel="noopener noreferrer">CVE-2026-120195</a></td><td><span class="score-badge critical">10.0</span></td><td>2026-11-01</td><td class="desc-cell">A security vulnerability has been detected in WAVLINK WL-WN579A3-A 2026-03-10-94f93d4. The impacted element is the function set_wzdgwMesh of the file /cgi-bin/adm.cgi of the component Initial Setup Wi…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-120196" target="_blank" rel="noopener noreferrer">CVE-2026-120196</a></td><td><span class="score-badge critical">9.9</span></td><td>2026-11-01</td><td class="desc-cell">A vulnerability was detected in WAVLINK WN579X3-D V250402. This affects the function port_forward of the file /cgi-bin/wapi.cgi. The manipulation of the argument Name results in os command injection. …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-120197" target="_blank" rel="noopener noreferrer">CVE-2026-120197</a></td><td><span class="score-badge critical">9.9</span></td><td>2026-11-01</td><td class="desc-cell">A flaw has been found in WAVLINK WL-WN530HG4B M_V260724. This impacts the function port_forward of the file /cgi-bin/wapi.cgi. This manipulation of the argument Name causes os command injection. It is…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-120198" target="_blank" rel="noopener noreferrer">CVE-2026-120198</a></td><td><span class="score-badge critical">10.0</span></td><td>2026-11-01</td><td class="desc-cell">A vulnerability has been found in WAVLINK WL-WN530BE1-A V251117. Affected is the function con_check_read_finish of the file /protocol.csp. Such manipulation of the argument group_name/IP-FROM leads to…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-120224" target="_blank" rel="noopener noreferrer">CVE-2026-120224</a></td><td><span class="score-badge critical">9.9</span></td><td>2026-11-01</td><td class="desc-cell">A security flaw has been discovered in Oray Pugongying X5 Pro up to 7.6.1. Affected is the function run_apis_by_json/run_async_task of the component API Authorization. The manipulation results in impr…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-120225" target="_blank" rel="noopener noreferrer">CVE-2026-120225</a></td><td><span class="score-badge critical">9.1</span></td><td>2026-11-01</td><td class="desc-cell">A weakness has been identified in Oray Pugongying X5 Pro up to 7.6.1. Affected by this vulnerability is the function config_restore_ex of the file /etc/openwrt_release. This manipulation of the argume…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-120227" target="_blank" rel="noopener noreferrer">CVE-2026-120227</a></td><td><span class="score-badge critical">9.9</span></td><td>2026-11-01</td><td class="desc-cell">A vulnerability was detected in WAVLINK WN701AE M01AE_V260105. This affects the function del_staticrule of the file static_route_setting.sh of the component ioos Web Backend. Performing a manipulation…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-120306" target="_blank" rel="noopener noreferrer">CVE-2026-120306</a></td><td><span class="score-badge critical">9.9</span></td><td>2026-11-01</td><td class="desc-cell">Beta9 turns each shell command in a tenant image definition into a Dockerfile RUN line and executes it with Buildah on the build worker. The worker image sets BUILDAH_ISOLATION=chroot, and no buildah …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-120307" target="_blank" rel="noopener noreferrer">CVE-2026-120307</a></td><td><span class="score-badge critical">9.9</span></td><td>2026-11-01</td><td class="desc-cell">The Beta9 worker serves the sandbox file API from outside the container. getHostPathFromContainerPath turns the tenant's container path into a worker path. If the unresolved path starts with a mount d…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-120308" target="_blank" rel="noopener noreferrer">CVE-2026-120308</a></td><td><span class="score-badge critical">9.9</span></td><td>2026-11-01</td><td class="desc-cell">A Beta9 tenant can attach a volume when deploying a function, endpoint, or task queue. The gateway builds the host path by joining the shared volumes root, the workspace name, and the volume identifie…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-120228" target="_blank" rel="noopener noreferrer">CVE-2026-120228</a></td><td><span class="score-badge critical">9.9</span></td><td>2026-11-01</td><td class="desc-cell">A flaw has been found in WAVLINK WN553X1-B V260403_2.0.0. This vulnerability affects the function sub_416D88 of the file /bin/ioos of the component ioos Service. Executing a manipulation of the argume…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-120229" target="_blank" rel="noopener noreferrer">CVE-2026-120229</a></td><td><span class="score-badge critical">9.1</span></td><td>2026-11-01</td><td class="desc-cell">A vulnerability has been found in WAVLINK WN553X1-B 260403_2.0.0. This issue affects the function sub_416B50 of the file /bin/ioos. The manipulation of the argument file_id leads to os command injecti…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">CISA KEV — 10 new entries (last 7 days)</div>
+    <div class="table-wrapper">
+      <table id="kev-table">
+        <thead>
+          <tr>
+            <th onclick="sortTable('kev-table',0)" data-col="0">CVE ID <span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable('kev-table',1)" data-col="1">Vendor / Product <span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable('kev-table',2)" data-col="2">Date Added <span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable('kev-table',3)" data-col="3">Due Date <span class="sort-icon">&#8597;</span></th>
+            <th>Ransomware</th>
+          </tr>
+        </thead>
+        <tbody>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-118527" target="_blank" rel="noopener noreferrer">CVE-2026-118527</a></td><td>Ivanti / Connect Secure</td><td>2026-10-30</td><td>2026-11-13</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-111357" target="_blank" rel="noopener noreferrer">CVE-2026-111357</a></td><td>Ivanti / Connect Secure</td><td>2026-10-30</td><td>2026-11-02</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-97229" target="_blank" rel="noopener noreferrer">CVE-2026-97229</a></td><td>GitLab / Community Edition and Enterprise Edition</td><td>2026-10-29</td><td>2026-11-01</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-76418" target="_blank" rel="noopener noreferrer">CVE-2026-76418</a></td><td>Cisco / Secure Firewall ASA Software and Cisco Secure FTD Software</td><td>2026-10-29</td><td>2026-11-01</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-41709" target="_blank" rel="noopener noreferrer">CVE-2026-41709</a></td><td>Broadcom / VMware ESX</td><td>2026-10-28</td><td>2026-11-11</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-46300" target="_blank" rel="noopener noreferrer">CVE-2026-46300</a></td><td>Linux / Kernel</td><td>2026-10-28</td><td>2026-10-31</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-48356" target="_blank" rel="noopener noreferrer">CVE-2026-48356</a></td><td>Adobe / Commerce and Magento</td><td>2026-10-27</td><td>2026-11-10</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-111497" target="_blank" rel="noopener noreferrer">CVE-2026-111497</a></td><td>Google / Brotli</td><td>2026-10-27</td><td>2026-11-10</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-109618" target="_blank" rel="noopener noreferrer">CVE-2026-109618</a></td><td>PHP Group / PHP</td><td>2026-10-26</td><td>2026-10-29</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-109619" target="_blank" rel="noopener noreferrer">CVE-2026-109619</a></td><td>PHP Group / PHP</td><td>2026-10-26</td><td>2026-10-29</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>
+    Data sources: &nbsp;
+    <a href="https://nvd.nist.gov/" target="_blank" rel="noopener noreferrer">NVD (National Vulnerability Database)</a>
+    &nbsp;&bull;&nbsp;
+    <a href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank" rel="noopener noreferrer">CISA Known Exploited Vulnerabilities Catalog</a>
+    <br><br>
+    Generated by Vulnerability Intelligence Pipeline &bull; 2026-11-01T14:44:57Z
+  </footer>
+</div>
+
+<script>
+const sortState = {};
+function sortTable(tableId, col) {
+  const table = document.getElementById(tableId);
+  const tbody = table.querySelector('tbody');
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+  const key = tableId + ':' + col;
+  const asc = sortState[key] !== true;
+  sortState[key] = asc;
+
+  // Update sort icons
+  table.querySelectorAll('th').forEach((th, i) => {
+    th.classList.toggle('sorted', i === col);
+    const icon = th.querySelector('.sort-icon');
+    if (icon) icon.textContent = i === col ? (asc ? '↑' : '↓') : '⇅';
+  });
+
+  rows.sort((a, b) => {
+    const aText = (a.cells[col] ? a.cells[col].textContent : '').trim();
+    const bText = (b.cells[col] ? b.cells[col].textContent : '').trim();
+    const aNum = parseFloat(aText);
+    const bNum = parseFloat(bText);
+    if (!isNaN(aNum) && !isNaN(bNum)) return asc ? aNum - bNum : bNum - aNum;
+    return asc ? aText.localeCompare(bText) : bText.localeCompare(aText);
+  });
+
+  rows.forEach(r => tbody.appendChild(r));
+}
+</script>
+
+</body>
+</html>
