@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vulnerability Intelligence Report — 2026-11-08</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #22263a;
+    --border: #2d3148;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --accent: #6366f1;
+    --critical: #dc2626;
+    --high: #ea580c;
+    --medium: #ca8a04;
+    --success: #16a34a;
+  }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace; line-height: 1.6; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* Header */
+  .header { background: linear-gradient(135deg, #1a1d27 0%, #0f1117 100%); border-bottom: 1px solid var(--border); padding: 24px 32px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+  .header-left h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: 0.01em; color: #f1f5f9; }
+  .header-left h1 span { color: var(--accent); }
+  .header-meta { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
+  .risk-badge { display: inline-flex; align-items: center; gap: 6px; padding: 8px 20px; border-radius: 9999px; font-weight: 700; font-size: 0.95rem; letter-spacing: 0.05em; text-transform: uppercase; background: #dc262622; color: #dc2626; border: 2px solid #dc2626; }
+  .risk-dot { width: 8px; height: 8px; border-radius: 50%; background: #dc2626; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  /* Layout */
+  .container { max-width: 1400px; margin: 0 auto; padding: 32px; }
+
+  /* KPI cards */
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 32px; }
+  .kpi-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; }
+  .kpi-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 8px; }
+  .kpi-value { font-size: 2.5rem; font-weight: 700; line-height: 1; color: #f1f5f9; }
+  .kpi-value.danger { color: var(--critical); }
+  .kpi-value.warn { color: var(--high); }
+  .kpi-sub { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+
+  /* Sections */
+  .section { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 24px; }
+  .section-title { font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+  .section p { color: var(--text-muted); line-height: 1.8; }
+
+  /* Action list */
+  .action-list { padding-left: 20px; }
+  .action-list li { color: var(--text-muted); margin-bottom: 10px; padding-left: 4px; line-height: 1.7; }
+  .action-list li::marker { color: var(--accent); font-weight: 700; }
+  .empty-msg { color: var(--text-muted); font-style: italic; }
+
+  /* Tables */
+  .table-wrapper { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+  th { background: var(--surface2); padding: 10px 14px; text-align: left; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); border-bottom: 1px solid var(--border); cursor: pointer; user-select: none; white-space: nowrap; }
+  th:hover { color: var(--text); }
+  th .sort-icon { margin-left: 4px; opacity: 0.4; }
+  th.sorted .sort-icon { opacity: 1; color: var(--accent); }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface2); }
+  .empty-row { text-align: center; color: var(--text-muted); font-style: italic; padding: 24px; }
+  .desc-cell { max-width: 500px; color: var(--text-muted); font-size: 0.8rem; }
+
+  /* Score badges */
+  .score-badge { display: inline-block; padding: 2px 8px; border-radius: 6px; font-weight: 700; font-size: 0.8rem; }
+  .score-badge.critical { background: #dc262622; color: #dc2626; border: 1px solid #dc262644; }
+  .score-badge.high { background: #ea580c22; color: #ea580c; border: 1px solid #ea580c44; }
+  .score-badge.medium { background: #ca8a0422; color: #ca8a04; border: 1px solid #ca8a0444; }
+
+  /* Misc badges */
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
+  .ransomware-known { background: #dc262622; color: #dc2626; border: 1px solid #dc262644; }
+  .ransomware-unknown { background: #37415122; color: #94a3b8; border: 1px solid #37415144; }
+  .cve-link { color: var(--accent); font-family: monospace; }
+
+  /* Warning */
+  .warning-box { background: #78350f22; border: 1px solid #92400e; border-radius: 8px; padding: 16px; margin-bottom: 24px; color: #fbbf24; font-size: 0.875rem; }
+  .warning-box ul { padding-left: 16px; margin-top: 8px; }
+
+  /* Footer */
+  footer { margin-top: 48px; padding: 24px 0; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); font-size: 0.8rem; }
+  footer a { color: var(--text-muted); }
+  footer a:hover { color: var(--text); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <h1>Vulnerability <span>Intelligence</span> Report</h1>
+    <div class="header-meta">Date: 2026-11-08 &nbsp;|&nbsp; Generated: 2026-11-08T14:46:13Z</div>
+  </div>
+  <div class="risk-badge">
+    <span class="risk-dot"></span>
+    Critical Risk
+  </div>
+</div>
+
+<div class="container">
+  
+
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">Total CVEs Found</div>
+      <div class="kpi-value danger">92</div>
+      <div class="kpi-sub">CVSS &ge; 7.0 in last 24h</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">CVSS Avg Score</div>
+      <div class="kpi-value warn">8.0</div>
+      <div class="kpi-sub">across all found CVEs</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">KEV New Entries</div>
+      <div class="kpi-value danger">3</div>
+      <div class="kpi-sub">added in last 7 days</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">KEV Due This Week</div>
+      <div class="kpi-value ">0</div>
+      <div class="kpi-sub">remediation deadlines</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Executive Summary</div>
+    <p>Our environment faces significant exposure across 92 high-severity CVEs, including four critical TOTOLINK network device vulnerabilities scoring 9.1 that enable remote command execution. Additionally, three new entries were added to CISA's Known Exploited Vulnerabilities catalog this week, covering SonicWall VPN, Apple products, and WordPress Core — all actively exploited in the wild. Deserialization flaws in Treeio, SQL injection risks in DataEase, and privilege escalation in Vikunja further broaden the attack surface. Immediate action is required to prioritize patching and reduce organizational risk before adversaries can leverage these weaknesses.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Risk Narrative</div>
+    <p>The current threat landscape reflects a convergence of network infrastructure weaknesses, application-layer vulnerabilities, and actively exploited flaws. Critical TOTOLINK device vulnerabilities expose network perimeters to unauthenticated remote attackers, while CISA KEV additions confirm active exploitation of SonicWall VPN and WordPress Core — common enterprise staples. Deserialization and injection flaws in DataEase and Treeio create pathways for data theft and lateral movement. Privilege escalation in Vikunja threatens data confidentiality across collaborative environments. Collectively, these vulnerabilities create compounding business risks including operational disruption, regulatory non-compliance, reputational harm, and potential data breach costs that could significantly impact revenue and stakeholder trust.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Prioritized Action Items</div>
+    <ol class='action-list'><li>Immediately audit and patch or isolate all TOTOLINK CA300-PoE devices running firmware 6.2c.884 to remediate the four critical remote code execution vulnerabilities (CVSS 9.1).</li>
+<li>Apply available patches or mitigations for all three newly added CISA KEV entries — SonicWall SonicOS SSLVPN, Apple Multiple Products, and WordPress Core — within 24 to 48 hours.</li>
+<li>Remediate the insecure deserialization vulnerabilities in Treeio and the SQL injection flaws in DataEase to prevent potential data exfiltration or system compromise.</li>
+<li>Upgrade Vikunja to version 2.7.1 or later to close the privilege escalation and authorization bypass vulnerabilities affecting authenticated users.</li>
+<li>Establish a continuous vulnerability prioritization process that cross-references all identified CVEs against the CISA KEV catalog to ensure the fastest response to actively exploited threats.</li></ol>
+  </div>
+
+  <div class="section">
+    <div class="section-title">High Severity CVEs — 92 found (CVSS &ge; 7.0)</div>
+    <div class="table-wrapper">
+      <table id="cve-table">
+        <thead>
+          <tr>
+            <th onclick="sortTable('cve-table',0)" data-col="0">CVE ID <span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable('cve-table',1)" data-col="1">CVSS <span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable('cve-table',2)" data-col="2">Published <span class="sort-icon">&#8597;</span></th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124318" target="_blank" rel="noopener noreferrer">CVE-2026-124318</a></td><td><span class="score-badge high">7.2</span></td><td>2026-11-07</td><td class="desc-cell">Treeio through 2.0 contains an insecure deserialization vulnerability in UpdateRecord.get_format_strings and ModuleSetting.loads that allows staff users to execute code via unverified pickle data. Att…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-123990" target="_blank" rel="noopener noreferrer">CVE-2026-123990</a></td><td><span class="score-badge high">7.3</span></td><td>2026-11-07</td><td class="desc-cell">A security vulnerability has been detected in DataEase up to 2.10.27/3.1.0. Affected is the function ExtWhere2Str.extWhere2sqlOjb of the file engine/trans/ExtWhere2Str.java of the component Chart Data…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-123991" target="_blank" rel="noopener noreferrer">CVE-2026-123991</a></td><td><span class="score-badge high">7.3</span></td><td>2026-11-07</td><td class="desc-cell">A vulnerability was detected in DataEase up to 2.10.27. Affected by this vulnerability is the function WhitelistUtils.endsWithAny of the file WhitelistUtils.java of the component Authentication Filter…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124057" target="_blank" rel="noopener noreferrer">CVE-2026-124057</a></td><td><span class="score-badge critical">9.1</span></td><td>2026-11-07</td><td class="desc-cell">A security flaw has been discovered in TOTOLINK CA300-PoE 6.2c.884. This impacts the function setWiFiMultipleConfig of the file /cgi-bin/cstecgi.cgi. Performing a manipulation of the argument Key1Str1…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124058" target="_blank" rel="noopener noreferrer">CVE-2026-124058</a></td><td><span class="score-badge critical">9.1</span></td><td>2026-11-07</td><td class="desc-cell">A weakness has been identified in TOTOLINK CA300-PoE 6.2c.884. Affected is the function setWiFiRepeaterConfig of the file /cgi-bin/cstecgi.cgi. Executing a manipulation of the argument ApCliKeyStr can…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124059" target="_blank" rel="noopener noreferrer">CVE-2026-124059</a></td><td><span class="score-badge critical">9.1</span></td><td>2026-11-07</td><td class="desc-cell">A security vulnerability has been detected in TOTOLINK CA300-PoE 6.2c.884. Affected by this vulnerability is the function setWiFiWdsAddConfig of the file /cgi-bin/cstecgi.cgi. The manipulation of the …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124060" target="_blank" rel="noopener noreferrer">CVE-2026-124060</a></td><td><span class="score-badge critical">9.1</span></td><td>2026-11-07</td><td class="desc-cell">A vulnerability was detected in TOTOLINK CA300-PoE 6.2c.884. Affected by this issue is the function UploadCustomModule of the file /cgi-bin/cstecgi.cgi. The manipulation of the argument File results i…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-120531" target="_blank" rel="noopener noreferrer">CVE-2026-120531</a></td><td><span class="score-badge high">7.2</span></td><td>2026-11-07</td><td class="desc-cell">The Subscribe2 – Form, Email Subscribers & Newsletters plugin for WordPress is vulnerable to Stored Cross-Site Scripting via the ‘data[ip]’ parameter in all versions up to, and including, 10.47 due to…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-123520" target="_blank" rel="noopener noreferrer">CVE-2026-123520</a></td><td><span class="score-badge high">7.1</span></td><td>2026-11-08</td><td class="desc-cell">Vikunja from 0.18.0 before 2.7.1 contains a privilege escalation vulnerability that allows team owners to gain admin or ownership of read-only shared projects by deleting accounts. Attackers can creat…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-123522" target="_blank" rel="noopener noreferrer">CVE-2026-123522</a></td><td><span class="score-badge high">7.1</span></td><td>2026-11-08</td><td class="desc-cell">Vikunja before 2.7.1 contains an authorization bypass vulnerability that allows authenticated users to read any task by injecting a crafted task object into a no-op Kanban bucket move. Attackers can s…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-123531" target="_blank" rel="noopener noreferrer">CVE-2026-123531</a></td><td><span class="score-badge high">8.8</span></td><td>2026-11-08</td><td class="desc-cell">Vikunja from 1.0.0 before 2.7.1 contains an uncontrolled resource consumption vulnerability that allows authenticated users to bypass service.maxitemsperpage by sending page=0 to /api/v1 list endpoint…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-123543" target="_blank" rel="noopener noreferrer">CVE-2026-123543</a></td><td><span class="score-badge high">7.5</span></td><td>2026-11-08</td><td class="desc-cell">OpenAM before 16.1.4 contains a denial of service vulnerability that allows unauthenticated attackers to exhaust server resources by sending serialized Java data without size or structure limits. Atta…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-123545" target="_blank" rel="noopener noreferrer">CVE-2026-123545</a></td><td><span class="score-badge high">7.1</span></td><td>2026-11-08</td><td class="desc-cell">OpenAM from 14.5.1 before 16.1.4 contains a cross-site request forgery vulnerability in the OAuth 2.0 device authorization flow that allows attackers to approve device codes when consent is skipped fo…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-123549" target="_blank" rel="noopener noreferrer">CVE-2026-123549</a></td><td><span class="score-badge critical">9.8</span></td><td>2026-11-08</td><td class="desc-cell">OpenAM before 16.1.4 fails to enforce the Valid Creation Attributes list during self-registration, allowing anonymous attackers to set restricted attributes including group membership. Attackers can r…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-123550" target="_blank" rel="noopener noreferrer">CVE-2026-123550</a></td><td><span class="score-badge critical">9.8</span></td><td>2026-11-08</td><td class="desc-cell">OpenAM before 16.1.4 contains an authentication bypass vulnerability in its SAML v2.0 service provider that accepts unsigned assertions on the ECP (PAOS) and HTTP-Artifact bindings when WantAssertions…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-123551" target="_blank" rel="noopener noreferrer">CVE-2026-123551</a></td><td><span class="score-badge critical">10.0</span></td><td>2026-11-08</td><td class="desc-cell">OpenAM from 14.0.0 before 16.1.4 contains an information disclosure vulnerability that allows unauthenticated attackers to read live session tokens from the notification WebSocket. Attackers can bypas…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-123554" target="_blank" rel="noopener noreferrer">CVE-2026-123554</a></td><td><span class="score-badge high">7.5</span></td><td>2026-11-08</td><td class="desc-cell">Zebra zebrad 6.4.0 before 7.0.0 performs quadratic work in the mempool coinbase-maturity check because Transaction::coinbase_spend_restriction() rebuilds the transaction's output list once per spent o…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-123555" target="_blank" rel="noopener noreferrer">CVE-2026-123555</a></td><td><span class="score-badge high">7.5</span></td><td>2026-11-08</td><td class="desc-cell">Zebra from 2.3.0 before 7.0.0 contains a denial of service vulnerability that allows unauthenticated peers to evade misbehavior scoring by sending transactions or blocks with invalid transparent scrip…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-123558" target="_blank" rel="noopener noreferrer">CVE-2026-123558</a></td><td><span class="score-badge high">7.5</span></td><td>2026-11-08</td><td class="desc-cell">Zebra zebrad before 7.0.0 contains a denial of service vulnerability that allows a malicious peer to stall checkpoint sync by cancelling the verifier rewind after a failed commit. Attackers can serve …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-123559" target="_blank" rel="noopener noreferrer">CVE-2026-123559</a></td><td><span class="score-badge high">7.5</span></td><td>2026-11-08</td><td class="desc-cell">Zebra before 7.0.0 contains an inefficient algorithmic complexity vulnerability that allows unauthenticated peers to exhaust verification threads by submitting transactions with many transparent input…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-123560" target="_blank" rel="noopener noreferrer">CVE-2026-123560</a></td><td><span class="score-badge high">7.5</span></td><td>2026-11-08</td><td class="desc-cell">Zebra before 7.0.0 contains an incomplete cleanup vulnerability that allows unauthenticated peers to stall initial sync by serving a forged checkpoint block body. Attackers can supply a body with forg…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-123562" target="_blank" rel="noopener noreferrer">CVE-2026-123562</a></td><td><span class="score-badge high">7.5</span></td><td>2026-11-08</td><td class="desc-cell">devalue (sveltejs/devalue) 5.8.0 before 5.9.3 contains an unhandled promise rejection in stringifyAsync: when serializing multiple promises, a later promise rejecting before an earlier one settles lea…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-123563" target="_blank" rel="noopener noreferrer">CVE-2026-123563</a></td><td><span class="score-badge high">7.5</span></td><td>2026-11-08</td><td class="desc-cell">Devalue before 5.9.3 contains a validation bypass vulnerability that allows custom ArrayBuffer revivers to skip typed-array allocation checks in the parse function. Attackers can supply very small cra…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-123564" target="_blank" rel="noopener noreferrer">CVE-2026-123564</a></td><td><span class="score-badge high">7.5</span></td><td>2026-11-08</td><td class="desc-cell">Sveltejs devalue from 1.0.0 before 5.9.3 contains a memory exhaustion flaw in uneval, whose generated code for sparse arrays allocates memory proportional to the array's declared length when evaluated…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-123565" target="_blank" rel="noopener noreferrer">CVE-2026-123565</a></td><td><span class="score-badge high">7.5</span></td><td>2026-11-08</td><td class="desc-cell">Sveltejs devalue before 5.9.3 contains a resource exhaustion vulnerability where repeated primitive strings cause quadratic expansion in the uneval function. Attackers can supply a small crafted paylo…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-123566" target="_blank" rel="noopener noreferrer">CVE-2026-123566</a></td><td><span class="score-badge high">7.5</span></td><td>2026-11-08</td><td class="desc-cell">Sveltejs devalue before 5.9.3 contains a denial of service vulnerability that allows attackers to cause CPU amplification by supplying sparse arrays to uneval. Attackers who influence sparse values pa…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-123569" target="_blank" rel="noopener noreferrer">CVE-2026-123569</a></td><td><span class="score-badge high">7.5</span></td><td>2026-11-08</td><td class="desc-cell">The devalue package for npm before 5.6.3 can consume excessive CPU and memory when serializing sparse arrays with uneval or stringify. An attacker who manages to get a sparse array created on the serv…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-123570" target="_blank" rel="noopener noreferrer">CVE-2026-123570</a></td><td><span class="score-badge high">7.5</span></td><td>2026-11-08</td><td class="desc-cell">The DNS wire-format message parser in hickory-proto (Hickory DNS) 0.18 before 0.26.2 preallocates record vectors sized by the untrusted ANCOUNT, NSCOUNT, and ARCOUNT header fields before reading recor…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-123571" target="_blank" rel="noopener noreferrer">CVE-2026-123571</a></td><td><span class="score-badge high">7.5</span></td><td>2026-11-08</td><td class="desc-cell">Hickory DNS from 0.26.0 before 0.26.2 contains an integer underflow vulnerability in TSIG RDATA decoding that allows remote attackers to trigger a panic via malformed records. Attackers can send a cra…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-123572" target="_blank" rel="noopener noreferrer">CVE-2026-123572</a></td><td><span class="score-badge high">7.5</span></td><td>2026-11-08</td><td class="desc-cell">Hickory-dns from 0.20.1 before 0.26.2 contains a denial of service vulnerability in the hickory-proto SVCB and HTTPS record presentation format parser, which panics on malformed alpn values. Attackers…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-123573" target="_blank" rel="noopener noreferrer">CVE-2026-123573</a></td><td><span class="score-badge high">7.5</span></td><td>2026-11-08</td><td class="desc-cell">hickory-dns from 0.20.1 before 0.26.2 contains a denial of service vulnerability in the hickory-proto SVCB and HTTPS record presentation format parser. Attackers can supply untrusted zone files where …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-123574" target="_blank" rel="noopener noreferrer">CVE-2026-123574</a></td><td><span class="score-badge high">7.5</span></td><td>2026-11-08</td><td class="desc-cell">The zone file parser in the hickory-proto crate of Hickory DNS 0.24.0 before 0.26.2 panics when a single token in a zone file is 4096 bytes or longer. Attackers who can supply untrusted zone files to …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-123575" target="_blank" rel="noopener noreferrer">CVE-2026-123575</a></td><td><span class="score-badge high">7.5</span></td><td>2026-11-08</td><td class="desc-cell">Hickory DNS before 0.26.2 contains a resource exhaustion vulnerability in its DNS-over-HTTPS HTTP/2 server that lacks sufficient timeouts or limits for incomplete request bodies. Remote attackers can …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-123576" target="_blank" rel="noopener noreferrer">CVE-2026-123576</a></td><td><span class="score-badge high">7.5</span></td><td>2026-11-08</td><td class="desc-cell">Hickory DNS 0.24.0 through 0.26.1 contains a memory exhaustion vulnerability that allows remote attackers to consume server resources by sending incomplete DNS-over-QUIC request bodies. Attackers can …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-123577" target="_blank" rel="noopener noreferrer">CVE-2026-123577</a></td><td><span class="score-badge high">7.5</span></td><td>2026-11-08</td><td class="desc-cell">Hickory DNS from 0.24.0 before 0.26.2 contains a resource exhaustion vulnerability that allows remote attackers to consume server memory via unbounded DoH request bodies. Attackers can send large requ…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-123580" target="_blank" rel="noopener noreferrer">CVE-2026-123580</a></td><td><span class="score-badge high">7.5</span></td><td>2026-11-08</td><td class="desc-cell">Hickory DNS hickory-net 0.26.0-beta.1 before 0.26.2 and hickory-proto through 0.26.0-alpha.1 perform insufficient checks on NSEC3 record names during DNSSEC verification, comparing only the hashed lab…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-123586" target="_blank" rel="noopener noreferrer">CVE-2026-123586</a></td><td><span class="score-badge high">7.5</span></td><td>2026-11-08</td><td class="desc-cell">Hickory DNS 0.25.0-alpha.3 through 0.25.2 contains a query amplification vulnerability in its recursive resolver, which mishandles cyclic sibling name server referrals that lack glue records. Attacker…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-123588" target="_blank" rel="noopener noreferrer">CVE-2026-123588</a></td><td><span class="score-badge high">7.5</span></td><td>2026-11-08</td><td class="desc-cell">The recursive resolver in Hickory DNS (all versions of the hickory-recursor crate, and hickory-resolver 0.26.0 before 0.26.2) caches an empty connection pool when it follows a referral with no glue re…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-123595" target="_blank" rel="noopener noreferrer">CVE-2026-123595</a></td><td><span class="score-badge high">8.8</span></td><td>2026-11-08</td><td class="desc-cell">Hickory DNS hickory-proto 0.25 through 0.26.0-alpha.1 and hickory-net 0.26.0-beta.1 before 0.26.2 contain a DNSSEC validation flaw in the validating recursor's NSEC3 handler, which matches the closest…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-123596" target="_blank" rel="noopener noreferrer">CVE-2026-123596</a></td><td><span class="score-badge high">8.8</span></td><td>2026-11-08</td><td class="desc-cell">Hickory DNS hickory-proto through 0.26.0-alpha.1 and hickory-net 0.26.0-beta.1 before 0.26.2 contain a DNSSEC validation flaw in the validating recursor's NSEC handler that accepts parent-side ancesto…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-123604" target="_blank" rel="noopener noreferrer">CVE-2026-123604</a></td><td><span class="score-badge high">7.5</span></td><td>2026-11-08</td><td class="desc-cell">Hickory DNS hickory-resolver 0.26.0-beta.1 before 0.26.2 contains an unbounded retry loop in NameServerPool::try_send, which re-queues truncated (TC) responses without checking the answering transport…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-123605" target="_blank" rel="noopener noreferrer">CVE-2026-123605</a></td><td><span class="score-badge high">8.8</span></td><td>2026-11-08</td><td class="desc-cell">Hickory DNS hickory-proto 0.1 through 0.25.0-alpha.3 and hickory-net before 0.26.2 contain a DNSSEC validation bypass because the validator verifies an RRSIG against the DNSKEY of whatever name appear…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-123606" target="_blank" rel="noopener noreferrer">CVE-2026-123606</a></td><td><span class="score-badge high">7.5</span></td><td>2026-11-08</td><td class="desc-cell">The hickory-dns recursor in hickory-recursor 0.25.0-alpha.3 through 0.25.2 and hickory-resolver 0.26.0-alpha.1 before 0.26.2 iterates every out-of-bailiwick NS target lacking glue in a referral withou…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-123607" target="_blank" rel="noopener noreferrer">CVE-2026-123607</a></td><td><span class="score-badge high">7.5</span></td><td>2026-11-08</td><td class="desc-cell">Hickory DNS hickory-proto 0.25.0-alpha.3 through 0.25.2 and hickory-net before 0.26.1 contain an unbounded loop vulnerability in DnssecDnsHandle NSEC3 closest-encloser proof validation when the SOA ow…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-123608" target="_blank" rel="noopener noreferrer">CVE-2026-123608</a></td><td><span class="score-badge high">7.5</span></td><td>2026-11-08</td><td class="desc-cell">Hickory DNS hickory-proto from 0.3.1 before 0.26.1 contains a denial of service vulnerability in BinEncoder that allows remote attackers to exhaust CPU through quadratic-time name compression. Attacke…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-123614" target="_blank" rel="noopener noreferrer">CVE-2026-123614</a></td><td><span class="score-badge critical">9.8</span></td><td>2026-11-08</td><td class="desc-cell">imgproxy from 4.0.0 before 4.0.16 contains an integer overflow in the ICO loader that allows remote attackers to trigger a heap buffer overflow via a crafted data_size value. Attackers can submit a cr…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-123615" target="_blank" rel="noopener noreferrer">CVE-2026-123615</a></td><td><span class="score-badge high">7.5</span></td><td>2026-11-08</td><td class="desc-cell">imgproxy 3.3.0 before 4.0.17 contains an out-of-bounds heap read and write in the ICO loader's BMP header reconstruction (vips_foreign_load_ico_header in vips/icoload.c) when an ICO entry declares a t…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-123616" target="_blank" rel="noopener noreferrer">CVE-2026-123616</a></td><td><span class="score-badge high">7.5</span></td><td>2026-11-08</td><td class="desc-cell">imgproxy from 3.3.0 before 4.0.16 contains an unbounded memory allocation vulnerability in the ICO loader that fails to validate the data_size field. Attackers can supply a crafted 23-byte ICO file de…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-114713" target="_blank" rel="noopener noreferrer">CVE-2026-114713</a></td><td><span class="score-badge high">8.6</span></td><td>2026-11-08</td><td class="desc-cell">The labeled-response module in UnrealIRCd 6.0.0 before 6.2.7.1 does not escape the IRCv3 "label" message tag when echoing it into replies, which allows any user on a network with two or more linked se…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124328" target="_blank" rel="noopener noreferrer">CVE-2026-124328</a></td><td><span class="score-badge high">7.4</span></td><td>2026-11-08</td><td class="desc-cell">A vulnerability has been found in FlowCI flow-core-x up to 1.23.49. The affected element is the function ConditionManagerImpl.run of the file core/src/main/java/com/flowci/core/common/manager/Conditio…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124331" target="_blank" rel="noopener noreferrer">CVE-2026-124331</a></td><td><span class="score-badge high">7.3</span></td><td>2026-11-08</td><td class="desc-cell">A vulnerability was identified in Jinher OA C6. This impacts an unknown function of the file /C6/JHSoft.Web.Project/OfficeReadOnly/ProjectAfficheManage.aspx. Such manipulation of the argument ProjID l…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124424" target="_blank" rel="noopener noreferrer">CVE-2026-124424</a></td><td><span class="score-badge high">7.1</span></td><td>2026-11-08</td><td class="desc-cell">WWBN AVideo contains a path traversal vulnerability in plugin/AI/receiveAsync.json.php that allows holders of any valid AI token to write arbitrary .vtt files by injecting traversal sequences into the…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124427" target="_blank" rel="noopener noreferrer">CVE-2026-124427</a></td><td><span class="score-badge critical">9.8</span></td><td>2026-11-08</td><td class="desc-cell">Craft CMS from 5.0.0 before 5.11.2 contains an authorization bypass vulnerability that allows anonymous GraphQL clients to read out-of-scope section entries via prev/next fields. Attackers can chain n…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124429" target="_blank" rel="noopener noreferrer">CVE-2026-124429</a></td><td><span class="score-badge high">7.5</span></td><td>2026-11-08</td><td class="desc-cell">Craft CMS from 5.0.0 before 5.11.2 contains a privilege escalation vulnerability that allows unauthenticated public registrants to reclaim deactivated non-admin accounts while retaining their direct p…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124430" target="_blank" rel="noopener noreferrer">CVE-2026-124430</a></td><td><span class="score-badge high">8.8</span></td><td>2026-11-08</td><td class="desc-cell">Craft CMS from 5.10.0 before 5.11.2 contains a remote code execution vulnerability that allows non-administrator control panel users to obtain HMAC-signed Twig templates via the app/render-elements en…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124432" target="_blank" rel="noopener noreferrer">CVE-2026-124432</a></td><td><span class="score-badge high">7.3</span></td><td>2026-11-08</td><td class="desc-cell">phpMyFAQ 4.1.9 before 4.1.11 and 4.2.0 pre-releases before 4.2.0-beta.3 contain an account enumeration vulnerability in the unauthenticated POST /api/webauthn/prepare-login endpoint, which returns sta…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124434" target="_blank" rel="noopener noreferrer">CVE-2026-124434</a></td><td><span class="score-badge high">7.1</span></td><td>2026-11-08</td><td class="desc-cell">Grav Lightbox Gallery plugin 1.1.0 before 1.3.2 on Grav 2.x calls any medium method named in image, thumb or thumb_options shortcode values without core's allowed media action check. A page editor can…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124436" target="_blank" rel="noopener noreferrer">CVE-2026-124436</a></td><td><span class="score-badge high">8.0</span></td><td>2026-11-08</td><td class="desc-cell">OpenRemote before 1.32.2 contains an improper authorization vulnerability that allows realm administrators to access and modify global resources by calling admin endpoints lacking super administrator …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124437" target="_blank" rel="noopener noreferrer">CVE-2026-124437</a></td><td><span class="score-badge high">7.5</span></td><td>2026-11-08</td><td class="desc-cell">Scriban before 7.5.3 contains a resource exhaustion vulnerability that allows untrusted template authors to exhaust memory and CPU because builtins like math.format, regex.replace and string.escape sk…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124438" target="_blank" rel="noopener noreferrer">CVE-2026-124438</a></td><td><span class="score-badge high">7.4</span></td><td>2026-11-08</td><td class="desc-cell">Scriban before 7.5.2 contains an information disclosure and object manipulation vulnerability that allows template authors to access .NET internals of function values through reflection member accesso…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124439" target="_blank" rel="noopener noreferrer">CVE-2026-124439</a></td><td><span class="score-badge high">7.5</span></td><td>2026-11-08</td><td class="desc-cell">Scriban and Scriban.Signed before 7.5.3 contain uncontrolled recursion flaws in which postfix member, indexer, and call chains bypass ExpressionDepthLimit, array comparison lacks depth and cycle check…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124440" target="_blank" rel="noopener noreferrer">CVE-2026-124440</a></td><td><span class="score-badge critical">9.9</span></td><td>2026-11-08</td><td class="desc-cell">Kyverno from 1.19.1 before 1.19.2 contains an authorization bypass vulnerability in the apiCall namespace clamp that allows namespace tenants to issue cross-namespace and cluster-scoped API requests b…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124441" target="_blank" rel="noopener noreferrer">CVE-2026-124441</a></td><td><span class="score-badge high">8.8</span></td><td>2026-11-08</td><td class="desc-cell">Kyverno before 1.19.2 contains an authorization bypass vulnerability that allows namespaced tenants to generate any resource kind in any namespace by templating the generate rule's kind and namespace …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124444" target="_blank" rel="noopener noreferrer">CVE-2026-124444</a></td><td><span class="score-badge high">7.1</span></td><td>2026-11-08</td><td class="desc-cell">OpenEMR before 8.4.0 contains a mass assignment vulnerability in the patient portal OnsiteDocument query API that lets request parameters set bitwise criteria filters whose values are placed unquoted …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124445" target="_blank" rel="noopener noreferrer">CVE-2026-124445</a></td><td><span class="score-badge critical">9.8</span></td><td>2026-11-08</td><td class="desc-cell">OpenEMR from 7.0.1 before 8.4.0 contains a flaw in src/Common/Auth/OneTimeAuth.php that ignores the enforce_onetime_use and max_access_count flags, never revokes consumed service_auth tokens, and chec…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124446" target="_blank" rel="noopener noreferrer">CVE-2026-124446</a></td><td><span class="score-badge high">8.8</span></td><td>2026-11-08</td><td class="desc-cell">OpenEMR before 8.3.0 contains a path traversal vulnerability in the FaxSMS module's RCFaxClient and SignalWireClient disposeDocument functions that allows authenticated low-privilege users to read and…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124447" target="_blank" rel="noopener noreferrer">CVE-2026-124447</a></td><td><span class="score-badge high">8.1</span></td><td>2026-11-08</td><td class="desc-cell">OpenEMR before 8.3.0 contains an insecure direct object reference vulnerability in OnsitePortalActivityController::Update() that checks the request's patientId instead of the stored record's owner. Au…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124448" target="_blank" rel="noopener noreferrer">CVE-2026-124448</a></td><td><span class="score-badge high">7.6</span></td><td>2026-11-08</td><td class="desc-cell">OpenEMR before 8.3.0 contains a stored cross-site scripting vulnerability in the CCDA/CCD preview stylesheets, where cda.xsl copies event-handler attributes whose values evade a character denylist and…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124450" target="_blank" rel="noopener noreferrer">CVE-2026-124450</a></td><td><span class="score-badge critical">9.9</span></td><td>2026-11-08</td><td class="desc-cell">OpenEMR before 8.3.0 contains a broken access control and path traversal vulnerability in the fax/sms module disposeDocument action via an unvalidated file_path parameter. Authenticated low-privilege …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124453" target="_blank" rel="noopener noreferrer">CVE-2026-124453</a></td><td><span class="score-badge high">7.1</span></td><td>2026-11-08</td><td class="desc-cell">OpenEMR before 8.3.0 contains an insecure direct object reference vulnerability in portal/lib/persist.php that allows authenticated portal patients to write settings for other patients. Attackers can …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124456" target="_blank" rel="noopener noreferrer">CVE-2026-124456</a></td><td><span class="score-badge high">7.1</span></td><td>2026-11-08</td><td class="desc-cell">OpenEMR before 8.3.0 contains missing authorization and insecure direct object reference vulnerabilities in the oe-module-prior-authorizations module that allow authenticated low-privilege users to ac…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124457" target="_blank" rel="noopener noreferrer">CVE-2026-124457</a></td><td><span class="score-badge high">7.6</span></td><td>2026-11-08</td><td class="desc-cell">OpenEMR before 8.3.0 contains a path traversal vulnerability in interface/billing/sl_eob_process.php that allows authenticated users to write and read files by supplying unsanitized eraname values. At…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124459" target="_blank" rel="noopener noreferrer">CVE-2026-124459</a></td><td><span class="score-badge high">8.1</span></td><td>2026-11-08</td><td class="desc-cell">OpenEMR before 8.3.0 contains an insecure direct object reference vulnerability in many encounter-form view and save endpoints that lack patient/encounter ownership checks. Authenticated clinical user…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124461" target="_blank" rel="noopener noreferrer">CVE-2026-124461</a></td><td><span class="score-badge high">8.1</span></td><td>2026-11-08</td><td class="desc-cell">OpenEMR before 8.3.0 contains a missing authorization vulnerability in library/ajax/upload.php that allows any authenticated user to read and overwrite document data by supplying an arbitrary doc_id. …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124463" target="_blank" rel="noopener noreferrer">CVE-2026-124463</a></td><td><span class="score-badge high">8.7</span></td><td>2026-11-08</td><td class="desc-cell">OpenEMR before 8.3.0 contains a stored cross-site scripting vulnerability that allows authenticated users with CAMOS access to inject HTML by saving malicious CAMOS content through ajax_save.php. Atta…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124466" target="_blank" rel="noopener noreferrer">CVE-2026-124466</a></td><td><span class="score-badge high">7.2</span></td><td>2026-11-08</td><td class="desc-cell">OpenEMR before 8.4.0 contains a server-side request forgery vulnerability that allows unauthenticated attackers to make the server send HTTP requests by registering an OAuth2 client with an unvalidate…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124467" target="_blank" rel="noopener noreferrer">CVE-2026-124467</a></td><td><span class="score-badge high">8.8</span></td><td>2026-11-08</td><td class="desc-cell">OpenEMR before 8.4.0 contains a local file inclusion in the ESign router (library/ESign/Router.php), which passes the unsanitized module parameter into a require_once of '<module>/Controller.php', and…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124468" target="_blank" rel="noopener noreferrer">CVE-2026-124468</a></td><td><span class="score-badge high">7.1</span></td><td>2026-11-08</td><td class="desc-cell">OpenEMR before 8.3.0 contains an SQL injection vulnerability in the Standard REST API patient insurance and employer search, which concatenates query-string parameter names into SQL as column identifi…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124469" target="_blank" rel="noopener noreferrer">CVE-2026-124469</a></td><td><span class="score-badge critical">9.9</span></td><td>2026-11-08</td><td class="desc-cell">OpenEMR before 8.3.0 contains an SQL injection vulnerability in the Fee Sheet drug-inventory lookup (DrugSalesService::sellDrug) that interpolates the prod[N][warehouse] POST field into an ORDER BY cl…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124471" target="_blank" rel="noopener noreferrer">CVE-2026-124471</a></td><td><span class="score-badge high">8.1</span></td><td>2026-11-08</td><td class="desc-cell">OpenEMR before 8.3.0 contains a missing authorization vulnerability in interface/billing/sl_eob_invoice.php that allows any authenticated user to read and modify billing data for any encounter. Attack…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124472" target="_blank" rel="noopener noreferrer">CVE-2026-124472</a></td><td><span class="score-badge high">8.1</span></td><td>2026-11-08</td><td class="desc-cell">OpenEMR before 8.3.0 contains a missing authorization vulnerability in interface/billing/sl_eob_patient_note.php that allows any authenticated user to read and modify patient billing notes. Attackers …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124473" target="_blank" rel="noopener noreferrer">CVE-2026-124473</a></td><td><span class="score-badge high">7.1</span></td><td>2026-11-08</td><td class="desc-cell">OpenEMR before 8.3.0 contains a broken object-level authorization vulnerability in the SOAP note update API, which does not verify that the supplied SOAP note ID (sid) belongs to the supplied patient …</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124475" target="_blank" rel="noopener noreferrer">CVE-2026-124475</a></td><td><span class="score-badge high">7.1</span></td><td>2026-11-08</td><td class="desc-cell">OpenEMR before 8.3.0 contains an insecure direct object reference vulnerability in portal/lib/persist.php that allows authenticated portal patients to modify other patients' settings by supplying an a…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124477" target="_blank" rel="noopener noreferrer">CVE-2026-124477</a></td><td><span class="score-badge high">8.8</span></td><td>2026-11-08</td><td class="desc-cell">OpenEMR before 8.3.0 contains a missing authorization vulnerability that allows low-privileged authenticated users to delete arbitrary patient recall records via the delete_Recall action. Attackers ca…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124480" target="_blank" rel="noopener noreferrer">CVE-2026-124480</a></td><td><span class="score-badge high">8.8</span></td><td>2026-11-08</td><td class="desc-cell">OpenEMR before 8.4.0 contains an authorization bypass vulnerability that allows low-privileged authenticated users to read cross-patient FHIR QuestionnaireResponse data by sending the APICSRFTOKEN hea…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124483" target="_blank" rel="noopener noreferrer">CVE-2026-124483</a></td><td><span class="score-badge high">8.3</span></td><td>2026-11-08</td><td class="desc-cell">OpenEMR before 8.4.0 contains an incorrect authorization vulnerability because the prescription REST API routes check the patients.med ACL instead of patients.rx and request no specific permission bit…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124484" target="_blank" rel="noopener noreferrer">CVE-2026-124484</a></td><td><span class="score-badge high">8.8</span></td><td>2026-11-08</td><td class="desc-cell">OpenEMR before 8.4.0 contains a missing authorization vulnerability in portal onsite-document APIs that allows any authenticated core user to access cross-patient documents. Attackers can omit the pat…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124486" target="_blank" rel="noopener noreferrer">CVE-2026-124486</a></td><td><span class="score-badge high">8.8</span></td><td>2026-11-08</td><td class="desc-cell">OpenEMR before 8.3.0 contains a missing authorization vulnerability in the classic document controller that allows low-privilege authenticated users to recategorize other patients' documents. Attacker…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124488" target="_blank" rel="noopener noreferrer">CVE-2026-124488</a></td><td><span class="score-badge high">8.1</span></td><td>2026-11-08</td><td class="desc-cell">OpenEMR before 8.3.0 contains an authorization bypass vulnerability that allows authenticated clinicians lacking high-sensitivity permission to read and modify encounter-bound forms via load_form.php.…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124489" target="_blank" rel="noopener noreferrer">CVE-2026-124489</a></td><td><span class="score-badge high">7.1</span></td><td>2026-11-08</td><td class="desc-cell">OpenEMR before 8.3.0 contains a broken access control vulnerability in portal/portal_payment.php that allows low-privilege authenticated users to bypass billing ACL checks by tampering patient identif…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124490" target="_blank" rel="noopener noreferrer">CVE-2026-124490</a></td><td><span class="score-badge critical">9.1</span></td><td>2026-11-08</td><td class="desc-cell">OpenEMR before 8.3.0 contains a path traversal vulnerability in the RingCentral RCFaxClient disposeDocument() method of oe-module-faxsms that allows authenticated attackers to read and write arbitrary…</td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-124492" target="_blank" rel="noopener noreferrer">CVE-2026-124492</a></td><td><span class="score-badge high">7.6</span></td><td>2026-11-08</td><td class="desc-cell">SunEditor before 3.4.0 contains a stored cross-site scripting vulnerability in ModalAnchorEditor's #createBookmarkList, which inserts entity-decoded h1-h6 header textContent into the bookmark list via…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">CISA KEV — 3 new entries (last 7 days)</div>
+    <div class="table-wrapper">
+      <table id="kev-table">
+        <thead>
+          <tr>
+            <th onclick="sortTable('kev-table',0)" data-col="0">CVE ID <span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable('kev-table',1)" data-col="1">Vendor / Product <span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable('kev-table',2)" data-col="2">Date Added <span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable('kev-table',3)" data-col="3">Due Date <span class="sort-icon">&#8597;</span></th>
+            <th>Ransomware</th>
+          </tr>
+        </thead>
+        <tbody>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-19868" target="_blank" rel="noopener noreferrer">CVE-2026-19868</a></td><td>SonicWall / SonicOS SSLVPN</td><td>2026-11-06</td><td>2026-11-20</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2024-27834" target="_blank" rel="noopener noreferrer">CVE-2024-27834</a></td><td>Apple / Multiple Products</td><td>2026-11-04</td><td>2026-11-18</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+<tr><td><a class="cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-119977" target="_blank" rel="noopener noreferrer">CVE-2026-119977</a></td><td>WordPress / WordPress Core</td><td>2026-11-03</td><td>2026-11-06</td><td><span class="badge ransomware-unknown">Unknown</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>
+    Data sources: &nbsp;
+    <a href="https://nvd.nist.gov/" target="_blank" rel="noopener noreferrer">NVD (National Vulnerability Database)</a>
+    &nbsp;&bull;&nbsp;
+    <a href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank" rel="noopener noreferrer">CISA Known Exploited Vulnerabilities Catalog</a>
+    <br><br>
+    Generated by Vulnerability Intelligence Pipeline &bull; 2026-11-08T14:46:13Z
+  </footer>
+</div>
+
+<script>
+const sortState = {};
+function sortTable(tableId, col) {
+  const table = document.getElementById(tableId);
+  const tbody = table.querySelector('tbody');
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+  const key = tableId + ':' + col;
+  const asc = sortState[key] !== true;
+  sortState[key] = asc;
+
+  // Update sort icons
+  table.querySelectorAll('th').forEach((th, i) => {
+    th.classList.toggle('sorted', i === col);
+    const icon = th.querySelector('.sort-icon');
+    if (icon) icon.textContent = i === col ? (asc ? '↑' : '↓') : '⇅';
+  });
+
+  rows.sort((a, b) => {
+    const aText = (a.cells[col] ? a.cells[col].textContent : '').trim();
+    const bText = (b.cells[col] ? b.cells[col].textContent : '').trim();
+    const aNum = parseFloat(aText);
+    const bNum = parseFloat(bText);
+    if (!isNaN(aNum) && !isNaN(bNum)) return asc ? aNum - bNum : bNum - aNum;
+    return asc ? aText.localeCompare(bText) : bText.localeCompare(aText);
+  });
+
+  rows.forEach(r => tbody.appendChild(r));
+}
+</script>
+
+</body>
+</html>
